@@ -7,9 +7,17 @@ using webapi.Services;
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
+// builder.Services.AddDbContext<ZupContext>(options =>
+//     options.UseNpgsql(builder.Configuration.GetConnectionString("postgres_default_db"))
+// );
+DotNetEnv.Env.Load();
+
+
 builder.Services.AddDbContext<ZupContext>(options =>
-    options.UseNpgsql(builder.Configuration.GetConnectionString("postgres_default_db"))
+    options.UseNpgsql(Environment.GetEnvironmentVariable("DEFAULT_POSTGRES"))
 );
+
+
 
 //builder.Services.AddScoped<ProjectService>();
 //builder.Services.AddScoped<DepartmentService>(); 
