@@ -1,24 +1,49 @@
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.IdentityModel.Tokens;
 using System.Reflection;
+using System.Text;
+
 using webapi.Models;
 using webapi.Data;
 using webapi.Services;
+using webapi.Identity;
 
 var builder = WebApplication.CreateBuilder(args);
+var config = builder.Configuration;
 
-// Add services to the container.
-// builder.Services.AddDbContext<ZupContext>(options =>
-//     options.UseNpgsql(builder.Configuration.GetConnectionString("postgres_default_db"))
-// );
-DotNetEnv.Env.Load();
-
-
+// load db
+DotNetEnv.Env.Load(); // load .env file for db connection string
 builder.Services.AddDbContext<ZupContext>(options =>
     options.UseNpgsql(Environment.GetEnvironmentVariable("DEFAULT_POSTGRES"))
 );
 
+// session management
+builder.Services.AddAuthentication(x => {
+    x.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+    x.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+    x.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
+}).AddJwtBearer(y => {
+    y.TokenValidationParameters = new TokenValidationParameters {
+        ValidIssuer = config["JwtSettings:Issuer"],
+        ValidAudience = config["JwtSettings:Audience"],
+        IssuerSigningKey = new SymmetricSecurityKey
+            (Encoding.UTF8.GetBytes(Environment.GetEnvironmentVariable("JWT_KEY")!)),
+        ValidateIssuer = false,
+        ValidateAudience = true,
+        ValidateLifetime = true,
+        ValidateIssuerSigningKey = true
+    };
+});
+
+builder.Services.AddAuthorization(options => {
+    options.AddPolicy(IdentityData.AdminUserPolicyName, p => 
+        p.RequireClaim(IdentityData.AdminUserClaimName, "true"));
+});
 
 
+// Add services to the container.
 //builder.Services.AddScoped<ProjectService>();
 //builder.Services.AddScoped<DepartmentService>(); 
 var services = Assembly.GetExecutingAssembly()
@@ -47,6 +72,7 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();

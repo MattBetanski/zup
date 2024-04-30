@@ -11,4 +11,5 @@ public class ZupContext : DbContext {
 
     public DbSet<Project> Project { get; set; }
     public DbSet<Department> Department { get; set; }
+    public DbSet<User> User { get; set; }
 }

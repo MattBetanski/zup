@@ -23,4 +23,11 @@ public class ProjectService {
                             select proj).FirstOrDefault();
         return project;
     }
+
+    public Project Create(Project new_project) {
+        _context.Project.Add(new_project);
+        _context.SaveChanges();
+
+        return new_project;
+    }
 }

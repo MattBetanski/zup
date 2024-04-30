@@ -1,11 +1,39 @@
 @webapi_HostAddress = http://localhost:5001
+@jwt = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1bmlxdWVfbmFtZSI6ImpiYWxscyIsIm5iZiI6MTcxNDUwMzgwMSwiZXhwIjoxNzE0NzYzMDAxLCJpYXQiOjE3MTQ1MDM4MDEsImF1ZCI6Imh0dHA6Ly9sb2NhbGhvc3Q6NTAwMCJ9.A37NnD10fWDxxIRmUGCirZuuIBwJ1GIdsXVP3NZmBso
 
 GET {{webapi_HostAddress}}/project/
+Authorization: Bearer {{jwt}}
 Accept: application/json
+###
+
+POST {{webapi_HostAddress}}/project/
 ###
 
 GET {{webapi_HostAddress}}/department/
 Accept: application/json
 ###
 
-# v 
+GET {{webapi_HostAddress}}/user/jballs
+#Authorization: Bearer {{jwt}}
+Accept: application/json
+###
+
+POST {{webapi_HostAddress}}/user/create/
+Content-Type: application/json
+
+{
+    "username": "jjjball2",
+    "email": "j@dddd.com",
+    "hashed_password": "password"
+}
+###
+
+POST {{webapi_HostAddress}}/user/login/
+Content-Type: application/json
+
+{
+    "username": "jballs"
+}
+###
+
+# v              
