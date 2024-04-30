@@ -5,10 +5,10 @@ A simple project management platform designed for ease-of-use. Part of a semeste
 This guide assumes use of a UNIX based operating system. While it is possible to run the **Zup Web API** on a Windows device, it will not be covered in detail here and success of that is not guarenteed.
 
 ### Installation
-Ensure the latest version of the **Zup Web API** has been received using `$ git pull`. The API requires both `PostgreSQL v16` and the `.NET Entity Framework` which may need to be installed, or updated. 
+Ensure the latest version of the **Zup Web API** has been received using `$ git pull`. The API also requires both `PostgreSQL v16` and the `.NET Entity Framework` which may need to be installed, or updated. 
 
 #### .NET and Entity Framework
-The API uses `.NET 8` so the runtime must be installed. Following the guide on [Microsoft's site](https://learn.microsoft.com/en-us/dotnet/core/install/linux) to install `.NET 8` for Linux. Some distributions have it available within their own official package repositories. 
+For instructions on how to install `.NET`, follow the guide on [Microsoft's site](https://learn.microsoft.com/en-us/dotnet/core/install/linux) to install `.NET 8` for Linux. Some distributions have it available within their own official package repositories. 
 
 Confirm `.NET` has been properly installed by running the following commands:
 ``` 
@@ -16,7 +16,7 @@ $ dotnet --list-sdks
 $ dotnet --list-runtimes
 ```
 
-Both commands should return their respective paths with a version greater than 8. With `.NET` installed, the `.NET Entity Framework` and project packages must also be installed. It is recommended to install `.NET Entity Framework` globally, which can be done with:
+Both commands should return at least one respective path with a version 8.x.x. With `.NET` installed, the `.NET Entity Framework` and project packages must also be installed. It is recommended to install `.NET Entity Framework` globally, which can be done with:
 ```
 $ dotnet tool install --global dotnet-ef
 ```
@@ -48,8 +48,9 @@ $ nano /path/to/zup/webapi/.env
 ```
 
 At the time of writing, the `.env` file needs two variables: `DEFAULT_POSTGRES` and `JWT_KEY`. 
-    - The `DEFAULT_POSTGRES` variable should contain the connection string for the `Postgres` database. Ensure the user id and password are correct, as failing to connect to the database will prevent the API from starting. 
-    - The `JWT_KEY` is a key used to generate JWTs for authentication. The minimum requirement for this key is **256 bits** or the encryption will fail, preventing the API from starting.
+    
+- The `DEFAULT_POSTGRES` variable should contain the connection string for the `Postgres` database. Ensure the user id and password are correct, as failing to connect to the database will prevent the API from starting. 
+- The `JWT_KEY` is a key used to generate JWTs for authentication. The minimum requirement for this key is **256 bits** or the encryption will fail, preventing the API from starting.
 
 An example is provided in `zup/webapi/example.env`.
 
@@ -77,7 +78,7 @@ $ dotnet run
 This will build the project and run it. The output after it has run will show the port the API is using, most likely `5001`.
 ```
 info: Microsoft.Hosting.Lifetime[14]
-      Now listening on: http://localhost:5001
+      Now listening on: http://localhost:5001 <--- find the port here
 info: Microsoft.Hosting.Lifetime[0]
       Application started. Press Ctrl+C to shut down.
 info: Microsoft.Hosting.Lifetime[0]
