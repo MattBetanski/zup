@@ -10,6 +10,7 @@ import { ArrowRightIcon } from '@heroicons/react/20/solid';
 import { Button } from './button';
 import { useFormState, useFormStatus } from 'react-dom';
 import { authenticate } from '../lib/action';
+import Link from 'next/link';
 
 export default function LoginForm() {
   const [errorMessage, dispatch] = useFormState(authenticate, undefined);
@@ -22,14 +23,14 @@ export default function LoginForm() {
         <div className="w-full">
           <div>
             <label
-              className="mb-3 mt-5 block text-xs font-medium text-gray-900"
+              className="mb-3 mt-5 block text-xs font-medium text-white"
               htmlFor="email"
             >
               Email
             </label>
             <div className="relative">
               <input
-                className="peer block w-full rounded-md py-[9px] pl-10 text-sm outline-2 placeholder:text-gray-500 bg-surface-200"
+                className="peer block w-full rounded-r-3xl border border-gray-500 rounded-l-lg py-[9px] pl-10 text-sm outline-2 placeholder:text-gray-500 bg-surface-200"
                 id="email"
                 type="email"
                 name="email"
@@ -41,14 +42,14 @@ export default function LoginForm() {
           </div>
           <div className="mt-4">
             <label
-              className="mb-3 mt-5 block text-xs font-medium text-gray-900"
+              className="mb-3 mt-5 block text-xs font-medium text-white"
               htmlFor="password"
             >
               Password
             </label>
             <div className="relative">
               <input
-                className="peer block w-full rounded-md py-[9px] pl-10 text-sm outline-2 placeholder:text-gray-500 bg-surface-200"
+                className="peer block w-full rounded-r-3xl border border-gray-500 rounded-l-lg py-[9px] pl-10 text-sm outline-2 placeholder:text-gray-500 bg-surface-200"
                 id="password"
                 type="password"
                 name="password"
@@ -61,6 +62,7 @@ export default function LoginForm() {
           </div>
         </div>
         <LoginButton />
+        <CreateLink />
         <div className="flex h-8 items-end space-x-1"
           aria-live="polite"
           aria-atomic="true"
@@ -87,4 +89,12 @@ function LoginButton() {
       Log in <ArrowRightIcon className="ml-auto h-5 w-5 text-gray-50" />
     </Button>
   );
+}
+
+function CreateLink() {
+  return (
+    <div className='mt-5 text-blue-300 text-sm text-center'>
+      <Link href="/create">Create an account</Link>
+    </div>
+  )
 }

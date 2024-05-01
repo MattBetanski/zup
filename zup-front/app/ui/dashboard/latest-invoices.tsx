@@ -11,10 +11,8 @@ export default async function LatestInvoices() {
       <h2 className={`${lusitana.className} mb-4 text-xl md:text-2xl`}>
         Latest Invoices
       </h2>
-      <div className="flex grow flex-col justify-between rounded-xl bg-gray-50 p-4">
-        {/* NOTE: comment in this code when you get to this point in the course */}
-
-        {<div className="bg-white px-6">
+      <div className="flex grow flex-col justify-between rounded-xl bg-surface-200 p-4">
+        {<div className="bg-surface-300 rounded-md px-6">
           {latestInvoices.map((invoice, i) => {
             return (
               <div
@@ -22,7 +20,7 @@ export default async function LatestInvoices() {
                 className={clsx(
                   'flex flex-row items-center justify-between py-4',
                   {
-                    'border-t': i !== 0,
+                    'border-t border-gray-400': i !== 0,
                   },
                 )}
               >
@@ -38,7 +36,7 @@ export default async function LatestInvoices() {
                     <p className="truncate text-sm font-semibold md:text-base">
                       {invoice.name}
                     </p>
-                    <p className="hidden text-sm text-gray-500 sm:block">
+                    <p className="hidden text-sm text-white sm:block">
                       {invoice.email}
                     </p>
                   </div>

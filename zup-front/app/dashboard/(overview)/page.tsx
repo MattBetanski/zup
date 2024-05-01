@@ -8,7 +8,6 @@ import { LatestInvoicesSkeleton, RevenueChartSkeleton, CardsSkeleton } from "@/a
 import CardWrapper from "../../ui/dashboard/cards";
 import { useSession } from "next-auth/react";
 export default async function Page() {
-    const {totalPaidInvoices, totalPendingInvoices, numberOfCustomers, numberOfInvoices} = await fetchCardData();
     return (
         <main>
             <h1 className={`${lusitana.className} mb-4 text-xl md:text-2xl`}>
@@ -24,7 +23,6 @@ export default async function Page() {
                     <RevenueChart />
                 </Suspense>
                 <Suspense fallback={<LatestInvoicesSkeleton />}>
-
                     <LatestInvoices />
                 </Suspense>
             </div>

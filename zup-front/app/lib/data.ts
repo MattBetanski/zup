@@ -59,6 +59,8 @@ export async function fetchLatestInvoices() {
 export async function fetchCardData() {
   noStore();
   try {
+    const sleep = (ms: number | undefined) => new Promise(r => setTimeout(r, ms));
+    //await sleep(100000000);
     const response = await fetch('http://localhost:9090/dashboard/cards');
     const json_data = await response.json();
     const numberOfInvoices = json_data.numberOfInvoices ?? '0';
