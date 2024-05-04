@@ -5,16 +5,38 @@ namespace webapi.Models;
 
 [Table("user")]
 public class User {
-    #pragma warning disable CS8618
-    [Key, Required]
-    public int user_id { get; set; }
+    [Key, Required, Column("user_id")]
+    public long UserId { get; set; }
 
-    [Required]
-    public string username { get; set; }    // these should eventually be non-nullable
-    [Required]
-    public string hashed_password { get; set; }
-    [Required]
-    public string email { get; set; }
-    public string? first_name { get; set; }  // these should eventually be non-nullable
-    #pragma warning restore CS8618
+    [Required, Column("username")]
+    public required string Username { get; set; }
+
+    [Required, Column("hashed_password")]
+    public required string HashedPassword { get; set; }
+
+    [Required, Column("salt")]
+    public required string Salt { get; set; }
+
+    [Required, Column("email")]
+    public required string Email { get; set; }
+
+    [Required, Column("first_name")]
+    public required string FirstName { get; set; }
+
+    [Required, Column("last_name")]
+    public required string LastName { get; set; }
+
+    [Required, Column("join_date")]
+    public DateTime JoinDate { get; set; }
+
+    [Required, Column("account_activated")]
+    public bool AccountActivated { get; set; }
+
+
+    // item history collections
+    [InverseProperty("Owner")]
+    public virtual ICollection<ItemHistory>? OwnedItemHistories { get; set; }
+
+    [InverseProperty("ChangeUser")]
+    public virtual ICollection<ItemHistory>? ChangedItemHistories { get; set; }
 }

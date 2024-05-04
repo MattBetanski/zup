@@ -5,7 +5,18 @@ namespace webapi.Models;
 
 [Table("department")]
 public class Department {
-    [Key, Required]
-    public int department_id { get; set; }
-    public string name { get; set; } = string.Empty;    
+    [Key, Required, Column("department_id")]
+    public long DepartmentId { get; set; }
+
+    [Required, Column("name")]
+    public required string Name { get; set; }
+
+    [Column("description")]
+    public string? Description { get; set; }
+
+    [Required, Column("creation_date")]
+    public DateTime CreationDate { get; set; }
+
+    [Required, Column("visibility")]
+    public bool visibility { get; set; }
 }

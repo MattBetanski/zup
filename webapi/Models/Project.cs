@@ -5,8 +5,21 @@ namespace webapi.Models;
 
 [Table("project")]
 public class Project {
-    [Key, Required]
-    public int project_id { get; set; }
-    public string name { get; set; } = string.Empty;
-    public virtual Department? department { get; set; }
+    [Key, Required, Column("project_id")]
+    public long ProjectId { get; set; }
+
+    [Required, Column("department_id")]
+    [ForeignKey("Department")]
+    public long DepartmentId { get; set; }
+    
+    [Column("name")]
+    public string Name { get; set; } = string.Empty; // needs to be unique within its department
+
+    [Column("description")]
+    public string? Description { get; set; }
+
+    [Column("created_date")]
+    public DateTime CreatedDate { get; set; }
+
+    public virtual Department? Department { get; set; }
 }
