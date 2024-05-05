@@ -6,7 +6,6 @@ import { Card } from "../../ui/dashboard/cards";
 import { Suspense } from "react";
 import { LatestInvoicesSkeleton, RevenueChartSkeleton, CardsSkeleton } from "@/app/ui/skeletons";
 import CardWrapper from "../../ui/dashboard/cards";
-import { useSession } from "next-auth/react";
 export default async function Page() {
     return (
         <main>
