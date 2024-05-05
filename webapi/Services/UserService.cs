@@ -13,14 +13,14 @@ public class UserService {
     public User create(User new_user) {
         try {
             User? find_un = (from usr in _context.User
-                       where usr.username == new_user.username 
+                       where usr.Username == new_user.Username 
                        select usr).FirstOrDefault();
             
             if (find_un != null)
                 throw new CredentialsInUseException("Username is already taken");
             
             User? find_em = (from usr in _context.User
-                       where usr.email == new_user.email
+                       where usr.Email == new_user.Email
                        select usr).FirstOrDefault();
             
             if (find_em != null)
@@ -38,7 +38,7 @@ public class UserService {
 
     public User? getByUsername(string username) {
         User? query_user = (from usr in _context.User
-                            where usr.username == username
+                            where usr.Username == username
                             select usr).FirstOrDefault();
         
         return query_user;
@@ -48,7 +48,7 @@ public class UserService {
         try {
             Console.WriteLine(username);
             User? user = (from usr in _context.User
-                          where usr.username == username
+                          where usr.Username == username
                           select usr).FirstOrDefault();
 
             if (user == null)

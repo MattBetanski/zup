@@ -19,7 +19,7 @@ public class ProjectService {
 
     public Project? GetById(int id) {
         Project? project = (from proj in _context.Project
-                            where proj.project_id == id
+                            where proj.ProjectId == id
                             select proj).FirstOrDefault();
         return project;
     }

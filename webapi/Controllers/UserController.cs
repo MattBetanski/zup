@@ -8,23 +8,13 @@ namespace webapi.Controllers;
 
 [ApiController]
 [Route("[controller]")]
+[Authorize]
 public class UserController : ControllerBase {
     UserService _userservice;
     AuthService _authservice;
     public UserController(UserService service, AuthService aservice) {
         _userservice = service;
         _authservice = aservice;
-    }
-
-    [Authorize]
-    [HttpGet("{username}")]
-    public ActionResult<User> GetUser(string username) {
-        User? user = _userservice.getByUsername(username);
-
-        if (user != null)
-            return user;
-        else 
-            return NotFound();
     }
 
     [HttpPost]

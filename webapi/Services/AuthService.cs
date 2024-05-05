@@ -18,7 +18,7 @@ public class AuthService {
 
         var token_descriptor = new SecurityTokenDescriptor {
             Subject = new ClaimsIdentity(new Claim[] {
-                new Claim(ClaimTypes.Name, user.username),
+                new Claim(ClaimTypes.Name, user.Username),
             }),
             Expires = DateTime.UtcNow.AddDays(3),
             Audience = "http://localhost:5000",

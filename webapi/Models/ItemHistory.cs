@@ -8,7 +8,7 @@ public class ItemHistory {
     [Key, Required, Column("history_id")]
     public long HistoryId { get; set; }
 
-    [Column("item_id")]
+    [Required, Column("item_id")]
     public long? ItemId { get; set; }
 
     [Required, Column("project_id")]
