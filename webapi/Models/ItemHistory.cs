@@ -1,5 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Text.Json.Serialization;
 
 namespace webapi.Models;
 
@@ -49,6 +50,8 @@ public class ItemHistory {
     [ForeignKey("ChangeUser")]
     public long ChangeUserId { get; set; }
 
+    [JsonIgnore]
     public virtual User? Owner { get; set; }
+    [JsonIgnore]
     public virtual User? ChangeUser { get; set; }
 }

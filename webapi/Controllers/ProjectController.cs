@@ -17,15 +17,15 @@ public class ProjectController : ControllerBase {
         _projectservice = service;
     }
 
-    [AllowAnonymous] // overwrites authorization for this route only
-    [HttpGet]
-    public IEnumerable<Project> GetAll() {
-        return _projectservice.GetAll();
+    [Authorize(Policy = IdentityData.AdminUserPolicyName)]
+    [HttpPost]
+    public IActionResult Create(Project new_project) {
+        return Ok();
     }
 
-    [HttpGet("{id}")]
-    public ActionResult<Project> GetById(int id) {
-        Project? project = _projectservice.GetById(id);
+    [HttpGet("{project_id}")]
+    public ActionResult<Project> GetById(int project_id) {
+        Project? project = _projectservice.GetById(project_id);
 
         if (project != null) {
             return project;
@@ -33,10 +33,19 @@ public class ProjectController : ControllerBase {
             return NotFound();
         }
     }
+    
+    [HttpPut]
+    public IActionResult Update([FromQuery]int project_id, Project updated_project) {
+        return Ok();
+    }
 
-    [Authorize(Policy = IdentityData.AdminUserPolicyName)]
-    [HttpPost]
-    public IActionResult Create(Project new_project) {
-        return null;
+    [HttpDelete]
+    public IActionResult Delete([FromQuery]int project_id) {
+        return Ok();
+    }
+
+    [HttpPut]
+    public IActionResult UserUpdate([FromQuery]int project_id, [FromQuery]int user_id, [FromQuery]int role_id, [FromQuery]bool remove) {
+        return Ok();
     }
 }

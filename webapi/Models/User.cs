@@ -1,5 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Text.Json.Serialization;
 
 namespace webapi.Models;
 
@@ -35,8 +36,10 @@ public class User {
 
     // item history collections
     [InverseProperty("Owner")]
+    [JsonIgnore]
     public virtual ICollection<ItemHistory>? OwnedItemHistories { get; set; }
 
     [InverseProperty("ChangeUser")]
+    [JsonIgnore]
     public virtual ICollection<ItemHistory>? ChangedItemHistories { get; set; }
 }

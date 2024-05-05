@@ -1,5 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Text.Json.Serialization;
 
 namespace webapi.Models;
 
@@ -16,6 +17,8 @@ public class NoteRating {
     [Required, Column("rate")]
     public bool Rate { get; set; }  // true if liked
 
+    [JsonIgnore]
     public virtual User? User { get; set; }
+    [JsonIgnore]
     public virtual Note? Note { get; set; }
 }

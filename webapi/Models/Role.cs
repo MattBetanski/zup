@@ -1,5 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Text.Json.Serialization;
 
 namespace webapi.Models;
 
@@ -36,5 +37,6 @@ public class Role {
     [Required, Column("wiki_delete")]
     public bool WikiDelete { get; set; }
 
+    [JsonIgnore]
     public virtual Department? Department { get; set; }
 }

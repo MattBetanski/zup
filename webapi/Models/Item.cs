@@ -1,5 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Text.Json.Serialization;
 
 namespace webapi.Models;
 
@@ -41,7 +42,10 @@ public class Item {
     [Required, Column("state")]
     public State State { get; set; }
 
+    [JsonIgnore]
     public virtual Project? Project { get; set; }
+    [JsonIgnore]
     public virtual User? Owner { get; set; }
+    [JsonIgnore]
     public virtual Item? Parent { get; set; }
 }

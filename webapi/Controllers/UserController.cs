@@ -8,7 +8,6 @@ namespace webapi.Controllers;
 
 [ApiController]
 [Route("[controller]")]
-[Authorize]
 public class UserController : ControllerBase {
     UserService _userservice;
     AuthService _authservice;
@@ -51,5 +50,11 @@ public class UserController : ControllerBase {
             Console.WriteLine(ex.Message);
             return StatusCode(500);
         }
+    }
+
+    [HttpPost]
+    [Route("logout")]
+    public IActionResult Logout() {
+        return Ok();
     }
 }
