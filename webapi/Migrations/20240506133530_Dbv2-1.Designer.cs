@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using webapi.Data;
@@ -11,9 +12,11 @@ using webapi.Data;
 namespace webapi.Migrations
 {
     [DbContext(typeof(ZupContext))]
-    partial class ZupContextModelSnapshot : ModelSnapshot
+    [Migration("20240506133530_Dbv2-1")]
+    partial class Dbv21
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -51,23 +54,6 @@ namespace webapi.Migrations
                     b.HasKey("DepartmentId");
 
                     b.ToTable("department");
-                });
-
-            modelBuilder.Entity("webapi.Models.DepartmentMember", b =>
-                {
-                    b.Property<long>("MemberId")
-                        .HasColumnType("bigint")
-                        .HasColumnName("member_id");
-
-                    b.Property<long>("DepartmentId")
-                        .HasColumnType("bigint")
-                        .HasColumnName("department_id");
-
-                    b.HasKey("MemberId", "DepartmentId");
-
-                    b.HasIndex("DepartmentId");
-
-                    b.ToTable("department_member");
                 });
 
             modelBuilder.Entity("webapi.Models.Item", b =>
@@ -129,23 +115,6 @@ namespace webapi.Migrations
                     b.HasIndex("ProjectId");
 
                     b.ToTable("item");
-                });
-
-            modelBuilder.Entity("webapi.Models.ItemAssignee", b =>
-                {
-                    b.Property<long>("ItemId")
-                        .HasColumnType("bigint")
-                        .HasColumnName("item_id");
-
-                    b.Property<long>("AssingeeId")
-                        .HasColumnType("bigint")
-                        .HasColumnName("assingee_id");
-
-                    b.HasKey("ItemId", "AssingeeId");
-
-                    b.HasIndex("AssingeeId");
-
-                    b.ToTable("item_assignee");
                 });
 
             modelBuilder.Entity("webapi.Models.ItemComment", b =>
@@ -365,37 +334,14 @@ namespace webapi.Migrations
                     b.ToTable("project");
                 });
 
-            modelBuilder.Entity("webapi.Models.ProjectUserRole", b =>
-                {
-                    b.Property<long>("ProjectId")
-                        .HasColumnType("bigint")
-                        .HasColumnName("project_id");
-
-                    b.Property<long>("UserId")
-                        .HasColumnType("bigint")
-                        .HasColumnName("user_id");
-
-                    b.Property<long>("RoleId")
-                        .HasColumnType("bigint")
-                        .HasColumnName("role_id");
-
-                    b.HasKey("ProjectId", "UserId", "RoleId");
-
-                    b.HasIndex("RoleId");
-
-                    b.HasIndex("UserId");
-
-                    b.ToTable("ProjectUserRole");
-                });
-
             modelBuilder.Entity("webapi.Models.Role", b =>
                 {
-                    b.Property<long>("RoleId")
+                    b.Property<int>("RoleId")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint")
+                        .HasColumnType("integer")
                         .HasColumnName("role_id");
 
-                    NpgsqlPropertyBuilderExtensions.UseSerialColumn(b.Property<long>("RoleId"));
+                    NpgsqlPropertyBuilderExtensions.UseSerialColumn(b.Property<int>("RoleId"));
 
                     b.Property<int>("CreateLevel")
                         .HasColumnType("integer")
@@ -527,25 +473,6 @@ namespace webapi.Migrations
                     b.ToTable("wiki_page");
                 });
 
-            modelBuilder.Entity("webapi.Models.DepartmentMember", b =>
-                {
-                    b.HasOne("webapi.Models.Department", "Department")
-                        .WithMany()
-                        .HasForeignKey("DepartmentId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("webapi.Models.User", "User")
-                        .WithMany()
-                        .HasForeignKey("MemberId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Department");
-
-                    b.Navigation("User");
-                });
-
             modelBuilder.Entity("webapi.Models.Item", b =>
                 {
                     b.HasOne("webapi.Models.User", "Owner")
@@ -569,25 +496,6 @@ namespace webapi.Migrations
                     b.Navigation("Parent");
 
                     b.Navigation("Project");
-                });
-
-            modelBuilder.Entity("webapi.Models.ItemAssignee", b =>
-                {
-                    b.HasOne("webapi.Models.User", "User")
-                        .WithMany()
-                        .HasForeignKey("AssingeeId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("webapi.Models.Item", "Item")
-                        .WithMany()
-                        .HasForeignKey("ItemId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Item");
-
-                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("webapi.Models.ItemHistory", b =>
@@ -664,33 +572,6 @@ namespace webapi.Migrations
                         .IsRequired();
 
                     b.Navigation("Department");
-                });
-
-            modelBuilder.Entity("webapi.Models.ProjectUserRole", b =>
-                {
-                    b.HasOne("webapi.Models.Project", "Project")
-                        .WithMany()
-                        .HasForeignKey("ProjectId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("webapi.Models.Role", "Role")
-                        .WithMany()
-                        .HasForeignKey("RoleId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("webapi.Models.User", "User")
-                        .WithMany()
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Project");
-
-                    b.Navigation("Role");
-
-                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("webapi.Models.Role", b =>

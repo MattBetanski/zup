@@ -7,11 +7,11 @@ namespace webapi.Models;
 [Table("role")]
 public class Role {
     [Key, Required, Column("role_id")]
-    public int RoleId { get; set; }
+    public long RoleId { get; set; }
 
     [Required, Column("department_id")]
     [ForeignKey("Department")]
-    public int DepartmentId { get; set; }
+    public long DepartmentId { get; set; }
 
     [Required, Column("name")]
     public required string Name { get; set; }

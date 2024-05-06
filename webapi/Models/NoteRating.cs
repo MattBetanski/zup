@@ -6,6 +6,9 @@ namespace webapi.Models;
 
 [Table("note_rating")]
 public class NoteRating {
+    [Key, Required, Column("note_rating_id")]
+    public long NoteRatingId { get; set; }
+    
     [Required, Column("user_id")]
     [ForeignKey("User")]
     public long UserId { get; set; }
