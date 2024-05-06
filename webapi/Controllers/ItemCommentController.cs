@@ -19,7 +19,22 @@ public class ItemCommentController : ControllerBase {
     }
 
     [HttpPost]
-    public IActionResult LeaveComment([FromQuery] long item_id) {
+    public IActionResult LeaveComment([FromQuery] long item_id, [FromBody] ItemCommentBody comment_info) {
+        return Ok();
+    }
+
+    [HttpGet]
+    public ActionResult<List<ItemComment>> GetComments([FromQuery] long item_id) {
+        return Ok();
+    }
+
+    [HttpPut]
+    public IActionResult EditComment([FromQuery] long item_id) {
+        return Ok();
+    }
+
+    [HttpDelete]
+    public IActionResult DeleteComment([FromQuery] long item_id) {
         return Ok();
     }
 }

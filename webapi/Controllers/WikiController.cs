@@ -17,14 +17,26 @@ public class WikiController : ControllerBase {
         // _wikiservice = service;
     }
 
+    [HttpPost]
+    public IActionResult CreateWiki([FromQuery] long department_id, [FromBody] WikiBody wiki_info) {
+        return Ok();
+    }    
+
     [HttpGet]
     [Route("all")]
     public ActionResult<List<WikiPage>> GetDepartmentsWikis([FromQuery] long department_id) {
+        // don't return the content here
         return Ok();
     }
 
     [HttpGet]
     public ActionResult<WikiPage> GetWikiContents([FromQuery] long wiki_id) {
+        // content will return as a string
+        return Ok();
+    }
+
+    [HttpPut]
+    public IActionResult UpdateWiki([FromQuery] long wiki_id, [FromBody] WikiBody wiki_info) {
         return Ok();
     }
 }

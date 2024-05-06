@@ -59,4 +59,10 @@ public class UserController : ControllerBase {
     public IActionResult Logout() {
         return Ok();
     }
+
+    [HttpGet]
+    [Route("invitations")]
+    public ActionResult<List<Invite>> GetInvites() {
+        return Ok();
+    }
 }

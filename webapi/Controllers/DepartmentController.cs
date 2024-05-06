@@ -74,4 +74,13 @@ public class DepartmentController : ControllerBase {
     public IActionResult RespondToInvite([FromQuery] long department_id, [FromQuery] bool response) {
         return Ok();
     }
+
+    // if have spare time:
+    // make it pageinated
+    // take in offset and count
+    [HttpGet]
+    [Route("note")]
+    public ActionResult<List<Note>> GetDepartmentNotes([FromQuery] long department_id) {
+        return Ok();
+    }
 }

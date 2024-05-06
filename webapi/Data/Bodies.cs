@@ -27,6 +27,10 @@ public class ItemBodyU {
     public DateTime? Deadline { get; set; }  
 }
 
+public class ItemCommentBody {
+    public required string Comment { get; set; }
+}
+
 public class LoginBody {
     public required string Username { get; set; }
 }
@@ -34,4 +38,9 @@ public class LoginBody {
 public class ProjectBody {
     public required string Name { get; set; }
     public string? Description { get; set; }
+}
+
+public class WikiBody {
+    public required string Title { get; set; }
+    public string? Content { get; set; }
 }

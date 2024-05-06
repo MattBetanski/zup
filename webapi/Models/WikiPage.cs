@@ -9,19 +9,19 @@ public class WikiPage {
     [Key, Required, Column("wiki_page_id")]
     public long WikiPageId { get; set; }
 
-    [Required, Column("project_id")]
-    [ForeignKey("Project")]
-    public long ProjectId { get; set; }
+    [Required, Column("department_id")]
+    [ForeignKey("Department")]
+    public long DepartmentId { get; set; }
 
     [Required, Column("title")]
     public required string Title { get; set; }
 
-    [Required, Column("file_path")]
-    public required string FilePath { get; set; }
+    [Column("content")]
+    public string? content { get; set; }
 
     [Required, Column("created_date")]
     public DateTime CreatedDate { get; set; }
 
     [JsonIgnore]
-    public virtual Project? Project { get; set; }
+    public virtual Department? Department { get; set; }
 }
