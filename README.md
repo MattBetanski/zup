@@ -87,4 +87,4 @@ info: Microsoft.Hosting.Lifetime[0]
       Content root path: /path/to/zup/webapi
 ```
 
-The **Zup Web API** is now running and ready to be accessed.
+The **Zup Web API** is now running and ready to be accessed. For reference on routes, navigate to `http://localhost:5001/swagger/` to view the OpenAPI schema.
