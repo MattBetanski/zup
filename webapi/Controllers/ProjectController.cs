@@ -1,15 +1,15 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Authorization;
 
+using webapi.Data;
 using webapi.Models;
 using webapi.Services;
-using webapi.Identity;
 
 namespace webapi.Controllers;
 
 [Authorize] // requires authorization for the entire controller, can also be put indiviually on each route
 [ApiController]
-[Route("[controller]")]
+[Route("project")]
 public class ProjectController : ControllerBase {
     ProjectService _projectservice;
     
@@ -17,35 +17,46 @@ public class ProjectController : ControllerBase {
         _projectservice = service;
     }
 
-    [Authorize(Policy = IdentityData.AdminUserPolicyName)]
+    // [Authorize(Policy = IdentityData.AdminUserPolicyName)]
+    // [HttpPost]
+    // public IActionResult Create(Project new_project) {
+    //     return Ok();
+    // }
+
+    // [HttpGet("{project_id}")]
+    // public ActionResult<Project> GetById(int project_id) {
+    //     Project? project = _projectservice.GetById(project_id);
+
+    //     if (project != null) {
+    //         return project;
+    //     } else {
+    //         return NotFound();
+    //     }
+    // }
+
     [HttpPost]
-    public IActionResult Create(Project new_project) {
+    public IActionResult CreateProject([FromBody] ProjectBody project_info) {
         return Ok();
     }
 
-    [HttpGet("{project_id}")]
-    public ActionResult<Project> GetById(int project_id) {
-        Project? project = _projectservice.GetById(project_id);
-
-        if (project != null) {
-            return project;
-        } else {
-            return NotFound();
-        }
+    [HttpGet]
+    public ActionResult<Project> GetProjectById([FromQuery] long project_id) {
+        return Ok();
     }
     
     [HttpPut]
-    public IActionResult Update([FromQuery]int project_id, Project updated_project) {
+    public IActionResult UpdateProject([FromQuery]long project_id, [FromBody] ProjectBody project_info) {
         return Ok();
     }
 
     [HttpDelete]
-    public IActionResult Delete([FromQuery]int project_id) {
+    public IActionResult DeleteProject([FromQuery]long project_id) {
         return Ok();
     }
 
     [HttpPut]
-    public IActionResult UserUpdate([FromQuery]int project_id, [FromQuery]int user_id, [FromQuery]int role_id, [FromQuery]bool remove) {
+    [Route("roles")]
+    public IActionResult UserRoleUpdate([FromQuery]long project_id, [FromQuery]long user_id, [FromQuery]long role_id, [FromQuery]bool remove = false) {
         return Ok();
     }
 }

@@ -8,6 +8,8 @@ public class ZupContext : DbContext {
     protected override void OnModelCreating(ModelBuilder modelBuilder) {
         modelBuilder.Entity<DepartmentMember>()
             .HasKey(dm => new { dm.MemberId, dm.DepartmentId });
+        modelBuilder.Entity<DepartmentInvite>()
+            .HasKey(di => new { di.DepartmentId, di.InviteeId });
         modelBuilder.Entity<ItemAssignee>()
             .HasKey(ia => new { ia.ItemId, ia.AssingeeId });
         modelBuilder.Entity<ProjectUserRole>()
@@ -17,6 +19,7 @@ public class ZupContext : DbContext {
     }
 
     public DbSet<Department> Department { get; set; }
+    public DbSet<DepartmentInvite> DepartmentInvite { get; set; }
     public DbSet<DepartmentMember> DepartmentMember { get; set; }
     public DbSet<Item> Item { get; set; }
     public DbSet<ItemAssignee> ItemAssignee { get; set; }

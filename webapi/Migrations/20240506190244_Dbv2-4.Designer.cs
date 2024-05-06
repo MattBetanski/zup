@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using webapi.Data;
@@ -11,9 +12,11 @@ using webapi.Data;
 namespace webapi.Migrations
 {
     [DbContext(typeof(ZupContext))]
-    partial class ZupContextModelSnapshot : ModelSnapshot
+    [Migration("20240506190244_Dbv2-4")]
+    partial class Dbv24
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -51,27 +54,6 @@ namespace webapi.Migrations
                     b.HasKey("DepartmentId");
 
                     b.ToTable("department");
-                });
-
-            modelBuilder.Entity("webapi.Models.DepartmentInvite", b =>
-                {
-                    b.Property<long>("DepartmentId")
-                        .HasColumnType("bigint")
-                        .HasColumnName("department_id");
-
-                    b.Property<long>("InviteeId")
-                        .HasColumnType("bigint")
-                        .HasColumnName("invitee_id");
-
-                    b.Property<bool>("Response")
-                        .HasColumnType("boolean")
-                        .HasColumnName("response");
-
-                    b.HasKey("DepartmentId", "InviteeId");
-
-                    b.HasIndex("InviteeId");
-
-                    b.ToTable("department_invite");
                 });
 
             modelBuilder.Entity("webapi.Models.DepartmentMember", b =>
@@ -546,25 +528,6 @@ namespace webapi.Migrations
                     b.HasIndex("ProjectId");
 
                     b.ToTable("wiki_page");
-                });
-
-            modelBuilder.Entity("webapi.Models.DepartmentInvite", b =>
-                {
-                    b.HasOne("webapi.Models.Department", "Department")
-                        .WithMany()
-                        .HasForeignKey("DepartmentId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("webapi.Models.User", "User")
-                        .WithMany()
-                        .HasForeignKey("InviteeId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Department");
-
-                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("webapi.Models.DepartmentMember", b =>

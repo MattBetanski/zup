@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using webapi.Data;
@@ -11,9 +12,11 @@ using webapi.Data;
 namespace webapi.Migrations
 {
     [DbContext(typeof(ZupContext))]
-    partial class ZupContextModelSnapshot : ModelSnapshot
+    [Migration("20240506190645_Dbv2-4-1")]
+    partial class Dbv241
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -64,8 +67,7 @@ namespace webapi.Migrations
                         .HasColumnName("invitee_id");
 
                     b.Property<bool>("Response")
-                        .HasColumnType("boolean")
-                        .HasColumnName("response");
+                        .HasColumnType("boolean");
 
                     b.HasKey("DepartmentId", "InviteeId");
 

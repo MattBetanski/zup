@@ -1,13 +1,15 @@
 using System.Runtime.InteropServices.JavaScript;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+
+using webapi.Data;
 using webapi.Models;
 using webapi.Services;
 
 namespace webapi.Controllers;
 
 [ApiController]
-[Route("[controller]")]
+[Route("user")]
 public class UserController : ControllerBase {
     UserService _userservice;
     AuthService _authservice;
@@ -35,7 +37,7 @@ public class UserController : ControllerBase {
 
     [HttpPost]
     [Route("login")]
-    public IActionResult Login([FromBody] LoginModel creds) {
+    public IActionResult Login([FromBody] LoginBody creds) {
         try {
             string username = creds.Username;
             Console.Write($"here: {username}");

@@ -1,0 +1,37 @@
+using webapi.Models;
+
+namespace webapi.Data;
+
+public class DepartmentBody {
+    public required string Name { get; set; }
+    public string? Description { get; set; }
+    public bool Visibility { get; set; }
+}
+
+public class ItemBody {
+    public required string Name { get; set; }
+    public long? ParentId { get; set; }
+    public string? Description { get; set; }
+    public required Models.Type Type { get; set; }
+    public State State { get; set; }
+    public bool Confidentiality { get; set; }
+    public DateTime? Deadline { get; set; }
+}
+
+public class ItemBodyU {
+    public required string Name { get; set; }
+    public long? ParentId { get; set; }
+    public string? Description { get; set; }
+    public State State { get; set; }
+    public bool Confidentiality { get; set; }
+    public DateTime? Deadline { get; set; }  
+}
+
+public class LoginBody {
+    public required string Username { get; set; }
+}
+
+public class ProjectBody {
+    public required string Name { get; set; }
+    public string? Description { get; set; }
+}
