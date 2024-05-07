@@ -1,6 +1,9 @@
 // This file contains type definitions for your data.
 // It describes the shape of the data, and what data type each property should accept.
 // For simplicity of teaching, we're manually defining these types.
+
+import internal from "stream";
+
 // However, these types are generated automatically if you're using an ORM such as Prisma.
 export type User = {
   id: string;
@@ -86,3 +89,12 @@ export type InvoiceForm = {
   amount: number;
   status: 'pending' | 'paid';
 };
+
+
+export type Department = {
+  name: string;
+  description: string;
+  departmentId: string;
+  creationDate: Date;
+  visibility: boolean;
+}

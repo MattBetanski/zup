@@ -235,3 +235,116 @@ export async function getUser(email: string) {
     throw new Error('Failed to fetch user.');
   }
 }
+export default async function Page({params}: {params: {id: string}}) {
+  const id = params.id;
+  
+  
+}
+
+export async function fetchDepartmentbyId(id: string) {
+  try {
+    if (id == "1") {
+      return {
+        id: 1,
+        name: "Test Name",
+        description: "Test Description",
+        creationDate: Date.now(),
+        visbility: "public"
+      }
+    } else {
+      return null;
+    }
+  } catch (err) {
+    console.error("Error:", err);
+    throw err;
+  }
+}
+
+export async function fetchProjectsForDepartment(deparmtentId: string) {
+  try {
+    return [
+      {
+        "projectId": 1,
+        "departmentId": 1,
+        "name": "Test Project One",
+        "description": "This is a test project",
+        "createdDate": Date.now()
+      },
+      {
+        "projectId": 2,
+        "departmentId": 1,
+        "name": "Test Project Two",
+        "description": "Another test project",
+        "createdDate": Date.now()
+      },
+      {
+        "projectId": 3,
+        "departmentId": 1,
+        "name": "Test Project Three",
+        "description": " The third test project for this deparment The third test project for this deparment The third test project for this deparment The third test project for this deparment The third test project for this deparment The third test project for this deparment The third test project for this deparment The third test project for this deparment The third test project for this deparment The third test project for this deparment The third test project for this deparment The third test project for this deparment The third test project for this deparment The third test project for this deparment The third test project for this deparment The third test project for this deparment The third test project for this deparment The third test project for this deparment",
+        "createdDate": Date.now()
+      },
+      {
+        "projectId": 3,
+        "departmentId": 1,
+        "name": "Test Project Three",
+        "description": " The third test project for this deparment The third test project for this deparment The third test project for this deparment The third test project for this deparment The third test project for this deparment The third test project for this deparment The third test project for this deparment The third test project for this deparment The third test project for this deparment The third test project for this deparment The third test project for this deparment The third test project for this deparment The third test project for this deparment The third test project for this deparment The third test project for this deparment The third test project for this deparment The third test project for this deparment The third test project for this deparment",
+        "createdDate": Date.now()
+      },
+      {
+        "projectId": 3,
+        "departmentId": 1,
+        "name": "Test Project Three",
+        "description": " The third test project for this deparment The third test project for this deparment The third test project for this deparment The third test project for this deparment The third test project for this deparment The third test project for this deparment The third test project for this deparment The third test project for this deparment The third test project for this deparment The third test project for this deparment The third test project for this deparment The third test project for this deparment The third test project for this deparment The third test project for this deparment The third test project for this deparment The third test project for this deparment The third test project for this deparment The third test project for this deparment",
+        "createdDate": Date.now()
+      },
+      {
+        "projectId": 3,
+        "departmentId": 1,
+        "name": "Test Project Three",
+        "description": " The third test project for this deparment The third test project for this deparment The third test project for this deparment The third test project for this deparment The third test project for this deparment The third test project for this deparment The third test project for this deparment The third test project for this deparment The third test project for this deparment The third test project for this deparment The third test project for this deparment The third test project for this deparment The third test project for this deparment The third test project for this deparment The third test project for this deparment The third test project for this deparment The third test project for this deparment The third test project for this deparment",
+        "createdDate": Date.now()
+      },
+      {
+        "projectId": 3,
+        "departmentId": 1,
+        "name": "Test Project Three",
+        "description": " The third test project for this deparment The third test project for this deparment The third test project for this deparment The third test project for this deparment The third test project for this deparment The third test project for this deparment The third test project for this deparment The third test project for this deparment The third test project for this deparment The third test project for this deparment The third test project for this deparment The third test project for this deparment The third test project for this deparment The third test project for this deparment The third test project for this deparment The third test project for this deparment The third test project for this deparment The third test project for this deparment",
+        "createdDate": Date.now()
+      }
+    ]
+  } catch (err) {
+    console.error("Error:", err);
+    throw err;
+  }
+}
+
+export async function fetchWikiPagesForDepartment(departmentId: string) {
+  try {
+    return [
+      {
+        "wikiPageId": 1,
+        "departmentId": 0,
+        "title": "This is a wiki page",
+        "filePath": "/test",
+        "createdDate": Date.now()
+      },
+      {
+        "wikiPageId": 2,
+        "departmentId": 0,
+        "title": "This is another wiki page",
+        "filePath": "/test",
+        "createdDate": Date.now()
+      },
+      {
+        "wikiPageId": 3,
+        "departmentId": 0,
+        "title": "Yet another wiki page",
+        "filePath": "/test",
+        "createdDate": Date.now()
+      },
+    ]
+  } catch (err) {
+
+  }
+}

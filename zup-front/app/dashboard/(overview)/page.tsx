@@ -6,12 +6,27 @@ import { Card } from "../../ui/dashboard/cards";
 import { Suspense } from "react";
 import { LatestInvoicesSkeleton, RevenueChartSkeleton, CardsSkeleton } from "@/app/ui/skeletons";
 import CardWrapper from "../../ui/dashboard/cards";
+import getServerSession from 'next-auth';
+import { checkAuthenticated, getToken } from "@/app/lib/action";
+import DepartmentWrapper from "@/app/ui/dashboard/departments";
+import { fetchDepartmentsForUser } from '@/app/lib/action';
+import { Button } from "@/app/ui/button";
 export default async function Page() {
+    let token = await checkAuthenticated();
+    const departments = await fetchDepartmentsForUser();
     return (
         <main>
             <h1 className={`${lusitana.className} mb-4 text-xl md:text-2xl`}>
                 Dashboard
             </h1>
+            <h2 className={`${lusitana.className} mb-4 text-md md:text-xl`}>
+                Welcome back, {token.unique_name}!
+            </h2>
+            <div className="overflow-hidden">
+                <Suspense fallback={<CardsSkeleton />}>
+                    <DepartmentWrapper  departments={departments}/>
+                </Suspense>
+            </div>
             <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
                 <Suspense fallback={<CardsSkeleton />}>
                     <CardWrapper />
