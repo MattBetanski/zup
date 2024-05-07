@@ -5,8 +5,13 @@ import { useState } from "react";
 import { useFormState } from 'react-dom';
 import { Button } from "../button";
 import { editDepartment } from "@/app/lib/department/action";
+import { useRouter } from "next/navigation";
 
 export default function EditDepartmentForm({params}: {params: {id: string}}) {
+    const router = useRouter();
+    function cancel() {
+        router.back();
+    }
     const initialState = {message: null, errors: {}};
     const [state, dispatch] = useFormState(editDepartment, initialState);
     const id = params.id;
@@ -71,7 +76,7 @@ export default function EditDepartmentForm({params}: {params: {id: string}}) {
                 </fieldset>
             </div>
             <div className="mt-6 flex justify-end gap-4">
-                <Button className="flex h-10 bg-surface-300 items-center rounded-lg px-4 text-sm font-medium hover:bg-surface-400">Cancel</Button>
+                <Button className="flex h-10 bg-surface-300 items-center rounded-lg px-4 text-sm font-medium hover:bg-surface-400" onClick={cancel}>Cancel</Button>
                 <Button type="submit">Create Department</Button>
             </div>
         </form>

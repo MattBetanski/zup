@@ -87,7 +87,6 @@ export async function createDepartment(prevState: CreateDepartmentState, formDat
 
 export async function editDepartment(prevState: EditDepartmentState, formData: FormData) {
     try {
-        console.log("gpt here");
         const validatedFields = EditDepartment.safeParse({
             id: formData.get("id"),
             name: formData.get("name"),
@@ -104,7 +103,6 @@ export async function editDepartment(prevState: EditDepartmentState, formData: F
         }
 
         let token = cookies().get("token")?.value ?? '';
-        console.log(token);
         const {name, description, visibility, id} = validatedFields.data;
         var departmentId = id;
         const booleanVisibility = visibility == "public";
@@ -117,9 +115,10 @@ export async function editDepartment(prevState: EditDepartmentState, formData: F
             }),
             headers: {
                 "Content-Type": "application/json",
-                "Bearer": token
+                "Authorization": `Bearer ${token}`
             }
         });
+        console.log(response);
         revalidatePath(`/dashboard/department/${id}`);
     } catch (err) {
         console.error(err);

@@ -8,6 +8,8 @@ import { useState } from "react";
 import PaginatedList from "@/app/ui/PaginatedLIst";
 import { RecentWikiPages } from "@/app/ui/department/wikiPages";
 import { Button } from "@/app/ui/button";
+import { UpdateDepartment } from "@/app/ui/department/buttons";
+import Link from "next/link";
 export default async function Page({params}: {params: {id: string}}) {
     const id = params.id;
     const department = await fetchDepartmentbyId(id);
@@ -45,6 +47,7 @@ export default async function Page({params}: {params: {id: string}}) {
                         <div className="flex h-64 bg-red-300">Roles</div>
                     </div>
                 </div>
+                <Button className="w-16 items-center justify-center"><Link href={`/dashboard/department/${id}/edit`}>Edit</Link></Button>
             </div>
         </main>
     )
