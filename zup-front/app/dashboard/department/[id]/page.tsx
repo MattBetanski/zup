@@ -41,8 +41,8 @@ export default async function Page({params}: {params: {id: string}}) {
                                     <Button className="w-48 text-center items-center justify-center">Create Wiki Page</Button>
                                 </div>
                             </div>
-                        <div className="flex h-64 bg-green-300">Text</div>
-                        <div className="flex h-64 bg-red-300">Text</div>
+                        <div className="flex h-64 bg-green-300">Notes</div>
+                        <div className="flex h-64 bg-red-300">Roles</div>
                     </div>
                 </div>
             </div>

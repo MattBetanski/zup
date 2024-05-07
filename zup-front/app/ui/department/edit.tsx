@@ -1,16 +1,18 @@
 'use client';
-import { editDepartment } from "@/app/lib/action";
 import { EyeIcon, EyeSlashIcon } from "@heroicons/react/24/solid";
 import { stat } from "fs";
 import { useState } from "react";
 import { useFormState } from 'react-dom';
 import { Button } from "../button";
+import { editDepartment } from "@/app/lib/department/action";
 
-export default function EditDepartmentForm() {
+export default function EditDepartmentForm({params}: {params: {id: string}}) {
     const initialState = {message: null, errors: {}};
     const [state, dispatch] = useFormState(editDepartment, initialState);
+    const id = params.id;
     return (
         <form action={dispatch}>
+            <input type="hidden" name="id" value={id}/>
             <div className="rounded-md bg-surface-200 p-4 md:p-6">
                 {/* Department Name */}
                 <div className="mb-4">

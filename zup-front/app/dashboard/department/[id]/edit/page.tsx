@@ -19,7 +19,7 @@ export default async function Page({params}: {params: {id: string}}) {
                     <PageHeader.Title>Edit Department</PageHeader.Title>
                 </PageHeader.TitleArea>
             </PageHeader>
-            <EditDepartmentForm />
+            <EditDepartmentForm params={{id: id}}/>
         </Box>
     )
 }
