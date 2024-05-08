@@ -1,19 +1,7 @@
 @webapi_HostAddress = http://localhost:5001
-@jwt = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1bmlxdWVfbmFtZSI6ImpiYWxscyIsIm5iZiI6MTcxNTAwMjA5NCwiZXhwIjoxNzE1MjYxMjk0LCJpYXQiOjE3MTUwMDIwOTQsImF1ZCI6Imh0dHA6Ly9sb2NhbGhvc3Q6NTAwMCJ9.R_XyPEym3Hg3gcwPlNqRyfk2v-xnruSdyWftdMimljY
+@jwt = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1bmlxdWVfbmFtZSI6ImhlbGxvd29ybGQiLCJuYmYiOjE3MTUxNzY5MDYsImV4cCI6MTcxNTQzNjEwNiwiaWF0IjoxNzE1MTc2OTA2LCJhdWQiOiJodHRwOi8vbG9jYWxob3N0OjUwMDAifQ.OKZe_1oUtqsO_WCEAsxYMOAwiOn212ZfZuzCwsOnFMs
 
 GET {{webapi_HostAddress}}/project/
-Authorization: Bearer {{jwt}}
-Accept: application/json
-###
-
-POST {{webapi_HostAddress}}/project/
-###
-
-GET {{webapi_HostAddress}}/department/
-Accept: application/json
-###
-
-GET {{webapi_HostAddress}}/user/jballs
 Authorization: Bearer {{jwt}}
 Accept: application/json
 ###
@@ -22,9 +10,11 @@ POST {{webapi_HostAddress}}/user/create/
 Content-Type: application/json
 
 {
-    "username": "jjjball2",
-    "email": "j@dddd.com",
-    "hashed_password": "password"
+    "username": "helloworld",
+    "email": "helloworld@gmail.com",
+    "password": "password",
+    "firstName": "hello",
+    "lastName": "world"
 }
 ###
 
@@ -32,8 +22,19 @@ POST {{webapi_HostAddress}}/user/login/
 Content-Type: application/json
 
 {
-    "username": "jballs"
+    "username": "helloworld",
+    "password": "password"
 }
 ###
 
-# v               
+POST {{webapi_HostAddress}}/department/
+Authorization: Bearer {{jwt}}
+Content-Type: application/json
+
+{
+    "name": "bigworlddepartment",
+    "description": "spodermun",
+    "visibilty": true
+}
+
+# v                

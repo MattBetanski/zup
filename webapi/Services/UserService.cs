@@ -44,14 +44,28 @@ public class UserService {
         return query_user;
     }
 
-    public User login(string username) {
+
+    public string HashPassword(string plain_password) {
+        return BCrypt.Net.BCrypt.EnhancedHashPassword(plain_password);
+    }
+
+    public bool VerifyPassword(string plain_password, string hashed_password) {
+        return BCrypt.Net.BCrypt.EnhancedVerify(plain_password, hashed_password);
+    }
+
+    public User login(string username, string plain_password) {
         try {
             Console.WriteLine(username);
             User? user = (from usr in _context.User
                           where usr.Username == username
                           select usr).FirstOrDefault();
 
+            if(user == null) { Console.WriteLine("null"); }
+
             if (user == null)
+                throw new InvalidCredentialsException("Username or password are incorrect");
+            
+            if(!VerifyPassword(plain_password, user.HashedPassword))
                 throw new InvalidCredentialsException("Username or password are incorrect");
             
             return user;

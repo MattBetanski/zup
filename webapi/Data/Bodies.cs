@@ -33,6 +33,7 @@ public class ItemCommentBody {
 
 public class LoginBody {
     public required string Username { get; set; }
+    public required string Password { get; set; }
 }
 
 public class ProjectBody {
@@ -43,4 +44,12 @@ public class ProjectBody {
 public class WikiBody {
     public required string Title { get; set; }
     public string? Content { get; set; }
+}
+
+public class UserBody {
+    public required string Username { get; set; }
+    public required string Password { get; set; }
+    public required string Email { get; set; }
+    public required string FirstName { get; set; }
+    public required string LastName { get; set; }
 }

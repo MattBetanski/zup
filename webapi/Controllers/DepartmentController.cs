@@ -20,7 +20,21 @@ public class DepartmentController : ControllerBase {
 
     [HttpPost]
     public IActionResult CreateDepartment([FromBody] DepartmentBody department_info) {
-        return Ok();
+        try {
+            Department new_dep = new Department {
+                Name = department_info.Name,
+                Description = department_info.Description,
+                CreationDate = DateTime.UtcNow,
+                Visibility = department_info.Visibility
+            };
+
+            _departmentservice.create(new_dep);
+            return NoContent();
+        }
+        catch (Exception ex) {
+            Console.WriteLine(ex.Message);
+            return StatusCode(500);
+        }
     }
 
     [HttpGet]

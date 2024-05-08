@@ -18,5 +18,5 @@ public class Department {
     public DateTime CreationDate { get; set; }
 
     [Required, Column("visibility")]
-    public bool visibility { get; set; }
+    public bool Visibility { get; set; }
 }

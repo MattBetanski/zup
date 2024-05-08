@@ -20,10 +20,21 @@ public class UserController : ControllerBase {
 
     [HttpPost]
     [Route("create")]
-    public IActionResult CreateAccount(User new_user) {
+    public IActionResult CreateAccount([FromBody] UserBody account_info) {
         try {
-            User created_user = _userservice.create(new_user);
-            string token = _authservice.GenerateJwtToken(new_user);
+
+
+            User created_user = new User {
+                Username = account_info.Username,
+                HashedPassword = _userservice.HashPassword(account_info.Password),
+                Email = account_info.Email,
+                FirstName = account_info.FirstName,
+                LastName = account_info.LastName
+            }; // Initialize the User object.
+
+            _userservice.create(created_user);
+
+            string token = _authservice.GenerateJwtToken(created_user);
             return Ok(new { Token = token });
         } 
         catch (CredentialsInUseException ciue) {
@@ -39,9 +50,7 @@ public class UserController : ControllerBase {
     [Route("login")]
     public IActionResult Login([FromBody] LoginBody creds) {
         try {
-            string username = creds.Username;
-            Console.Write($"here: {username}");
-            User logged_user = _userservice.login(username);
+            User logged_user = _userservice.login(creds.Username, creds.Password);
             string token = _authservice.GenerateJwtToken(logged_user);
             return Ok(new { Token = token });
         }
@@ -52,12 +61,6 @@ public class UserController : ControllerBase {
             Console.WriteLine(ex.Message);
             return StatusCode(500);
         }
-    }
-
-    [HttpPost]
-    [Route("logout")]
-    public IActionResult Logout() {
-        return Ok();
     }
 
     [HttpGet]

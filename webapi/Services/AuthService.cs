@@ -1,8 +1,8 @@
-using System;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
 using Microsoft.IdentityModel.Tokens;
+
 using webapi.Models;
 
 namespace webapi.Services;
@@ -28,6 +28,7 @@ public class AuthService {
         var token = token_handler.CreateToken(token_descriptor);
         return token_handler.WriteToken(token);
     }
+
 
     // public ClaimsPrincipal ParseJwtToken(string token) {
     //     var token_handler = new JwtSecurityTokenHandler();

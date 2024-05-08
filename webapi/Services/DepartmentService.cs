@@ -11,10 +11,14 @@ public class DepartmentService {
         _context = context;
     }
 
-    public IEnumerable<Department> GetAll() {
-        var departments = (from dept in _context.Department 
-                            select dept).AsNoTracking().ToList();
+    public Department create(Department department) {
+        try {
+            _context.Department.Add(department);
+            _context.SaveChanges();
 
-        return departments;
+            return department;
+        } catch {
+            throw;
+        }
     }
 }

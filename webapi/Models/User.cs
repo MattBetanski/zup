@@ -15,9 +15,6 @@ public class User {
     [Required, Column("hashed_password")]
     public required string HashedPassword { get; set; }
 
-    [Required, Column("salt")]
-    public required string Salt { get; set; }
-
     [Required, Column("email")]
     public required string Email { get; set; }
 
