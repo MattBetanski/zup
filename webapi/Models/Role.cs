@@ -19,20 +19,11 @@ public class Role {
     [Column("description")]
     public string? Description { get; set; }
 
-    [Required, Column("read_level")]
-    public int ReadLevel { get; set; }
-
-    [Required, Column("write_level")]
-    public int WriteLevel { get; set; }
-
-    [Required, Column("create_level")]
-    public int CreateLevel { get; set; }
-
-    [Required, Column("delete_level")]
-    public int DeleteLevel { get; set; }
+    [Required, Column("item_level")]
+    public RoleLevel ItemLevel { get; set;}
 
     [Required, Column("wiki_level")]
-    public int WikiLevel { get; set; }
+    public RoleLevel WikiLevel { get; set; }
 
     [Required, Column("wiki_delete")]
     public bool WikiDelete { get; set; }

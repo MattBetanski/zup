@@ -18,7 +18,7 @@ public class ProjectService {
                                    select prj).Any();
 
             if (project_exists)
-                throw new ProjectNameInUseException("A project with the provided name already exists within the department");
+                throw new ObjectNameInUseException("A project with the provided name already exists within the department");
 
             _context.Project.Add(new_project);
             _context.SaveChanges();

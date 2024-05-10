@@ -46,7 +46,6 @@ public class ProjectController : ControllerBase {
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
     public IActionResult CreateProject([FromBody] ProjectBody project_info) {
         try {
-            Console.WriteLine("here");
             User self = _userservice.getSelf(User.FindFirstValue(ClaimTypes.NameIdentifier));
 
             Project new_project = new Project {
@@ -64,7 +63,7 @@ public class ProjectController : ControllerBase {
             }
             // after roles created, come back and assign user maximum roles
         }
-        catch (ProjectNameInUseException pniue) {
+        catch (ObjectNameInUseException pniue) {
             return BadRequest(pniue.Message);
         }
         catch (Exception ex) {

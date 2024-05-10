@@ -1,3 +1,4 @@
+using System.Security.Claims;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -11,15 +12,22 @@ namespace webapi.Controllers;
 [Route("item")]
 [Authorize]
 public class ItemController : ControllerBase {
-    // private ItemService _itemservice;
+    private ItemService _itemservice;
+    private UserService _userservice;
 
-    public ItemController(/*ItemService service*/) {
-        // _itemservice = service;
+    public ItemController(ItemService iservice, UserService uservice) {
+        _itemservice = iservice;
+        _userservice = uservice;
     }
 
     [HttpPost]
     public IActionResult CreateItem([FromBody] ItemBody item_info) {
         // set owner to be whoever is creating the item
+        // check if in department (get from porject id)
+        // check if in project
+        // check if level is high enough
+        User self = _userservice.getSelf(User.FindFirstValue(ClaimTypes.NameIdentifier));
+
         return Ok();
     }
 

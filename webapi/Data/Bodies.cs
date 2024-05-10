@@ -16,6 +16,7 @@ public class ItemBody {
     public State State { get; set; }
     public bool Confidentiality { get; set; }
     public DateTime? Deadline { get; set; }
+    public required long ProjectId { get; set; }
 }
 
 public class ItemBodyU {
@@ -39,7 +40,16 @@ public class LoginBody {
 public class ProjectBody {
     public required string Name { get; set; }
     public string? Description { get; set; }
-    public long DepartmentId { get; set; }
+    public required long DepartmentId { get; set; }
+}
+
+public class RoleBody {
+    public required long DepartmentId { get; set; }
+    public required string Name { get; set; }
+    public string? Description { get; set; }
+    public required RoleLevel ItemLevel { get; set; }
+    public required RoleLevel WikiLevel { get; set; }
+    public required bool WikiDelete { get; set; }
 }
 
 public class WikiBody {

@@ -20,3 +20,9 @@ public enum InviteResponse {
     Declined,
     Accpeted
 }
+
+public enum RoleLevel {
+    NoAccess,
+    Read,
+    Modify
+}

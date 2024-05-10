@@ -1,5 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Text.Json.Serialization;
 
 namespace webapi.Models;
 
@@ -16,7 +17,10 @@ public class ProjectUserRole {
     [ForeignKey("Role")]
     public long RoleId { get; set; }
 
+    [JsonIgnore]
     public virtual Project? Project { get; set; }
+    [JsonIgnore]
     public virtual User? User { get; set; }
+    [JsonIgnore]
     public virtual Role? Role { get; set; }
 }

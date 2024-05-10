@@ -57,6 +57,20 @@ Content-Type: application/json
     "description": "me no like",
     "departmentId": 2
 }
+### creates a project (must be owner of department)
+
+POST {{webapi_HostAddress}}/role/
+Authorization: Bearer {{jwt}}
+Content-Type: application/json
+
+{
+    "name": "sigma",
+    "description": "mewing",
+    "departmentId": 2,
+    "itemLevel": "Modify",
+    "wikiLevel": "Read",
+    "wikiDelete": true
+}
 ###
 
 // FOR TESTING ONLY //
