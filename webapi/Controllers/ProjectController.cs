@@ -15,10 +15,12 @@ namespace webapi.Controllers;
 public class ProjectController : ControllerBase {
     ProjectService _projectservice;
     UserService _userservice;
-    
-    public ProjectController(ProjectService pservice, UserService uservice) {
+    DepartmentService _departmentservice;
+
+    public ProjectController(ProjectService pservice, UserService uservice, DepartmentService dservice) {
         _projectservice = pservice;
         _userservice = uservice;
+        _departmentservice = dservice;
     }
 
     // [Authorize(Policy = IdentityData.AdminUserPolicyName)]
@@ -39,6 +41,9 @@ public class ProjectController : ControllerBase {
     // }
 
     [HttpPost]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    [ProducesResponseType(typeof(string), StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
     public IActionResult CreateProject([FromBody] ProjectBody project_info) {
         try {
             Console.WriteLine("here");
@@ -51,9 +56,13 @@ public class ProjectController : ControllerBase {
                 CreatedDate = DateTime.UtcNow
             };
 
-            new_project = _projectservice.Create(new_project);
+            if (self.UserId != _departmentservice.getOwner(project_info.DepartmentId).UserId)
+                return Forbid("You are not permitted to invite users to this department");
+            else {
+                new_project = _projectservice.Create(new_project);
+                return NoContent();
+            }
             // after roles created, come back and assign user maximum roles
-            return NoContent();
         }
         catch (ProjectNameInUseException pniue) {
             return BadRequest(pniue.Message);

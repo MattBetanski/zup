@@ -156,7 +156,34 @@ public class DepartmentController : ControllerBase {
         return Ok();
     }
 
+    [HttpGet]
+    [Route("owner")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(string), StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(typeof(string), StatusCodes.Status404NotFound)]
+    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+    public ActionResult<bool> checkIfDepartmentOwner([FromQuery] long department_id, [FromQuery] long user_id) {
+        try {
+            User self = _userservice.getSelf(User.FindFirstValue(ClaimTypes.NameIdentifier));
+            User owner = _departmentservice.getOwner(department_id);
 
+            if (self.UserId == owner.UserId)
+                return true;
+            else
+                return false;
+        }
+        catch (DataNotFoundException dnfe) {
+            return NotFound(dnfe.Message);
+        }
+        catch (AccessNotAllowedException anae) {
+            return Unauthorized(anae.Message);
+        }
+        catch (Exception ex) {
+            Console.WriteLine(ex.Message);
+            return StatusCode(500, ex.Message);
+        }
+
+    }
 
 
     // FOR TESTING ONLY //
