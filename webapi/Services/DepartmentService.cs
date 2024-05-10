@@ -70,7 +70,7 @@ public class DepartmentService {
             DepartmentInvite invite = new DepartmentInvite {
                 DepartmentId = department.DepartmentId,
                 InviteeId = invitee.UserId,
-                Response = InviteResponse.Pending
+                Response = (int)InviteResponse.Pending
             };
 
             _context.DepartmentInvite.Add(invite);
