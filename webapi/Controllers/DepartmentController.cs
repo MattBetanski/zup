@@ -60,7 +60,7 @@ public class DepartmentController : ControllerBase {
             User self = _userservice.getSelf(User.FindFirstValue(ClaimTypes.NameIdentifier));
 
             if (_departmentservice.checkIfInDepartment(self.UserId, department_id))
-                return Forbid("Not a member of the department");
+                return StatusCode(403, "Not a member of the department");
 
             Department department = _departmentservice.getById(department_id);
             return department;
