@@ -48,6 +48,11 @@ POST {{webapi_HostAddress}}/department/invite?department_id=2&invitee_id=2
 Authorization: Bearer {{jwt}}
 ### invite a user to the department (must be owner of department)
 
+GET {{webapi_HostAddress}}/department/projects?department_id=2
+Authorization: Bearer {{jwt}}
+Accept: application/json
+### get all the projects in the department 
+
 POST {{webapi_HostAddress}}/project/
 Authorization: Bearer {{jwt}}
 Content-Type: application/json
@@ -74,8 +79,8 @@ Content-Type: application/json
 ###
 
 // FOR TESTING ONLY //
-PUT {{webapi_HostAddress}}/department/testingadd?user_id=6&department_id=2
+PUT {{webapi_HostAddress}}/department/testingadd?user_id=1&department_id=2
 Authorization: Bearer {{jwt}}
 ### add user to department
 
-# v
+# v 

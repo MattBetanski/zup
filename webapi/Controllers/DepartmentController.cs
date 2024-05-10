@@ -57,6 +57,11 @@ public class DepartmentController : ControllerBase {
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
     public ActionResult<Department> GetDepartmentById([FromQuery] long department_id) {
         try {
+            User self = _userservice.getSelf(User.FindFirstValue(ClaimTypes.NameIdentifier));
+
+            if (_departmentservice.checkIfInDepartment(self.UserId, department_id))
+                return Forbid("Not a member of the department");
+
             Department department = _departmentservice.getById(department_id);
             return department;
         } 
@@ -94,7 +99,19 @@ public class DepartmentController : ControllerBase {
     [HttpGet]
     [Route("projects")]
     public ActionResult<List<Project>> GetDepartmentsProjects([FromQuery] long department_id) {
-        return Ok();
+        try {
+            User self = _userservice.getSelf(User.FindFirstValue(ClaimTypes.NameIdentifier));
+            
+            if (!_departmentservice.checkIfInDepartment(self.UserId, department_id))
+                return StatusCode(403, "Not a member of the department");
+            
+            List<Project> projects = _departmentservice.GetProjects(department_id);
+            return projects;
+        }
+        catch (Exception ex) {
+            Console.WriteLine(ex.Message);
+            return StatusCode(500, ex.Message);
+        }
     }
 
     [HttpPut]

@@ -43,6 +43,7 @@ public class ProjectController : ControllerBase {
     [HttpPost]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(typeof(string), StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(typeof(string), StatusCodes.Status403Forbidden)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
     public IActionResult CreateProject([FromBody] ProjectBody project_info) {
         try {
@@ -56,7 +57,7 @@ public class ProjectController : ControllerBase {
             };
 
             if (self.UserId != _departmentservice.getOwner(project_info.DepartmentId).UserId)
-                return Forbid("You are not permitted to invite users to this department");
+                return StatusCode(403, "You are not permitted to invite users to this department");
             else {
                 new_project = _projectservice.Create(new_project);
                 return NoContent();

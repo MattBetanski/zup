@@ -101,4 +101,31 @@ public class DepartmentService {
         _context.DepartmentMember.Add(departmentMember);
         _context.SaveChanges();
     }
+
+    public bool checkIfInDepartment(long user_id, long department_id) {
+        try {
+
+            bool is_department_member = (from dm in _context.DepartmentMember
+                                         where dm.MemberId == user_id && dm.DepartmentId == department_id
+                                         select dm).Any();
+            
+            return is_department_member;
+        }
+        catch {
+            throw;
+        }
+    }
+
+    public List<Project> GetProjects(long department_id) {
+        try {
+            List<Project> projects = (from prj in _context.Project
+                                      where prj.DepartmentId == department_id
+                                      select prj).ToList();
+            
+            return projects;                 
+        }
+        catch {
+            throw;
+        }
+    }
 }
