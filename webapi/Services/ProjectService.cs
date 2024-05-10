@@ -11,6 +11,25 @@ public class ProjectService {
         _context = context;
     }
 
+    public Project Create(Project new_project) {
+        try {
+            bool project_exists = (from prj in _context.Project
+                                   where prj.Name == new_project.Name
+                                   select prj).Any();
+
+            if (project_exists)
+                throw new ProjectNameInUseException("A project with the provided name already exists within the department");
+
+            _context.Project.Add(new_project);
+            _context.SaveChanges();
+
+            return new_project;
+        }
+        catch {
+            throw;
+        }
+    }
+
     public IEnumerable<Project> GetAll() {
         return _context.Project
                 .AsNoTracking()
@@ -24,10 +43,5 @@ public class ProjectService {
         return project;
     }
 
-    public Project Create(Project new_project) {
-        _context.Project.Add(new_project);
-        _context.SaveChanges();
-
-        return new_project;
-    }
+    
 }

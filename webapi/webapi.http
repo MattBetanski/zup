@@ -48,10 +48,20 @@ POST {{webapi_HostAddress}}/department/invite?department_id=2&invitee_id=2
 Authorization: Bearer {{jwt}}
 ### invite a user to the department (must be owner of department)
 
+POST {{webapi_HostAddress}}/project/
+Authorization: Bearer {{jwt}}
+Content-Type: application/json
+
+{
+    "name": "bigworldproject2",
+    "description": "me no like",
+    "departmentId": 2
+}
+###
 
 // FOR TESTING ONLY //
 PUT {{webapi_HostAddress}}/department/testingadd?user_id=6&department_id=2
 Authorization: Bearer {{jwt}}
 ### add user to department
 
-# v                       
+# v

@@ -23,6 +23,7 @@ public class DepartmentController : ControllerBase {
 
     [HttpPost]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
+    [ProducesResponseType(typeof(string), StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
     public IActionResult CreateDepartment([FromBody] DepartmentBody department_info) {
         try {
@@ -73,23 +74,13 @@ public class DepartmentController : ControllerBase {
     [Route("all")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(string), StatusCodes.Status401Unauthorized)]
-    [ProducesResponseType(typeof(string), StatusCodes.Status404NotFound)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
     public ActionResult<List<Department>> GetUsersDepartments() {
         try {
-            string? id_string = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            User self = _userservice.getSelf(User.FindFirstValue(ClaimTypes.NameIdentifier));
 
-            if (id_string == null)
-                throw new AccessNotAllowedException("There was an issue authenticating the claimed user's ID");
-
-            if (!long.TryParse(id_string, out long user_id))
-                throw new AccessNotAllowedException("There was an issue parsing the authenticated user's ID");
-
-            List<Department> departments = _departmentservice.getByUser(user_id);
+            List<Department> departments = _departmentservice.getByUser(self.UserId);
             return departments;
-        }
-        catch (DataNotFoundException dnfe) {
-            return NotFound(dnfe.Message);
         }
         catch (AccessNotAllowedException anae) {
             return Unauthorized(anae.Message);
@@ -128,7 +119,6 @@ public class DepartmentController : ControllerBase {
                 _departmentservice.inviteUser(department_id, invitee_id);
                 return Ok();
             }
-            
         }
         catch (DataNotFoundException dnfe) {
             return NotFound(dnfe.Message);

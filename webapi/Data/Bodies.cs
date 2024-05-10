@@ -39,6 +39,7 @@ public class LoginBody {
 public class ProjectBody {
     public required string Name { get; set; }
     public string? Description { get; set; }
+    public long DepartmentId { get; set; }
 }
 
 public class WikiBody {

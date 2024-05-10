@@ -1,3 +1,5 @@
+
+using System.Security.Claims;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Authorization;
 
@@ -12,9 +14,11 @@ namespace webapi.Controllers;
 [Route("project")]
 public class ProjectController : ControllerBase {
     ProjectService _projectservice;
+    UserService _userservice;
     
-    public ProjectController(ProjectService service) {
-        _projectservice = service;
+    public ProjectController(ProjectService pservice, UserService uservice) {
+        _projectservice = pservice;
+        _userservice = uservice;
     }
 
     // [Authorize(Policy = IdentityData.AdminUserPolicyName)]
@@ -36,7 +40,28 @@ public class ProjectController : ControllerBase {
 
     [HttpPost]
     public IActionResult CreateProject([FromBody] ProjectBody project_info) {
-        return Ok();
+        try {
+            Console.WriteLine("here");
+            User self = _userservice.getSelf(User.FindFirstValue(ClaimTypes.NameIdentifier));
+
+            Project new_project = new Project {
+                Name = project_info.Name,
+                Description = project_info.Description,
+                DepartmentId = project_info.DepartmentId,
+                CreatedDate = DateTime.UtcNow
+            };
+
+            new_project = _projectservice.Create(new_project);
+            // after roles created, come back and assign user maximum roles
+            return NoContent();
+        }
+        catch (ProjectNameInUseException pniue) {
+            return BadRequest(pniue.Message);
+        }
+        catch (Exception ex) {
+            Console.WriteLine(ex.Message);
+            return StatusCode(500, ex.Message);
+        }
     }
 
     [HttpGet]

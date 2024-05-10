@@ -46,9 +46,6 @@ public class DepartmentService {
             List<Department> departments = (from dep in _context.Department
                                             where department_ids.Contains(dep.DepartmentId)
                                             select dep).ToList();
-
-            if (!departments.Any())
-                throw new DataNotFoundException("User is not part of any department");
             
             return departments;
         }

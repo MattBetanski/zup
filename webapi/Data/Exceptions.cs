@@ -20,4 +20,9 @@ public class DataNotFoundException : Exception {
     public DataNotFoundException(string message) : base(message) { }
 }
 
+public class ProjectNameInUseException : Exception {
+    public ProjectNameInUseException() { }
+    public ProjectNameInUseException(string message) : base(message) { }
+}
+
 
