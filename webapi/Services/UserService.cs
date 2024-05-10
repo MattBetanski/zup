@@ -10,6 +10,25 @@ public class UserService {
         _context = context;
     }
 
+    public User getSelf(string? id_string) {
+        try {
+            if (id_string == null)
+                throw new AccessNotAllowedException("There was an issue authenticating the claimed user's ID");
+
+            if (!long.TryParse(id_string, out long user_id))
+                throw new AccessNotAllowedException("There was an issue parsing the authenticated user's ID");
+
+            User self = (from usr in _context.User
+                        where usr.UserId == user_id
+                        select usr).FirstOrDefault() ?? throw new DataNotFoundException("No user found");
+            
+            return self;
+        }
+        catch {
+            throw;
+        }
+    }
+
     public User create(User new_user) {
         try {
             User? find_un = (from usr in _context.User

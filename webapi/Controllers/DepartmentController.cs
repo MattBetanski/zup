@@ -14,9 +14,11 @@ namespace webapi.Controllers;
 [Authorize]
 public class DepartmentController : ControllerBase {
     private DepartmentService _departmentservice;
+    private UserService _userservice;
 
-    public DepartmentController(DepartmentService service) {
-        _departmentservice = service;
+    public DepartmentController(DepartmentService dservice, UserService uservice) {
+        _departmentservice = dservice;
+        _userservice = uservice;
     }
 
     [HttpPost]
@@ -24,17 +26,23 @@ public class DepartmentController : ControllerBase {
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
     public IActionResult CreateDepartment([FromBody] DepartmentBody department_info) {
         try {
-            
+            User self = _userservice.getSelf(User.FindFirstValue(ClaimTypes.NameIdentifier));
 
             Department new_dep = new Department {
                 Name = department_info.Name,
                 Description = department_info.Description,
                 CreationDate = DateTime.UtcNow,
-                Visibility = department_info.Visibility
+                Visibility = department_info.Visibility,
+                OwnerId = self.UserId
             };
 
-            _departmentservice.create(new_dep);
+            Department post_creation_department = _departmentservice.create(new_dep);
+            _departmentservice.AddUserToDepartment(self.UserId, post_creation_department.DepartmentId);
+
             return NoContent();
+        }
+        catch (DataNotFoundException dnfe) {
+            return BadRequest(dnfe.Message);
         }
         catch (Exception ex) {
             Console.WriteLine(ex.Message);
@@ -112,15 +120,9 @@ public class DepartmentController : ControllerBase {
     [Route("invite")]
     public IActionResult InviteUserToDepartment([FromQuery] long department_id, [FromQuery] long invitee_id) {
         try {
-            string? id_string = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            User self = _userservice.getSelf(User.FindFirstValue(ClaimTypes.NameIdentifier));
             
-            if (id_string == null)
-                throw new AccessNotAllowedException("There was an issue authenticating the claimed user's ID");
-
-            if (!long.TryParse(id_string, out long user_id))
-                throw new AccessNotAllowedException("There was an issue parsing the authenticated user's ID");
-            
-            if (user_id != _departmentservice.getOwner(department_id).UserId)
+            if (self.UserId != _departmentservice.getOwner(department_id).UserId)
                 return Forbid("You are not permitted to invite users to this department");
             else {
                 _departmentservice.inviteUser(department_id, invitee_id);

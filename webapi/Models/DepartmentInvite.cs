@@ -15,12 +15,10 @@ public class DepartmentInvite {
     public long InviteeId { get; set; }
 
     [Column("response")]
-    public int Response { get; set; }
+    public InviteResponse Response { get; set; }
 
     [JsonIgnore]
     public virtual Department? Department { get; set;}
     [JsonIgnore]
     public virtual User? User { get; set; }
-
-
 }

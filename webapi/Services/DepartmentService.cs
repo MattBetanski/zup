@@ -70,7 +70,7 @@ public class DepartmentService {
             DepartmentInvite invite = new DepartmentInvite {
                 DepartmentId = department.DepartmentId,
                 InviteeId = invitee.UserId,
-                Response = (int)InviteResponse.Pending
+                Response = InviteResponse.Pending
             };
 
             _context.DepartmentInvite.Add(invite);
@@ -95,7 +95,6 @@ public class DepartmentService {
         }
     }
 
-    // FOR TESTING ONLY //
     public void AddUserToDepartment(long user_id, long department_id) {
         var departmentMember = new DepartmentMember {
             MemberId = user_id,

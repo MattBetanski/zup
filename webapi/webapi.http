@@ -1,13 +1,13 @@
 @webapi_HostAddress = http://localhost:5001
-@jwt = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1laWQiOiI2IiwidW5pcXVlX25hbWUiOiJoZWxsb3dvcmxkIiwibmJmIjoxNzE1MzU4ODk4LCJleHAiOjE3MTU2MTgwOTgsImlhdCI6MTcxNTM1ODg5OCwiYXVkIjoiaHR0cDovL2xvY2FsaG9zdDo1MDAwIn0.Qar6le0VQNNIvc5VJBaTNoYlOlXIW009i6QwYtU6jJE
+@jwt = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1laWQiOiIxIiwidW5pcXVlX25hbWUiOiJoZWxsb3dvcmxkIiwibmJmIjoxNzE1MzY0NDkzLCJleHAiOjE3MTU2MjM2OTMsImlhdCI6MTcxNTM2NDQ5MywiYXVkIjoiaHR0cDovL2xvY2FsaG9zdDo1MDAwIn0.jurYjr9EYjjPwLcmqjCOZO_p5zZgbjCwsIuJcqUTlgY
 
 
 POST {{webapi_HostAddress}}/user/create/
 Content-Type: application/json
 
 {
-    "username": "helloworld",
-    "email": "helloworld@gmail.com",
+    "username": "helloworld2",
+    "email": "helloworld2@gmail.com",
     "password": "password",
     "firstName": "hello",
     "lastName": "world"
@@ -34,7 +34,7 @@ Content-Type: application/json
 }
 ### creates department
 
-GET {{webapi_HostAddress}}/department?department_id=6
+GET {{webapi_HostAddress}}/department?department_id=2
 Authorization: Bearer {{jwt}}
 Accept: application/json
 ### gets department based on department id
@@ -44,11 +44,13 @@ Authorization: Bearer {{jwt}}
 Accept: application/json
 ### get all departments the user is in
 
-POST {{webapi_HostAddress}}/deparment/invite?department
+POST {{webapi_HostAddress}}/department/invite?department_id=2&invitee_id=2
+Authorization: Bearer {{jwt}}
+### invite a user to the department (must be owner of department)
 
 
 // FOR TESTING ONLY //
-PUT {{webapi_HostAddress}}/department/testingadd?user_id=6&department_id=3
+PUT {{webapi_HostAddress}}/department/testingadd?user_id=6&department_id=2
 Authorization: Bearer {{jwt}}
 ### add user to department
 
