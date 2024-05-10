@@ -20,6 +20,9 @@ public class UserController : ControllerBase {
 
     [HttpPost]
     [Route("create")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(string), StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
     public IActionResult CreateAccount([FromBody] UserBody account_info) {
         try {
 
@@ -29,7 +32,8 @@ public class UserController : ControllerBase {
                 HashedPassword = _userservice.HashPassword(account_info.Password),
                 Email = account_info.Email,
                 FirstName = account_info.FirstName,
-                LastName = account_info.LastName
+                LastName = account_info.LastName,
+                JoinDate = DateTime.UtcNow
             }; // Initialize the User object.
 
             _userservice.create(created_user);
@@ -48,6 +52,9 @@ public class UserController : ControllerBase {
 
     [HttpPost]
     [Route("login")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(string), StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
     public IActionResult Login([FromBody] LoginBody creds) {
         try {
             User logged_user = _userservice.login(creds.Username, creds.Password);

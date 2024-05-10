@@ -1,5 +1,5 @@
 @webapi_HostAddress = http://localhost:5001
-@jwt = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1bmlxdWVfbmFtZSI6ImhlbGxvd29ybGQiLCJuYmYiOjE3MTUxNzY5MDYsImV4cCI6MTcxNTQzNjEwNiwiaWF0IjoxNzE1MTc2OTA2LCJhdWQiOiJodHRwOi8vbG9jYWxob3N0OjUwMDAifQ.OKZe_1oUtqsO_WCEAsxYMOAwiOn212ZfZuzCwsOnFMs
+@jwt = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1laWQiOiI2IiwidW5pcXVlX25hbWUiOiJoZWxsb3dvcmxkIiwibmJmIjoxNzE1MzU4ODk4LCJleHAiOjE3MTU2MTgwOTgsImlhdCI6MTcxNTM1ODg5OCwiYXVkIjoiaHR0cDovL2xvY2FsaG9zdDo1MDAwIn0.Qar6le0VQNNIvc5VJBaTNoYlOlXIW009i6QwYtU6jJE
 
 
 POST {{webapi_HostAddress}}/user/create/
@@ -40,5 +40,16 @@ Accept: application/json
 ### gets department based on department id
  
 GET {{webapi_HostAddress}}/department/all
+Authorization: Bearer {{jwt}}
+Accept: application/json
+### get all departments the user is in
 
-# v                  
+POST {{webapi_HostAddress}}/deparment/invite?department
+
+
+// FOR TESTING ONLY //
+PUT {{webapi_HostAddress}}/department/testingadd?user_id=6&department_id=3
+Authorization: Bearer {{jwt}}
+### add user to department
+
+# v                       

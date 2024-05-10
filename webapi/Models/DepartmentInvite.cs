@@ -15,7 +15,7 @@ public class DepartmentInvite {
     public long InviteeId { get; set; }
 
     [Column("response")]
-    public bool Response { get; set; }
+    public InviteResponse Response { get; set; }
 
     [JsonIgnore]
     public virtual Department? Department { get; set;}

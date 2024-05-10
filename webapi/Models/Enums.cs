@@ -14,3 +14,9 @@ public enum State {
     Blocked,
     Completed
 }
+
+public enum InviteResponse {
+    Pending,
+    Declined,
+    Accpeted
+}
