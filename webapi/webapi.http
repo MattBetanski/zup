@@ -1,10 +1,6 @@
 @webapi_HostAddress = http://localhost:5001
 @jwt = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1bmlxdWVfbmFtZSI6ImhlbGxvd29ybGQiLCJuYmYiOjE3MTUxNzY5MDYsImV4cCI6MTcxNTQzNjEwNiwiaWF0IjoxNzE1MTc2OTA2LCJhdWQiOiJodHRwOi8vbG9jYWxob3N0OjUwMDAifQ.OKZe_1oUtqsO_WCEAsxYMOAwiOn212ZfZuzCwsOnFMs
 
-GET {{webapi_HostAddress}}/project/
-Authorization: Bearer {{jwt}}
-Accept: application/json
-###
 
 POST {{webapi_HostAddress}}/user/create/
 Content-Type: application/json
@@ -16,7 +12,7 @@ Content-Type: application/json
     "firstName": "hello",
     "lastName": "world"
 }
-###
+### creates an user
 
 POST {{webapi_HostAddress}}/user/login/
 Content-Type: application/json
@@ -25,7 +21,7 @@ Content-Type: application/json
     "username": "helloworld",
     "password": "password"
 }
-###
+### logs in user based on credentials
 
 POST {{webapi_HostAddress}}/department/
 Authorization: Bearer {{jwt}}
@@ -34,7 +30,15 @@ Content-Type: application/json
 {
     "name": "bigworlddepartment",
     "description": "spodermun",
-    "visibilty": true
+    "visibility": true
 }
+### creates department
 
-# v                
+GET {{webapi_HostAddress}}/department?department_id=6
+Authorization: Bearer {{jwt}}
+Accept: application/json
+### gets department based on department id
+ 
+GET {{webapi_HostAddress}}/department/all
+
+# v                  

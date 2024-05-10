@@ -1,3 +1,4 @@
+using System.Security.Claims;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -39,14 +40,42 @@ public class DepartmentController : ControllerBase {
 
     [HttpGet]
     public ActionResult<Department> GetDepartmentById([FromQuery] long department_id) {
-        return Ok();
+        try {
+            Department department = _departmentservice.getById(department_id);
+            return department;
+        } 
+        catch (DataNotFoundException dnfe) {
+            return BadRequest(dnfe.Message);
+        } 
+        catch (Exception ex) {
+            Console.WriteLine(ex.Message);
+            return StatusCode(500);
+        }
     }
 
     // gets all the departments the user belongs to
     [HttpGet]
     [Route("all")]
     public ActionResult<List<Department>> GetUsersDepartments() {
-        return Ok();
+        try {
+            string? id_string = User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+            if (id_string == null)
+                throw new AccessNotAllowedException("There was an issue authenticating the claimed user's ID");
+
+            if (!long.TryParse(id_string, out long user_id))
+                throw new AccessNotAllowedException("There was an issue parsing the authenticated user's ID");
+
+            List<Department> departments = _departmentservice.getByUser(user_id);
+            return departments;
+        }
+        catch (AccessNotAllowedException anae) {
+            return Unauthorized(anae.Message);
+        }
+        catch (Exception ex) {
+            Console.WriteLine(ex.Message);
+            return StatusCode(500);
+        }
     }
 
     [HttpGet]
