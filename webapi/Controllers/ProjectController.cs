@@ -75,7 +75,17 @@ public class ProjectController : ControllerBase {
 
     [HttpGet]
     public ActionResult<Project> GetProjectById([FromQuery] long project_id) {
-        return Ok();
+        try {
+            Project project = _projectservice.GetById(project_id);
+            return project;
+        }
+        catch (DataNotFoundException dnfe) {
+            return NotFound(dnfe.Message);
+        }
+        catch (Exception ex) {
+            Console.WriteLine(ex.Message);
+            return StatusCode(500, ex.Message);
+        }
     }
     
     [HttpPut]
@@ -90,7 +100,30 @@ public class ProjectController : ControllerBase {
 
     [HttpPut]
     [Route("roles")]
-    public IActionResult UserRoleUpdate([FromQuery]long project_id, [FromQuery]long user_id, [FromQuery]long role_id, [FromQuery]bool remove = false) {
+    public IActionResult UserRoleUpdate([FromQuery]long project_id, [FromQuery]long user_id, [FromQuery]long role_id) {
+        try {
+            User self = _userservice.getSelf(User.FindFirstValue(ClaimTypes.NameIdentifier));
+            Department department = _projectservice.GetDepartment(project_id);
+            
+            if (self.UserId != _departmentservice.getOwner(department.DepartmentId).UserId)
+                return StatusCode(403, "You are not permitted to invite users to this department");
+            else {
+                _projectservice.UpdateUserRole(project_id, user_id, role_id);
+                return Ok();
+            }
+        }
+        catch (DataNotFoundException dnfe) {
+            return NotFound(dnfe.Message);
+        }
+        catch (Exception ex) {
+            Console.WriteLine(ex.Message);
+            return StatusCode(500, ex.Message);
+        }
+    }
+
+    [HttpDelete]
+    [Route("roles")]
+    public IActionResult RemoveUserFromProject([FromQuery]long project_id, [FromQuery]long user_id) {
         return Ok();
     }
 }

@@ -36,12 +36,46 @@ public class ProjectService {
                 .ToList();
     }
 
-    public Project? GetById(int id) {
-        Project? project = (from proj in _context.Project
-                            where proj.ProjectId == id
-                            select proj).FirstOrDefault();
-        return project;
+    public Project GetById(long id) {
+        try {
+            Project project = (from proj in _context.Project
+                                where proj.ProjectId == id
+                                select proj).FirstOrDefault() ?? throw new DataNotFoundException("The selected project could not be found");
+            return project;
+        }
+        catch {
+            throw;
+        }
     }
 
-    
+    public void UpdateUserRole(long project_id, long user_id, long role_id) {
+        try {
+            ProjectUserRole existingProjectUserRole = (from pur in _context.ProjectUserRole
+                                                       where pur.ProjectId == project_id && pur.UserId == user_id
+                                                       select pur).FirstOrDefault() ?? throw new DataNotFoundException("The selected project member could not be found");
+
+            existingProjectUserRole.RoleId = role_id;
+            _context.SaveChanges();
+        }
+        catch {
+            throw;
+        }
+    }
+
+    public Department GetDepartment(long project_id) {
+        try {
+            Project? project = (from prj in _context.Project
+                                where prj.ProjectId == project_id
+                                select prj).FirstOrDefault() ?? throw new DataNotFoundException("The selected project could not be found");
+            
+            Department? department = (from dep in _context.Department
+                                      where dep.DepartmentId == project.DepartmentId
+                                      select dep).FirstOrDefault() ?? throw new DataNotFoundException("The selected department could not be found");
+
+            return department;
+        }
+        catch {
+            throw;
+        }
+    }
 }

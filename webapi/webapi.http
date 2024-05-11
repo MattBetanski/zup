@@ -51,7 +51,7 @@ Authorization: Bearer {{jwt}}
 GET {{webapi_HostAddress}}/department/projects?department_id=2
 Authorization: Bearer {{jwt}}
 Accept: application/json
-### get all the projects in the department 
+### get all the projects in the department
 
 POST {{webapi_HostAddress}}/project/
 Authorization: Bearer {{jwt}}
@@ -63,6 +63,11 @@ Content-Type: application/json
     "departmentId": 2
 }
 ### creates a project (must be owner of department)
+
+GET {{webapi_HostAddress}}/project?project_id=1
+Authorization: Bearer {{jwt}}
+Accept: application/json
+###
 
 POST {{webapi_HostAddress}}/role/
 Authorization: Bearer {{jwt}}
