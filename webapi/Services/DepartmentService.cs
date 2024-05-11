@@ -104,6 +104,25 @@ public class DepartmentService {
         }
     }
 
+    public void RevokeInvite(long department_id, long user_id) {
+        try {
+            bool hasInvite = (from di in _context.DepartmentInvite
+                             where di.DepartmentId == department_id && di.InviteeId == user_id
+                             select di).Any();
+            if (!hasInvite)
+                throw new DataNotFoundException("Selected user has no pending invite for this department");
+            
+            DepartmentInvite invite = (from di in _context.DepartmentInvite
+                                       where di.DepartmentId == department_id && di.InviteeId == user_id
+                                       select di).FirstOrDefault() ?? throw new DataNotFoundException("Selected user has no pending invite for this department");
+            _context.DepartmentInvite.Remove(invite);
+            _context.SaveChanges();
+        }
+        catch {
+            throw;
+        }
+    }
+
     public List<InvitesResponse> GetPendingInvites(long department_id) {
         try {
             List<InvitesResponse> invitesR = new List<InvitesResponse>();

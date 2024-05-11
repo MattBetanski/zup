@@ -44,7 +44,7 @@ Authorization: Bearer {{jwt}}
 Accept: application/json
 ### get all departments the user is in
 
-POST {{webapi_HostAddress}}/department/invite?department_id=2&invitee_id=2
+POST {{webapi_HostAddress}}/department/invite?department_id=2&email=helloworld2@gmail.com
 Authorization: Bearer {{jwt}}
 ### invite a user to the department (must be owner of department)
 
@@ -67,6 +67,10 @@ GET {{webapi_HostAddress}}/department/invitations?department_id=2
 Authorization: Bearer {{jwt}}
 Accpet: application/json
 ### get all pending invites for department (must be owner)
+
+DELETE {{webapi_HostAddress}}/department/invite?department_id=2&invitee_id=2
+Authorization: Bearer {{jwt}}
+###
 
 POST {{webapi_HostAddress}}/project/
 Authorization: Bearer {{jwt}}

@@ -266,14 +266,14 @@ public class DepartmentController : ControllerBase {
     /// <param name="department_id"></param>
     /// <param name="email"></param>
     /// <returns></returns>
-    /// <response code="200">User was invited to the department</response>
+    /// <response code="204">User was invited to the department</response>
     /// <response code="401">A problem occured validating the user's token</response>
     /// <response code="403">User is not the owner of the department</response>
     /// <response code="404">Some data was not found, check exception message for details</response>
     /// <response code="500">Internal server error</response>
     [HttpPost]
     [Route("invite")]
-    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(typeof(string), StatusCodes.Status401Unauthorized)]
     [ProducesResponseType(typeof(string), StatusCodes.Status403Forbidden)]
     [ProducesResponseType(typeof(string), StatusCodes.Status404NotFound)]
@@ -286,7 +286,7 @@ public class DepartmentController : ControllerBase {
                 return StatusCode(403, "You are not permitted to invite users to this department");
             else {
                 _departmentservice.inviteUser(department_id, email);
-                return Ok();
+                return NoContent();
             }
         }
         catch (AccessNotAllowedException anea) {
@@ -304,7 +304,20 @@ public class DepartmentController : ControllerBase {
     [HttpDelete]
     [Route("invite")]
     public IActionResult RevokeInviteToDepartment([FromQuery] long department_id, [FromQuery] long invitee_id) {
-        return Ok();
+        try {
+            User self = _userservice.getSelf(User.FindFirstValue(ClaimTypes.NameIdentifier));
+
+            if(self.UserId != _departmentservice.getOwner(department_id).UserId)
+                return StatusCode(403, "You are not permitted to revoke invites in this department");
+            else {
+                _departmentservice.RevokeInvite(department_id, invitee_id);
+                return NoContent();
+            }
+        }
+        catch (Exception ex) {
+            Console.WriteLine(ex.Message);
+            return StatusCode(500, ex.Message);
+        }
     }
 
     /// <summary>
@@ -313,20 +326,28 @@ public class DepartmentController : ControllerBase {
     /// <param name="department_id">Id of the department</param>
     /// <returns>List of all pending invites for the department</returns>
     /// <response code="200">Returns a list of all pending invites for the department.</response>
-    /// <response code="401">Bad request here.</response>
+    /// <response code="400">Some data was not found, check exception message for details</response>
+    /// <response code="401">A problem occured validating the user's token</response>
     /// <response code="500">Internal server error</response>
     [HttpGet]
     [Route("invitations")]
-    public ActionResult<List<InvitesResponse>> GetPendingInvites([FromQuery] long department_id) {
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(string), StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(typeof(string), StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(typeof(string), StatusCodes.Status403Forbidden)]
+    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+    public ActionResult<List<InvitesResponse>> GetDepartmentsPendingInvites([FromQuery] long department_id) {
         try {
             User self = _userservice.getSelf(User.FindFirstValue(ClaimTypes.NameIdentifier));
-            User owner = _departmentservice.getOwner(department_id);
 
-            if (self.UserId != owner.UserId) 
+            if (self.UserId != _departmentservice.getOwner(department_id).UserId) 
                 return StatusCode(403, "You are not permitted to view pending invites for this department");
             
             List<InvitesResponse> invitesList = _departmentservice.GetPendingInvites(department_id);
             return invitesList;
+        }
+        catch (AccessNotAllowedException anae) {
+            return Unauthorized(anae.Message);
         }
         catch (DataNotFoundException dnfe) {
             return BadRequest(dnfe.Message);
