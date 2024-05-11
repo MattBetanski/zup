@@ -40,9 +40,20 @@ public class ProjectController : ControllerBase {
     //     }
     // }
 
+    /// <summary>
+    /// Creates a new project
+    /// </summary>
+    /// <param name="project_info"></param>
+    /// <returns></returns>
+    /// <response code="204">Project created successfully</response>
+    /// <response code="400">A project with the provided name already exists within the department</response>
+    /// <response code="401">A problem occured validating the user's token</response>
+    /// <response code="403">User is not permitted to create projects in the departmentt</response>
+    /// <response code="500">Internal server error</response>
     [HttpPost]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(typeof(string), StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(typeof(string), StatusCodes.Status401Unauthorized)]
     [ProducesResponseType(typeof(string), StatusCodes.Status403Forbidden)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
     public IActionResult CreateProject([FromBody] ProjectBody project_info) {
@@ -57,7 +68,7 @@ public class ProjectController : ControllerBase {
             };
 
             if (self.UserId != _departmentservice.getOwner(project_info.DepartmentId).UserId)
-                return StatusCode(403, "You are not permitted to invite users to this department");
+                return StatusCode(403, "You are not permitted to create projects this department");
             else {
                 new_project = _projectservice.Create(new_project);
                 return NoContent();
@@ -67,13 +78,27 @@ public class ProjectController : ControllerBase {
         catch (ObjectNameInUseException pniue) {
             return BadRequest(pniue.Message);
         }
+        catch (AccessNotAllowedException anae) {
+            return NotFound(anae.Message);
+        }
         catch (Exception ex) {
             Console.WriteLine(ex.Message);
             return StatusCode(500, ex.Message);
         }
     }
 
+    /// <summary>
+    /// Gets a project with its ID
+    /// </summary>
+    /// <param name="project_id"></param>
+    /// <returns></returns>
+    /// <response code="200">Project found</response>
+    /// <response code="404">Project not found</response>
+    /// <response code="500">Internal server error</response>
     [HttpGet]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(string), StatusCodes.Status404NotFound)]
+    [ProducesResponseType(typeof(string), StatusCodes.Status500InternalServerError)]
     public ActionResult<Project> GetProjectById([FromQuery] long project_id) {
         try {
             Project project = _projectservice.GetById(project_id);
@@ -98,10 +123,33 @@ public class ProjectController : ControllerBase {
         return Ok();
     }
 
+    /// <summary>
+    /// Adds a user to a project and assigns a role
+    /// </summary>
+    /// <param name="project_id"></param>
+    /// <param name="user_id"></param>
+    /// <param name="role_id"></param>
+    /// <returns></returns>
+    /// <response code="204">User added to project successfully</response>
+    /// <response code="400">Selected user has already been added to the project</response>
+    /// <response code="401">A problem occured validating the user's token</response>
+    /// <response code="403">User is not permitted to add users to projects in this department</response>
+    /// <response code="500">Internal server error</response>
     [HttpPost]
     [Route("roles")]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    [ProducesResponseType(typeof(string), StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(typeof(string), StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(typeof(string), StatusCodes.Status403Forbidden)]
+    [ProducesResponseType(typeof(string), StatusCodes.Status500InternalServerError)]
     public IActionResult AddMemberToProject([FromQuery] long project_id, [FromQuery] long user_id, [FromQuery] long role_id) {
         try {
+            User self = _userservice.getSelf(User.FindFirstValue(ClaimTypes.NameIdentifier));
+            Department department = _projectservice.GetDepartment(project_id);
+
+            if (self.UserId != _departmentservice.getOwner(department.DepartmentId).UserId)
+                return StatusCode(403, "You are not permitted to add users to projects in this department");
+
             ProjectUserRole projectUserRole = new ProjectUserRole {
                 ProjectId = project_id,
                 UserId = user_id,
@@ -110,6 +158,9 @@ public class ProjectController : ControllerBase {
 
             _projectservice.AssignUserRole(projectUserRole);
             return NoContent();
+        }
+        catch (AccessNotAllowedException anae) {
+            return Unauthorized(anae.Message);
         }
         catch (UserAlreadyInGroupException uaige) {
             return BadRequest(uaige.Message);
@@ -120,19 +171,38 @@ public class ProjectController : ControllerBase {
         }
     }
 
+    /// <summary>
+    /// Updates a user's role in a project
+    /// </summary>
+    /// <param name="project_id"></param>
+    /// <param name="user_id"></param>
+    /// <param name="role_id"></param>
+    /// <returns></returns>
+    /// <response code="200">User role updated successfully</response>
+    /// <response code="401">A problem occured validating the user's token</response>
+    /// <response code="403">User is not permitted to update user roles in this department</response>
+    /// <response code="404">The selected project member could not be found</response>
     [HttpPut]
     [Route("roles")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(string), StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(typeof(string), StatusCodes.Status403Forbidden)]
+    [ProducesResponseType(typeof(string), StatusCodes.Status404NotFound)]
+    [ProducesResponseType(typeof(string), StatusCodes.Status500InternalServerError)]
     public IActionResult UserRoleUpdate([FromQuery]long project_id, [FromQuery]long user_id, [FromQuery]long role_id) {
         try {
             User self = _userservice.getSelf(User.FindFirstValue(ClaimTypes.NameIdentifier));
             Department department = _projectservice.GetDepartment(project_id);
             
             if (self.UserId != _departmentservice.getOwner(department.DepartmentId).UserId)
-                return StatusCode(403, "You are not permitted to invite users to this department");
+                return StatusCode(403, "You are not permitted to update user roles in this department");
             else {
                 _projectservice.UpdateUserRole(project_id, user_id, role_id);
                 return Ok();
             }
+        }
+        catch (AccessNotAllowedException anae) {
+            return Unauthorized(anae.Message);
         }
         catch (DataNotFoundException dnfe) {
             return NotFound(dnfe.Message);

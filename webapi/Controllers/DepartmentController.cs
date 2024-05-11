@@ -26,9 +26,10 @@ public class DepartmentController : ControllerBase {
     /// <summary>
     /// Creates a new department
     /// </summary>
-    /// <param name="department_info">Information about the department necessary for creating it</param>
+    /// <param name="department_info"></param>
     /// <response code="204">Department was created successfully</response>
     /// <response code="400">Some data was not found, check exception message for details</response>
+    /// <response code="401">A problem occured validating the user's token</response>
     /// <response code="500">Internal server error</response>
     [HttpPost]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
@@ -51,6 +52,9 @@ public class DepartmentController : ControllerBase {
 
             return NoContent();
         }
+        catch (AccessNotAllowedException anae) {
+            return Unauthorized(anae.Message);
+        }
         catch (DataNotFoundException dnfe) {
             return BadRequest(dnfe.Message);
         }
@@ -63,12 +67,12 @@ public class DepartmentController : ControllerBase {
     /// <summary>
     /// Gets a department by its id
     /// </summary>
-    /// <param name="department_id">ID of the department</param>
+    /// <param name="department_id"></param>
     /// <returns>The department with a matching ID</returns>
     /// <response code="200">Returns the department with the matching ID</response>
     /// <response code="401">A problem occured validating the user's token</response>
     /// <response code="403">User is not a member of the department</response>
-    /// <response code="404">Department with the given ID was not found</response>
+    /// <response code="404">Some data was not found, check exception message for details</response>
     /// <response code="500">Internal server error</response>
     [HttpGet]
     [ProducesResponseType(StatusCodes.Status200OK)]
@@ -123,8 +127,21 @@ public class DepartmentController : ControllerBase {
         }
     }
 
+    /// <summary>
+    /// Returns a list of all projects in the department
+    /// </summary>
+    /// <param name="department_id"></param>
+    /// <returns>List of all projects in the department</returns>
+    /// <response code="200">Returns a list of all projects in the department</response>
+    /// <response code="401">A problem occured validating the user's token</response>
+    /// <response code="403">User is not a member of the department</response>
+    /// <response code="500">Internal server error</response>
     [HttpGet]
     [Route("projects")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(string), StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(typeof(string), StatusCodes.Status403Forbidden)]
+    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
     public ActionResult<List<Project>> GetDepartmentsProjects([FromQuery] long department_id) {
         try {
             User self = _userservice.getSelf(User.FindFirstValue(ClaimTypes.NameIdentifier));
@@ -134,6 +151,9 @@ public class DepartmentController : ControllerBase {
             
             List<Project> projects = _departmentservice.GetProjects(department_id);
             return projects;
+        }
+        catch (AccessNotAllowedException anae) {
+            return Unauthorized(anae.Message);
         }
         catch (Exception ex) {
             Console.WriteLine(ex.Message);
@@ -151,8 +171,21 @@ public class DepartmentController : ControllerBase {
         return Ok();
     }
 
+    /// <summary>
+    /// Returns a list of all roles in the department
+    /// </summary>
+    /// <param name="department_id"></param>
+    /// <returns>List of all roles in the department</returns>
+    /// <response code="200">Returns a list of all roles in the department</response>
+    /// <response code="401">A problem occured validating the user's token</response>
+    /// <response code="403">User is not a member of the department</response>
+    /// <response code="500">Internal server error</response>
     [HttpGet]
     [Route("roles")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(string), StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(typeof(string), StatusCodes.Status403Forbidden)]
+    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
     public ActionResult<List<Role>> GetDepartmentRoles([FromQuery] long department_id) {
         try {
             User self = _userservice.getSelf(User.FindFirstValue(ClaimTypes.NameIdentifier));
@@ -164,14 +197,30 @@ public class DepartmentController : ControllerBase {
                 return roles;
             }
         }
+        catch (AccessNotAllowedException anae) {
+            return NotFound(anae.Message);
+        }
         catch (Exception ex) {
             Console.WriteLine(ex.Message);
             return StatusCode(500, ex.Message);
         }
     }
 
+    /// <summary>
+    /// Returns a list of all members in the department
+    /// </summary>
+    /// <param name="project_id"></param>
+    /// <returns>List of all members in the department</returns>
+    /// <response code="200">Returns a list of all members in the department</response>
+    /// <response code="401">A problem occured validating the user's token</response>
+    /// <response code="403">User is not a member of the department</response>
+    /// <response code="500">Internal server error</response>
     [HttpGet]
     [Route("members")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(string), StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(typeof(string), StatusCodes.Status403Forbidden)]
+    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
     public ActionResult<UserAndRoleBody> GetDepartmentMembersByProjectId([FromQuery] long project_id) {
         try {
             List<UserAndRoleBody> user_list = new List<UserAndRoleBody>();
@@ -202,14 +251,33 @@ public class DepartmentController : ControllerBase {
                 return Ok(user_list);
             }
         }
+        catch (AccessNotAllowedException anea) {
+            return Unauthorized(anea.Message);
+        }
         catch (Exception ex) {
             Console.WriteLine(ex.Message);
             return StatusCode(500, ex.Message);
         }
     }
 
+    /// <summary>
+    /// Adds a user to the department
+    /// </summary>
+    /// <param name="department_id"></param>
+    /// <param name="email"></param>
+    /// <returns></returns>
+    /// <response code="200">User was added to the department</response>
+    /// <response code="401">A problem occured validating the user's token</response>
+    /// <response code="403">User is not the owner of the department</response>
+    /// <response code="404">Some data was not found, check exception message for details</response>
+    /// <response code="500">Internal server error</response>
     [HttpPost]
     [Route("invite")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(string), StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(typeof(string), StatusCodes.Status403Forbidden)]
+    [ProducesResponseType(typeof(string), StatusCodes.Status404NotFound)]
+    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
     public IActionResult InviteUserToDepartment([FromQuery] long department_id, [FromQuery] string email) {
         try {
             User self = _userservice.getSelf(User.FindFirstValue(ClaimTypes.NameIdentifier));
@@ -220,6 +288,9 @@ public class DepartmentController : ControllerBase {
                 _departmentservice.inviteUser(department_id, email);
                 return Ok();
             }
+        }
+        catch (AccessNotAllowedException anea) {
+            return Unauthorized(anea.Message);
         }
         catch (DataNotFoundException dnfe) {
             return NotFound(dnfe.Message);
@@ -243,6 +314,9 @@ public class DepartmentController : ControllerBase {
     /// <returns>List of all pending invites for the department</returns>
     /// <response code="200">Returns a list of all pending invites for the department.</response>
     /// <response code="401">Bad request here.</response>
+    /// 
+
+    // remove these extra lines for the summary once this is done ^
     [HttpGet]
     [Route("invitations")]
     public ActionResult<List<DepartmentInvite>> GetPendingInvites([FromQuery] long department_id) {
@@ -264,6 +338,16 @@ public class DepartmentController : ControllerBase {
         return Ok();
     }
 
+    /// <summary>
+    /// Checks if the user is the owner of the department
+    /// </summary>
+    /// <param name="department_id"></param>
+    /// <param name="user_id"></param>
+    /// <returns></returns>
+    /// <response code="200">Returns true if the user is the owner of the department, false otherwise</response>
+    /// <response code="401">A problem occured validating the user's token</response>
+    /// <response code="404">Some data was not found, check exception message for details</response>
+    /// <response code="500">Internal server error</response>
     [HttpGet]
     [Route("owner")]
     [ProducesResponseType(StatusCodes.Status200OK)]

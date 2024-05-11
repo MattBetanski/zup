@@ -22,7 +22,22 @@ public class RoleController : ControllerBase {
         _departmentservice = dservice;
     }
 
+    /// <summary>
+    /// Creates a new role
+    /// </summary>
+    /// <param name="role_info"></param>
+    /// <returns></returns>
+    /// <response code="204">Role created successfully</response>
+    /// <response code="400">A role with the provided name already exists within the department</response>
+    /// <response code="401">A problem occured validating the user's token</response>
+    /// <response code="403">User is not permitted to create roles in the department</response>
+    /// <response code="500">Internal server error</response>
     [HttpPost]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    [ProducesResponseType(typeof(string), StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(typeof(string), StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(typeof(string), StatusCodes.Status403Forbidden)]
+    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
     public IActionResult CreateRole([FromBody] RoleBody role_info) {
         try {
             Role new_role = new Role() {
@@ -41,6 +56,9 @@ public class RoleController : ControllerBase {
                 new_role = _roleservice.Create(new_role);
                 return NoContent();
             }
+        }
+        catch (AccessNotAllowedException) {
+            return Unauthorized();
         }
         catch (ObjectNameInUseException oniue) {
             return BadRequest(oniue.Message);

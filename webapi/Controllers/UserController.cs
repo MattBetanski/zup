@@ -18,6 +18,14 @@ public class UserController : ControllerBase {
         _authservice = aservice;
     }
 
+    /// <summary>
+    /// Creates a new user account
+    /// </summary>
+    /// <param name="account_info"></param>
+    /// <returns>JSON web token for user authetication</returns>
+    /// <response code="200">User account created successfully, returns JSON web token</response>
+    /// <response code="400">A user with the provided username or email already exists</response>
+    /// <response code="500">Internal server error</response>
     [HttpPost]
     [Route("create")]
     [ProducesResponseType(StatusCodes.Status200OK)]
@@ -25,8 +33,6 @@ public class UserController : ControllerBase {
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
     public IActionResult CreateAccount([FromBody] UserBody account_info) {
         try {
-
-
             User created_user = new User {
                 Username = account_info.Username,
                 HashedPassword = _userservice.HashPassword(account_info.Password),
@@ -34,7 +40,7 @@ public class UserController : ControllerBase {
                 FirstName = account_info.FirstName,
                 LastName = account_info.LastName,
                 JoinDate = DateTime.UtcNow
-            }; // Initialize the User object.
+            };
 
             _userservice.create(created_user);
 
@@ -50,6 +56,14 @@ public class UserController : ControllerBase {
         }
     }
 
+    /// <summary>
+    /// Logs in a user
+    /// </summary>
+    /// <param name="creds"></param>
+    /// <returns>JSON web token for user authentication</returns>
+    /// <response code="200">User logged in successfully, returns JSON web token</response>
+    /// <response code="400">Invalid credentials</response>
+    /// <response code="500">Internal server error</response>
     [HttpPost]
     [Route("login")]
     [ProducesResponseType(StatusCodes.Status200OK)]
