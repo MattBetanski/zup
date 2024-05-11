@@ -51,7 +51,7 @@ public class ProjectService {
     public void AssignUserRole(ProjectUserRole projectUserRole) {
         try {
             bool userHasRole = (from pur in _context.ProjectUserRole
-                                where pur.UserId == projectUserRole.UserId
+                                where pur.UserId == projectUserRole.UserId && pur.ProjectId == projectUserRole.ProjectId
                                 select pur).Any();
             if(userHasRole)
                 throw new UserAlreadyInGroupException("Selected user has already been assigned a role");
@@ -106,6 +106,7 @@ public class ProjectService {
 
     public bool checkIfInProject(long user_id, long project_id) {
         try {
+            Console.WriteLine($"U_id: {user_id}\nP_id: {project_id}");
             bool is_project_member = (from pur in _context.ProjectUserRole
                                       where pur.UserId == user_id && pur.ProjectId == project_id
                                       select pur).Any();

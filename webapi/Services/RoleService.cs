@@ -33,9 +33,51 @@ public class RoleService {
     public Role? GetByUserId(long user_id) {
         try {
             Role? role = (from pur in _context.ProjectUserRole
-                            where pur.UserId == user_id
-                            select pur.Role).FirstOrDefault();
+                          where pur.UserId == user_id
+                          select pur.Role).FirstOrDefault();
             return role;
+        }
+        catch {
+            throw;
+        }
+    }
+
+    public bool checkItemLevel(long user_id, RoleLevel level) {
+        try {
+            bool meetsLevel = false;
+            Role? role = (from pur in _context.ProjectUserRole
+                         where pur.UserId == user_id
+                         select pur.Role).FirstOrDefault();
+            
+            if (role == null) 
+                meetsLevel = false;
+            else if (level >= role.ItemLevel)
+                meetsLevel = true;
+            else
+                meetsLevel = false;
+
+            return meetsLevel;
+        }
+        catch {
+            throw;
+        }
+    }
+
+    public bool checkWikiLevel(long user_id, RoleLevel level) {
+        try {
+            bool meetsLevel = false;
+            Role? role = (from pur in _context.ProjectUserRole
+                         where pur.UserId == user_id
+                         select pur.Role).FirstOrDefault();
+            
+            if (role == null) 
+                meetsLevel = false;
+            else if (level >= role.WikiLevel)
+                meetsLevel = true;
+            else
+                meetsLevel = false;
+
+            return meetsLevel;
         }
         catch {
             throw;

@@ -221,9 +221,9 @@ public class DepartmentController : ControllerBase {
     [ProducesResponseType(typeof(string), StatusCodes.Status401Unauthorized)]
     [ProducesResponseType(typeof(string), StatusCodes.Status403Forbidden)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-    public ActionResult<UserAndRoleBody> GetDepartmentMembersByProjectId([FromQuery] long project_id) {
+    public ActionResult<UserAndRoleResponse> GetDepartmentMembersByProjectId([FromQuery] long project_id) {
         try {
-            List<UserAndRoleBody> user_list = new List<UserAndRoleBody>();
+            List<UserAndRoleResponse> user_list = new List<UserAndRoleResponse>();
 
             User self = _userservice.getSelf(User.FindFirstValue(ClaimTypes.NameIdentifier));
             long department_id = _departmentservice.getByProjectId(project_id).DepartmentId;
@@ -233,7 +233,7 @@ public class DepartmentController : ControllerBase {
             else {
                 List<User> members = _departmentservice.GetMembers(department_id);
                 foreach(User mbr in members) {
-                    UserAndRoleBody userAndRoleBody = new UserAndRoleBody {
+                    UserAndRoleResponse UserAndRoleResponse = new UserAndRoleResponse {
                         Email = mbr.Email,
                         FirstName = mbr.FirstName,
                         LastName = mbr.LastName
@@ -241,11 +241,11 @@ public class DepartmentController : ControllerBase {
 
                     Role? role = _roleservice.GetByUserId(mbr.UserId);
                     if (role != null) {
-                        userAndRoleBody.RoleId = role.RoleId;
-                        userAndRoleBody.RoleName = role.Name;
+                        UserAndRoleResponse.RoleId = role.RoleId;
+                        UserAndRoleResponse.RoleName = role.Name;
                     }
 
-                    user_list.Add(userAndRoleBody);
+                    user_list.Add(UserAndRoleResponse);
                 }
 
                 return Ok(user_list);
@@ -303,7 +303,7 @@ public class DepartmentController : ControllerBase {
 
     [HttpDelete]
     [Route("invite")]
-    public IActionResult RevokeInviteToDepartment([FromQuery] long department_id, [FromQuery] string email) {
+    public IActionResult RevokeInviteToDepartment([FromQuery] long department_id, [FromQuery] long invitee_id) {
         return Ok();
     }
 
@@ -319,7 +319,7 @@ public class DepartmentController : ControllerBase {
     // remove these extra lines for the summary once this is done ^
     [HttpGet]
     [Route("invitations")]
-    public ActionResult<List<DepartmentInvite>> GetPendingInvites([FromQuery] long department_id) {
+    public ActionResult<List<InvitesResponse>> GetPendingInvites([FromQuery] long department_id) {
         return Ok();
     }
 

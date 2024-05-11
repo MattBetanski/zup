@@ -1,5 +1,5 @@
 @webapi_HostAddress = http://localhost:5001
-@jwt = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1laWQiOiIxIiwidW5pcXVlX25hbWUiOiJoZWxsb3dvcmxkIiwibmJmIjoxNzE1MzY0NDkzLCJleHAiOjE3MTU2MjM2OTMsImlhdCI6MTcxNTM2NDQ5MywiYXVkIjoiaHR0cDovL2xvY2FsaG9zdDo1MDAwIn0.jurYjr9EYjjPwLcmqjCOZO_p5zZgbjCwsIuJcqUTlgY
+@jwt = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1laWQiOiIyIiwidW5pcXVlX25hbWUiOiJoZWxsb3dvcmxkMiIsIm5iZiI6MTcxNTQ1ODQ5MiwiZXhwIjoxNzE1NzE3NjkyLCJpYXQiOjE3MTU0NTg0OTIsImF1ZCI6Imh0dHA6Ly9sb2NhbGhvc3Q6NTAwMCJ9.2kh5h0p7KRdBF6HHtY7jwsTrmWnpN7fn98TABSX3els
 
 
 POST {{webapi_HostAddress}}/user/create/
@@ -18,7 +18,7 @@ POST {{webapi_HostAddress}}/user/login/
 Content-Type: application/json
 
 {
-    "username": "helloworld",
+    "username": "helloworld2",
     "password": "password"
 }
 ### logs in user based on credentials
@@ -79,7 +79,7 @@ Authorization: Bearer {{jwt}}
 Accept: application/json
 ### get project by id
 
-POST {{webapi_HostAddress}}/project/roles?project_id=1&user_id=2&role_id=1
+POST {{webapi_HostAddress}}/project/roles?project_id=2&user_id=2&role_id=1
 Authorization: Bearer {{jwt}}
 ### add a user to a project with a specified role
 
@@ -98,6 +98,19 @@ Content-Type: application/json
     "itemLevel": "Read",
     "wikiLevel": "Modify",
     "wikiDelete": true
+}
+###
+
+POST {{webapi_HostAddress}}/item/
+Authorization: Bearer {{jwt}}
+Content-Type: application/json
+
+{
+    "name": "invade poland",
+    "description": "very very fast",
+    "state": "Open",
+    "type": "Epic",
+    "projectId": 2
 }
 ###
 

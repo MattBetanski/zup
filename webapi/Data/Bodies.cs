@@ -14,8 +14,6 @@ public class ItemBody {
     public string? Description { get; set; }
     public required Models.Type Type { get; set; }
     public State State { get; set; }
-    public bool Confidentiality { get; set; }
-    public DateTime? Deadline { get; set; }
     public required long ProjectId { get; set; }
 }
 
@@ -24,8 +22,6 @@ public class ItemBodyU {
     public long? ParentId { get; set; }
     public string? Description { get; set; }
     public State State { get; set; }
-    public bool Confidentiality { get; set; }
-    public DateTime? Deadline { get; set; }  
 }
 
 public class ItemCommentBody {
@@ -63,13 +59,4 @@ public class UserBody {
     public required string Email { get; set; }
     public required string FirstName { get; set; }
     public required string LastName { get; set; }
-}
-
-public class UserAndRoleBody {
-    public required string Email { get; set; }
-    public required string FirstName { get; set; }
-    public required string LastName { get; set; }
-    public long RoleId { get; set; }
-    public string? RoleName { get; set; }
-
 }
