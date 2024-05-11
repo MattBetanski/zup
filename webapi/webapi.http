@@ -1,6 +1,8 @@
 @webapi_HostAddress = http://localhost:5001
+// user 1
 @jwt = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1laWQiOiIxIiwidW5pcXVlX25hbWUiOiJoZWxsb3dvcmxkIiwibmJmIjoxNzE1NDYwMDY4LCJleHAiOjE3MTU3MTkyNjgsImlhdCI6MTcxNTQ2MDA2OCwiYXVkIjoiaHR0cDovL2xvY2FsaG9zdDo1MDAwIn0.8BrU4zyvOOdOa9rrmRBWVxrwGw765MtHHWNEchmDjE0
-
+// user 2
+@jwt2 = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1laWQiOiIyIiwidW5pcXVlX25hbWUiOiJoZWxsb3dvcmxkMiIsIm5iZiI6MTcxNTQ2MzU0MiwiZXhwIjoxNzE1NzIyNzQyLCJpYXQiOjE3MTU0NjM1NDIsImF1ZCI6Imh0dHA6Ly9sb2NhbGhvc3Q6NTAwMCJ9.VzG_EbGWWqipnvGD9pVFTDsyw_z6JrqcAz0cf92yemY
 
 POST {{webapi_HostAddress}}/user/create/
 Content-Type: application/json
@@ -18,10 +20,15 @@ POST {{webapi_HostAddress}}/user/login/
 Content-Type: application/json
 
 {
-    "username": "helloworld",
+    "username": "helloworld2",
     "password": "password"
 }
 ### logs in user based on credentials
+
+GET {{webapi_HostAddress}}/user/invitations
+Authorization: Bearer {{jwt2}}
+Accept: application/json
+### get all pending invites for user
 
 POST {{webapi_HostAddress}}/department/
 Authorization: Bearer {{jwt}}

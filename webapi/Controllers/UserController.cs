@@ -1,4 +1,4 @@
-using System.Runtime.InteropServices.JavaScript;
+using System.Security.Claims;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -86,7 +86,25 @@ public class UserController : ControllerBase {
 
     [HttpGet]
     [Route("invitations")]
-    public ActionResult<List<Invite>> GetInvites() {
+    [Authorize]
+    public ActionResult<List<MinimalDepartment>> GetUsersInvites() {
+        try {
+            User self = _userservice.getSelf(User.FindFirstValue(ClaimTypes.NameIdentifier));
+            List<MinimalDepartment> invites = _userservice.GetInvites(self.UserId);
+            return invites;
+        }
+        catch (AccessNotAllowedException anae) {
+            return Unauthorized(anae.Message);
+        }
+        catch (Exception ex) {
+            Console.WriteLine(ex.Message);
+            return StatusCode(500, ex.Message);
+        }
+    }
+
+    [HttpPut]
+    [Route("invitations")]
+    public IActionResult RespondToInvite([FromQuery] long department_id, [FromQuery] bool response) {
         return Ok();
     }
 }

@@ -377,12 +377,6 @@ public class DepartmentController : ControllerBase {
         }
     }
 
-    [HttpPut]
-    [Route("invitations")]
-    public IActionResult RespondToInvite([FromQuery] long department_id, [FromQuery] bool response) {
-        return Ok();
-    }
-
     // if have spare time:
     // make it pageinated
     // take in offset and count

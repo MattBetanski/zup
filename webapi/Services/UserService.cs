@@ -74,12 +74,9 @@ public class UserService {
 
     public User login(string username, string plain_password) {
         try {
-            Console.WriteLine(username);
             User? user = (from usr in _context.User
                           where usr.Username == username
                           select usr).FirstOrDefault();
-
-            if(user == null) { Console.WriteLine("null"); }
 
             if (user == null)
                 throw new InvalidCredentialsException("Username or password are incorrect");
@@ -91,6 +88,29 @@ public class UserService {
         }
         catch {
             throw;  // throws exception up without altering stack trace
+        }
+    }
+
+    public List<MinimalDepartment> GetInvites(long user_id) {
+        try {
+            List<MinimalDepartment> minimalDepartments = new List<MinimalDepartment>();
+            List<DepartmentInvite> invites = (from di in _context.DepartmentInvite
+                                               where di.InviteeId == user_id
+                                               select di).ToList();
+            Console.WriteLine($"len: {invites.Count()}");
+            foreach (DepartmentInvite di in invites) {
+                MinimalDepartment md = new MinimalDepartment {
+                    Name = (from dep in _context.Department
+                            where dep.DepartmentId == di.DepartmentId
+                            select dep.Name).FirstOrDefault() ?? throw new DataNotFoundException("A problem occured when fetching the invite"),
+                    DepartmentId = di.DepartmentId
+                };
+                minimalDepartments.Add(md);
+            }
+            return minimalDepartments;
+        }
+        catch {
+            throw; 
         }
     }
 }
