@@ -47,14 +47,7 @@ public class ItemController : ControllerBase {
             User self = _userservice.getSelf(User.FindFirstValue(ClaimTypes.NameIdentifier));
             long department_id = _projectservice.GetDepartment(item_info.ProjectId).DepartmentId;
 
-
-            if(!_departmentservice.checkIfInDepartment(self.UserId, department_id))
-                return StatusCode(403, "Cannot create an item in this department");
-            else if (!_projectservice.checkIfInProject(self.UserId, item_info.ProjectId)) 
-                return StatusCode(403, "Cannot create an item in this project");
-            else if (!_roleservice.checkItemLevel(self.UserId, RoleLevel.Modify))
-                return StatusCode(403, "You do not have permission to create an item in this project");
-            else {
+            IActionResult create() {
                 Item item = new Item {
                     OwnerId = self.UserId,
                     Name = item_info.Name,
@@ -69,6 +62,19 @@ public class ItemController : ControllerBase {
                 _itemservice.Create(item);
                 return NoContent();
             }
+
+            if(self.UserId == _departmentservice.getOwner(department_id).UserId)
+                return create();
+            else if(!_departmentservice.checkIfInDepartment(self.UserId, department_id))
+                return StatusCode(403, "Cannot create an item in this department");
+            else if (!_projectservice.checkIfInProject(self.UserId, item_info.ProjectId)) 
+                return StatusCode(403, "Cannot create an item in this project");
+            else if (!_roleservice.checkItemLevel(self.UserId, RoleLevel.Modify))
+                return StatusCode(403, "You do not have permission to create an item in this project");
+            else {
+                return create();
+            }
+
         }
         catch (AccessNotAllowedException anae) {
             return Unauthorized(anae.Message);

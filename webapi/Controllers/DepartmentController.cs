@@ -301,8 +301,25 @@ public class DepartmentController : ControllerBase {
         }
     }
 
+    /// <summary>
+    /// Revoke an invite to the department
+    /// </summary>
+    /// <param name="department_id"></param>
+    /// <param name="invitee_id"></param>
+    /// <returns></returns>
+    /// <response code="204">Invite was revoked</response>
+    /// <response code="400">Some data was not found, check exception message for details</response>
+    /// <response code="401">A problem occured validating the user's token</response>
+    /// <response code="403">User is not the owner of the department</response>
+    /// <response code="500">Internal server error</response>
     [HttpDelete]
     [Route("invite")]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    [ProducesResponseType(typeof(string), StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(typeof(string), StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(typeof(string), StatusCodes.Status403Forbidden)]
+    [ProducesResponseType(typeof(string), StatusCodes.Status404NotFound)]
+    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
     public IActionResult RevokeInviteToDepartment([FromQuery] long department_id, [FromQuery] long invitee_id) {
         try {
             User self = _userservice.getSelf(User.FindFirstValue(ClaimTypes.NameIdentifier));
@@ -313,6 +330,12 @@ public class DepartmentController : ControllerBase {
                 _departmentservice.RevokeInvite(department_id, invitee_id);
                 return NoContent();
             }
+        }
+        catch (AccessNotAllowedException anae) {
+            return Unauthorized(anae.Message);
+        }
+        catch (DataNotFoundException dnfe) {
+            return NotFound(dnfe.Message);
         }
         catch (Exception ex) {
             Console.WriteLine(ex.Message);
