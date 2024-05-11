@@ -1,5 +1,5 @@
 @webapi_HostAddress = http://localhost:5001
-@jwt = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1laWQiOiIyIiwidW5pcXVlX25hbWUiOiJoZWxsb3dvcmxkMiIsIm5iZiI6MTcxNTQ1ODQ5MiwiZXhwIjoxNzE1NzE3NjkyLCJpYXQiOjE3MTU0NTg0OTIsImF1ZCI6Imh0dHA6Ly9sb2NhbGhvc3Q6NTAwMCJ9.2kh5h0p7KRdBF6HHtY7jwsTrmWnpN7fn98TABSX3els
+@jwt = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1laWQiOiIxIiwidW5pcXVlX25hbWUiOiJoZWxsb3dvcmxkIiwibmJmIjoxNzE1NDYwMDY4LCJleHAiOjE3MTU3MTkyNjgsImlhdCI6MTcxNTQ2MDA2OCwiYXVkIjoiaHR0cDovL2xvY2FsaG9zdDo1MDAwIn0.8BrU4zyvOOdOa9rrmRBWVxrwGw765MtHHWNEchmDjE0
 
 
 POST {{webapi_HostAddress}}/user/create/
@@ -18,7 +18,7 @@ POST {{webapi_HostAddress}}/user/login/
 Content-Type: application/json
 
 {
-    "username": "helloworld2",
+    "username": "helloworld",
     "password": "password"
 }
 ### logs in user based on credentials
@@ -62,6 +62,11 @@ GET {{webapi_HostAddress}}/department/members?project_id=2
 Authorization: Bearer {{jwt}}
 Accept: application/json
 ### get the members of the department with a project id
+
+GET {{webapi_HostAddress}}/department/invitations?department_id=2
+Authorization: Bearer {{jwt}}
+Accpet: application/json
+### get all pending invites for department (must be owner)
 
 POST {{webapi_HostAddress}}/project/
 Authorization: Bearer {{jwt}}

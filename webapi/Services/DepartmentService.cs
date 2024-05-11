@@ -104,6 +104,32 @@ public class DepartmentService {
         }
     }
 
+    public List<InvitesResponse> GetPendingInvites(long department_id) {
+        try {
+            List<InvitesResponse> invitesR = new List<InvitesResponse>();
+            List<DepartmentInvite> invites = (from di in _context.DepartmentInvite
+                                             where di.DepartmentId == department_id
+                                             select di).ToList();
+
+            foreach (DepartmentInvite di in invites) {
+                InvitesResponse body = new InvitesResponse {
+                    DepartmentId = di.DepartmentId,
+                    InviteeId = di.InviteeId,
+                    Email = (from usr in _context.User
+                             where usr.UserId == di.InviteeId
+                             select usr.Email).FirstOrDefault() ?? throw new DataNotFoundException("A problem occured when fetching users")
+                };
+
+                invitesR.Add(body);
+            }
+
+            return invitesR;
+        }
+        catch {
+            throw;
+        }
+    }
+
     public User getOwner(long department_id) {
         try {
             User owner = (from dep in _context.Department

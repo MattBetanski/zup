@@ -314,13 +314,23 @@ public class DepartmentController : ControllerBase {
     /// <returns>List of all pending invites for the department</returns>
     /// <response code="200">Returns a list of all pending invites for the department.</response>
     /// <response code="401">Bad request here.</response>
-    /// 
-
-    // remove these extra lines for the summary once this is done ^
+    /// <response code="500">Internal server error</response>
     [HttpGet]
     [Route("invitations")]
     public ActionResult<List<InvitesResponse>> GetPendingInvites([FromQuery] long department_id) {
-        return Ok();
+        try {
+            User self = _userservice.getSelf(User.FindFirstValue(ClaimTypes.NameIdentifier));
+            User owner = _departmentservice.getOwner(department_id);
+
+            if (self.UserId != owner.UserId) 
+                return StatusCode(403, "You are not permitted to view pending invites for this department");
+            
+            List<InvitesResponse> invitesList = _departmentservice.GetPendingInvites(department_id);
+            return invitesList;
+        }
+        catch (DataNotFoundException dnfe) {
+            return BadRequest(dnfe.Message);
+        }
     }
 
     [HttpPut]
