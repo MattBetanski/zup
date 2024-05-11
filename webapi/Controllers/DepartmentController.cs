@@ -131,7 +131,7 @@ public class DepartmentController : ControllerBase {
             User self = _userservice.getSelf(User.FindFirstValue(ClaimTypes.NameIdentifier));
             
             if (self.UserId != _departmentservice.getOwner(department_id).UserId)
-                return Forbid("You are not permitted to invite users to this department");
+                return StatusCode(403, "You are not permitted to invite users to this department");
             else {
                 _departmentservice.inviteUser(department_id, invitee_id);
                 return Ok();
@@ -139,6 +139,25 @@ public class DepartmentController : ControllerBase {
         }
         catch (DataNotFoundException dnfe) {
             return NotFound(dnfe.Message);
+        }
+        catch (Exception ex) {
+            Console.WriteLine(ex.Message);
+            return StatusCode(500, ex.Message);
+        }
+    }
+
+    [HttpGet]
+    [Route("roles")]
+    public ActionResult<List<Role>> GetDepartmentRoles([FromQuery] long department_id) {
+        try {
+            User self = _userservice.getSelf(User.FindFirstValue(ClaimTypes.NameIdentifier));
+            
+            if (!_departmentservice.checkIfInDepartment(self.UserId, department_id))
+                return StatusCode(403, "You are not permitted view roles in this department");
+            else {
+                List<Role> roles = _departmentservice.GetRoles(department_id);
+                return roles;
+            }
         }
         catch (Exception ex) {
             Console.WriteLine(ex.Message);

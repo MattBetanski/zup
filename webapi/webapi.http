@@ -67,7 +67,7 @@ Content-Type: application/json
 GET {{webapi_HostAddress}}/project?project_id=1
 Authorization: Bearer {{jwt}}
 Accept: application/json
-###
+### get project by id
 
 POST {{webapi_HostAddress}}/role/
 Authorization: Bearer {{jwt}}

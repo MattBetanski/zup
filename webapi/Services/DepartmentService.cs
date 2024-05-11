@@ -128,4 +128,16 @@ public class DepartmentService {
             throw;
         }
     }
+
+    public List<Role> GetRoles(long department_id) {
+        try {
+            List<Role> roles = (from rl in _context.Role
+                                where rl.DepartmentId == department_id
+                                select rl).ToList();
+            return roles;
+        }
+        catch {
+            throw;
+        }
+    }
 }
