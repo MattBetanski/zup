@@ -26,12 +26,23 @@ public class ItemController : ControllerBase {
         _userservice = uservice;
     }
 
+    /// <summary>
+    /// Creates an item
+    /// </summary>
+    /// <param name="item_info"></param>
+    /// <returns></returns>
+    /// <response code="204">Item created successfully</response>
+    /// <response code="400">Invalid data</response>
+    /// <response code="401">A problem occured validating the user's token</response>
+    /// <response code="403">User does not have the proper level to create an item</response>
+    /// <response code="500">Internal server error</response>
     [HttpPost]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    [ProducesResponseType(typeof(string), StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(typeof(string), StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(typeof(string), StatusCodes.Status403Forbidden)]
+    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
     public IActionResult CreateItem([FromBody] ItemBody item_info) {
-        // set owner to be whoever is creating the item
-        // check if in department (get from porject id)x
-        // check if in project x
-        // check if level is high enough
         try {
             User self = _userservice.getSelf(User.FindFirstValue(ClaimTypes.NameIdentifier));
             long department_id = _projectservice.GetDepartment(item_info.ProjectId).DepartmentId;

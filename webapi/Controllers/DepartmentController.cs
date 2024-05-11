@@ -261,12 +261,12 @@ public class DepartmentController : ControllerBase {
     }
 
     /// <summary>
-    /// Adds a user to the department
+    /// Invites a user to the department
     /// </summary>
     /// <param name="department_id"></param>
     /// <param name="email"></param>
     /// <returns></returns>
-    /// <response code="200">User was added to the department</response>
+    /// <response code="200">User was invited to the department</response>
     /// <response code="401">A problem occured validating the user's token</response>
     /// <response code="403">User is not the owner of the department</response>
     /// <response code="404">Some data was not found, check exception message for details</response>
