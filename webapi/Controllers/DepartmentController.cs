@@ -126,28 +126,6 @@ public class DepartmentController : ControllerBase {
         return Ok();
     }
 
-    [HttpPost]
-    [Route("invite")]
-    public IActionResult InviteUserToDepartment([FromQuery] long department_id, [FromQuery] long invitee_id) {
-        try {
-            User self = _userservice.getSelf(User.FindFirstValue(ClaimTypes.NameIdentifier));
-            
-            if (self.UserId != _departmentservice.getOwner(department_id).UserId)
-                return StatusCode(403, "You are not permitted to invite users to this department");
-            else {
-                _departmentservice.inviteUser(department_id, invitee_id);
-                return Ok();
-            }
-        }
-        catch (DataNotFoundException dnfe) {
-            return NotFound(dnfe.Message);
-        }
-        catch (Exception ex) {
-            Console.WriteLine(ex.Message);
-            return StatusCode(500, ex.Message);
-        }
-    }
-
     [HttpGet]
     [Route("roles")]
     public ActionResult<List<Role>> GetDepartmentRoles([FromQuery] long department_id) {
@@ -205,9 +183,31 @@ public class DepartmentController : ControllerBase {
         }
     }
 
+    [HttpPost]
+    [Route("invite")]
+    public IActionResult InviteUserToDepartment([FromQuery] long department_id, [FromQuery] string email) {
+        try {
+            User self = _userservice.getSelf(User.FindFirstValue(ClaimTypes.NameIdentifier));
+            
+            if (self.UserId != _departmentservice.getOwner(department_id).UserId)
+                return StatusCode(403, "You are not permitted to invite users to this department");
+            else {
+                _departmentservice.inviteUser(department_id, email);
+                return Ok();
+            }
+        }
+        catch (DataNotFoundException dnfe) {
+            return NotFound(dnfe.Message);
+        }
+        catch (Exception ex) {
+            Console.WriteLine(ex.Message);
+            return StatusCode(500, ex.Message);
+        }
+    }
+
     [HttpDelete]
     [Route("invite")]
-    public IActionResult RevokeInviteToDepartment([FromQuery] long department_id, [FromQuery] long invitee_id) {
+    public IActionResult RevokeInviteToDepartment([FromQuery] long department_id, [FromQuery] string email) {
         return Ok();
     }
 

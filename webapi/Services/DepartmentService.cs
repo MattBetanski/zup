@@ -70,24 +70,26 @@ public class DepartmentService {
         }
     }
 
-    public void inviteUser(long department_id, long invitee_id) {
+    public void inviteUser(long department_id, string email) {
         try {
             Department department = (from dep in _context.Department
                                       where dep.DepartmentId == department_id
                                       select dep).FirstOrDefault() ?? throw new DataNotFoundException("The selected department could not be found");
             
-            User invitee = (from usr in _context.User
-                             where usr.UserId == invitee_id
-                             select usr).FirstOrDefault() ?? throw new DataNotFoundException("The selected user could not be found");
+            User? invitee = (from usr in _context.User
+                             where usr.Email == email
+                             select usr).FirstOrDefault();
 
-            DepartmentInvite invite = new DepartmentInvite {
-                DepartmentId = department.DepartmentId,
-                InviteeId = invitee.UserId,
-                Response = InviteResponse.Pending
-            };
+            if (invitee != null) {
+                DepartmentInvite invite = new DepartmentInvite {
+                    DepartmentId = department.DepartmentId,
+                    InviteeId = invitee.UserId,
+                    Response = InviteResponse.Pending
+                };
 
-            _context.DepartmentInvite.Add(invite);
-            _context.SaveChanges();
+                _context.DepartmentInvite.Add(invite);
+                _context.SaveChanges();
+            }
         }
         catch {
             throw;
