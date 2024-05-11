@@ -70,7 +70,16 @@ public class ProjectService {
                                                        where pur.ProjectId == project_id && pur.UserId == user_id
                                                        select pur).FirstOrDefault() ?? throw new DataNotFoundException("The selected project member could not be found");
 
-            existingProjectUserRole.RoleId = role_id;
+            _context.ProjectUserRole.Remove(existingProjectUserRole);
+            _context.SaveChanges();
+
+            ProjectUserRole newProjectUserRole = new ProjectUserRole {
+                ProjectId = project_id,
+                UserId = user_id,
+                RoleId = role_id
+            };
+
+            _context.ProjectUserRole.Add(newProjectUserRole);
             _context.SaveChanges();
         }
         catch {
