@@ -37,6 +37,22 @@ public class DepartmentService {
         }
     }
 
+    public Department getByProjectId(long project_id) {
+        try {
+            Project project = (from prj in _context.Project
+                               where prj.ProjectId == project_id
+                               select prj).FirstOrDefault() ?? throw new DataNotFoundException("The selected project could not be found");
+            
+            Department department = (from dep in _context.Department
+                                     where dep.DepartmentId == project.DepartmentId
+                                     select dep).FirstOrDefault() ?? throw new DataNotFoundException("The selected department could not be found");
+            return department;
+        }
+        catch {
+            throw;
+        }
+    }
+
     public List<Department> getByUser(long user_id) {
         try {
             long[] department_ids = (from dm in _context.DepartmentMember
@@ -56,11 +72,11 @@ public class DepartmentService {
 
     public void inviteUser(long department_id, long invitee_id) {
         try {
-            Department? department = (from dep in _context.Department
+            Department department = (from dep in _context.Department
                                       where dep.DepartmentId == department_id
                                       select dep).FirstOrDefault() ?? throw new DataNotFoundException("The selected department could not be found");
             
-            User? invitee = (from usr in _context.User
+            User invitee = (from usr in _context.User
                              where usr.UserId == invitee_id
                              select usr).FirstOrDefault() ?? throw new DataNotFoundException("The selected user could not be found");
 
@@ -80,7 +96,7 @@ public class DepartmentService {
 
     public User getOwner(long department_id) {
         try {
-            User? owner = (from dep in _context.Department
+            User owner = (from dep in _context.Department
                            join usr in _context.User on dep.OwnerId equals usr.UserId
                            where dep.DepartmentId == department_id
                            select usr).FirstOrDefault() ?? throw new DataNotFoundException("No owner was found or the selected department could not be found");
@@ -135,6 +151,21 @@ public class DepartmentService {
                                 where rl.DepartmentId == department_id
                                 select rl).ToList();
             return roles;
+        }
+        catch {
+            throw;
+        }
+    }
+
+    public List<User> GetMembers(long department_id) {
+        try {
+            long[] user_ids = (from dm in _context.DepartmentMember
+                               where dm.DepartmentId == department_id
+                               select dm.MemberId).ToArray();
+            List<User> members = (from usr in _context.User
+                                  where user_ids.Contains(usr.UserId)
+                                  select usr).ToList();
+            return members;
         }
         catch {
             throw;

@@ -14,10 +14,12 @@ namespace webapi.Controllers;
 [Authorize]
 public class DepartmentController : ControllerBase {
     private DepartmentService _departmentservice;
+    private RoleService _roleservice;
     private UserService _userservice;
 
-    public DepartmentController(DepartmentService dservice, UserService uservice) {
+    public DepartmentController(DepartmentService dservice, UserService uservice, RoleService rservice) {
         _departmentservice = dservice;
+        _roleservice =rservice;
         _userservice = uservice;
     }
 
@@ -157,6 +159,44 @@ public class DepartmentController : ControllerBase {
             else {
                 List<Role> roles = _departmentservice.GetRoles(department_id);
                 return roles;
+            }
+        }
+        catch (Exception ex) {
+            Console.WriteLine(ex.Message);
+            return StatusCode(500, ex.Message);
+        }
+    }
+
+    [HttpGet]
+    [Route("members")]
+    public ActionResult<UserAndRoleBody> GetDepartmentMembersByProjectId([FromQuery] long project_id) {
+        try {
+            List<UserAndRoleBody> user_list = new List<UserAndRoleBody>();
+
+            User self = _userservice.getSelf(User.FindFirstValue(ClaimTypes.NameIdentifier));
+            long department_id = _departmentservice.getByProjectId(project_id).DepartmentId;
+
+            if (!_departmentservice.checkIfInDepartment(self.UserId, department_id))
+                return StatusCode(403, "You are not permitted to view this department");
+            else {
+                List<User> members = _departmentservice.GetMembers(department_id);
+                foreach(User mbr in members) {
+                    UserAndRoleBody userAndRoleBody = new UserAndRoleBody {
+                        Email = mbr.Email,
+                        FirstName = mbr.FirstName,
+                        LastName = mbr.LastName
+                    };
+
+                    Role? role = _roleservice.GetByUserId(mbr.UserId);
+                    if (role != null) {
+                        userAndRoleBody.RoleId = role.RoleId;
+                        userAndRoleBody.RoleName = role.Name;
+                    }
+
+                    user_list.Add(userAndRoleBody);
+                }
+
+                return Ok(user_list);
             }
         }
         catch (Exception ex) {

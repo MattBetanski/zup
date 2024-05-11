@@ -53,6 +53,16 @@ Authorization: Bearer {{jwt}}
 Accept: application/json
 ### get all the projects in the department
 
+GET {{webapi_HostAddress}}/department/roles?department_id=2
+Authorization: Bearer {{jwt}}
+Accept: application/json
+### get the roles in the department
+
+GET {{webapi_HostAddress}}/department/members?project_id=2
+Authorization: Bearer {{jwt}}
+Accept: application/json
+### get the members of the department with a project id
+
 POST {{webapi_HostAddress}}/project/
 Authorization: Bearer {{jwt}}
 Content-Type: application/json

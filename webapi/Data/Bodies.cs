@@ -64,3 +64,12 @@ public class UserBody {
     public required string FirstName { get; set; }
     public required string LastName { get; set; }
 }
+
+public class UserAndRoleBody {
+    public required string Email { get; set; }
+    public required string FirstName { get; set; }
+    public required string LastName { get; set; }
+    public long RoleId { get; set; }
+    public string? RoleName { get; set; }
+
+}

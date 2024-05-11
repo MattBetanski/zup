@@ -29,4 +29,16 @@ public class RoleService {
             throw;
         }
     }
+
+    public Role? GetByUserId(long user_id) {
+        try {
+            Role? role = (from pur in _context.ProjectUserRole
+                            where pur.UserId == user_id
+                            select pur.Role).FirstOrDefault();
+            return role;
+        }
+        catch {
+            throw;
+        }
+    }
 }
