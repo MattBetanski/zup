@@ -8,7 +8,10 @@ import {
   User,
   Revenue,
   Invoice,
-  LatestInvoice
+  LatestInvoice,
+  Item,
+  ItemType,
+  ItemState
 } from './definitions';
 import { formatCurrency } from './utils';
 import { unstable_noStore as noStore } from 'next/cache';
@@ -243,6 +246,7 @@ export default async function Page({params}: {params: {id: string}}) {
 
 export async function fetchDepartmentbyId(id: string) {
   try {
+
     if (id == "1") {
       return {
         id: 1,
@@ -319,7 +323,7 @@ export async function fetchProjectsForDepartment(deparmtentId: string) {
   }
 }
 
-export async function fetchWikiPagesForDepartment(departmentId: string) {
+export async function fetchWikiPagesForDepartment(departmentId: number) {
   try {
     return [
       {
@@ -346,5 +350,118 @@ export async function fetchWikiPagesForDepartment(departmentId: string) {
     ]
   } catch (err) {
 
+  }
+}
+
+export async function getItemsForProject(projectId: string) {
+  try {
+    const data: Item[] =  [
+      {
+        "itemId": 0,
+        "projectId": 0,
+        "ownerId": 1,
+        "parentId": null,
+        "name": "Item One",
+        "description": "Item One Description",
+        "type": ItemType.Epic,
+        "createdDate": new Date(Date.now()),
+        "deadline": null,
+        "state": ItemState.Open
+      },
+      {
+        "itemId": 1,
+        "projectId": 0,
+        "ownerId": 1,
+        "parentId": null,
+        "name": "Item Two",
+        "description": "Item Two Description",
+        "type": ItemType.Epic,
+        "createdDate": new Date(Date.now()),
+        "deadline": null,
+        "state": ItemState.Open,
+      },
+      {
+        "itemId": 2,
+        "projectId": 0,
+        "ownerId": 1,
+        "parentId": 0,
+        "name": "Item Three",
+        "description": "Item Three Description",
+        "type": ItemType.Feature,
+        "createdDate": new Date(Date.now()),
+        "deadline": null,
+        "state": ItemState.Open,
+      },
+      {
+        "itemId": 3,
+        "projectId": 0,
+        "ownerId": 1,
+        "parentId": 2,
+        "name": "Item Four",
+        "description": "Item Four Description",
+        "type": ItemType.Requirement,
+        "createdDate": new Date(Date.now()),
+        "deadline": null,
+        "state": ItemState.Open,
+      },
+      {
+        "itemId": 4,
+        "projectId": 0,
+        "ownerId": 1,
+        "parentId": null,
+        "name": "Item Five",
+        "description": "Item Five Description",
+        "type": ItemType.Epic,
+        "createdDate": new Date(Date.now()),
+        "deadline": null,
+        "state": ItemState.Open,
+      },
+      {
+        "itemId": 5,
+        "projectId": 0,
+        "ownerId": 1,
+        "parentId": 1,
+        "name": "Item Six",
+        "description": "Item Six Description",
+        "type": ItemType.Feature,
+        "createdDate": new Date(Date.now()),
+        "deadline": null,
+        "state": ItemState.Open,
+      },
+    ];
+    return data;
+  } catch (err) {
+
+  }
+}
+
+
+export async function getItemsForType(type: string) {
+  switch (type) {
+    case "epic":
+       return [
+        {
+          "itemId": 1,
+          "name": "Test Item"
+        },
+        {
+          "itemId": 2,
+          "name": "Another One"
+        }
+       ]
+    case "feature":
+      return [
+        {
+          "itemId": 3,
+          "name": "Third Item"
+        }
+      ]
+    default:
+      return [
+        {
+          "itemId": 4,
+          "name": "Last Item"
+        }
+      ]
   }
 }

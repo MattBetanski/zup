@@ -10,9 +10,11 @@ import { RecentWikiPages } from "@/app/ui/department/wikiPages";
 import { Button } from "@/app/ui/button";
 import { UpdateDepartment } from "@/app/ui/department/buttons";
 import Link from "next/link";
-export default async function Page({params}: {params: {id: string}}) {
+import { getDepartmentById } from "@/app/lib/department/action";
+import { getProjectsForDepartment } from "@/app/lib/project/action";
+export default async function Page({params}: {params: {id: number}}) {
     const id = params.id;
-    const department = await fetchDepartmentbyId(id);
+    const department = await getDepartmentById(id);
     const wikiPages = await fetchWikiPagesForDepartment(id);
     const pages = wikiPages?.slice(0, 3);
     console.log(department);
@@ -20,13 +22,15 @@ export default async function Page({params}: {params: {id: string}}) {
         notFound();
     }
 
-    const items = await fetchProjectsForDepartment(id);
+    //const items = await fetchProjectsForDepartment(id);
+    const items = await getProjectsForDepartment(id);
 
     return (
         <main>
             <div className="flex flex-col overflow-hidden">
-                <div className="h-[1/8] p-3 rounded-lg bg-surface-300">
+                <div className="h-[1/8] p-3">
                     <h1 className={`${lusitana.className} text-3xl`}>{department.name}</h1>
+                    <hr></hr>
                     <p className={` mt-5 text-md`}>{department.description}</p>
                 </div>
                 <div className="flex h-3/4 mt-5 overflow-hidden">

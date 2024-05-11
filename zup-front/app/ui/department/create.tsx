@@ -10,10 +10,10 @@ import {
   UserCircleIcon,
 } from '@heroicons/react/24/outline';
 import { Button } from '@/app/ui/button';
-import { createDepartment, createInvoice } from '@/app/lib/action';
 import { stat } from 'fs';
 import { EyeIcon, EyeSlashIcon } from '@heroicons/react/24/solid';
 import { useRouter, useSearchParams } from 'next/navigation';
+import { createDepartment, CreateDepartmentState } from '@/app/lib/department/action';
 
 export default function Form() {
     const router = useRouter();
@@ -21,14 +21,14 @@ export default function Form() {
     function cancel() {
         router.back();
     }
-  const initialState = { message: null, errors: {}};
+  const initialState: CreateDepartmentState = { message: null, errors: {}};
   const [state, dispatch] = useFormState(createDepartment, initialState);
   return (
     <form action={dispatch}>
       <div className="rounded-md bg-surface-200 p-4 md:p-6">
         {/* Department Name */}
         <div className="mb-4">
-          <label htmlFor="customer" className="mb-2 block text-sm font-medium">
+          <label htmlFor="name" className="mb-2 block text-sm font-medium">
             Department Name
           </label>
           <div className="relative">

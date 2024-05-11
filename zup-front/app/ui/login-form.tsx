@@ -9,16 +9,13 @@ import {
 import { ArrowRightIcon } from '@heroicons/react/20/solid';
 import { Button } from './button';
 import { useFormState, useFormStatus } from 'react-dom';
-import { authenticate, getToken, redirectDashboard } from '../lib/action';
 import Link from 'next/link';
 import { UserCircleIcon } from '@heroicons/react/20/solid';
-import { formatDateToLocal } from '../lib/utils';
-import { redirect } from 'next/navigation';
-import { jwtDecode } from 'jwt-decode';
-import {signIn} from '@/app/lib/action';
+import { loginAccount, LoginAccountState } from '../lib/authentication/action';
 
-export default async function LoginForm() {
-  const [errorMessage, dispatch] = useFormState(signIn, undefined);
+export default function LoginForm() {
+  const initialState: LoginAccountState = {message: null, errors: {}};
+  const [state, dispatch] = useFormState(loginAccount, initialState);
   return (
     <form action={dispatch} className="space-y-3 drop-shadow-2xl text-white bg-surface-300 rounded-b-3xl">
       <div className="flex-1 rounded-lg px-6 pb-4 pt-8">
@@ -26,12 +23,12 @@ export default async function LoginForm() {
           Please log in to continue.
         </h1>
         <div className="w-full">
-          <div>
+          <div className='mb-4'>
             <label
               className="mb-3 mt-5 block text-xs font-medium text-white"
               htmlFor="username"
             >
-              Email
+              Username
             </label>
             <div className="relative">
               <input
@@ -40,9 +37,14 @@ export default async function LoginForm() {
                 type="username"
                 name="username"
                 placeholder="Enter your username"
-                required
+                aria-describedby='username-error'
               />
               <UserCircleIcon className="pointer-events-none absolute left-3 top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-gray-500 peer-focus:text-white" />
+            </div>
+            <div id="username-error" aria-live='polite' aria-atomic='true'>
+              {state.errors?.username && state.errors.username.map((error: string) => (
+                <p className='mt-2 text-sm text-red-500' key={error}>{error}</p>
+              ))}
             </div>
           </div>
           <div className="mt-4">
@@ -59,10 +61,14 @@ export default async function LoginForm() {
                 type="password"
                 name="password"
                 placeholder="Enter password"
-                required
-                minLength={6}
+                aria-describedby='password-error'
               />
               <KeyIcon className="pointer-events-none absolute left-3 top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-gray-500 peer-focus:text-white" />
+            </div>
+            <div id="password-error" aria-live='polite' aria-atomic='true'>
+              {state.errors?.password && state.errors.password.map((error: string) => (
+                <p className='mt-2 text-sm text-red-500' key={error}>{error}</p>
+              ))}
             </div>
           </div>
         </div>
@@ -72,14 +78,12 @@ export default async function LoginForm() {
           aria-live="polite"
           aria-atomic="true"
         >
-          {errorMessage && (
+          {state.message && (
             <>
               <ExclamationCircleIcon className='h-5 w-5 text-red-500' />
-              <p className='text-sm text-red-500'>{errorMessage}</p>
+              <p className='text-sm text-red-500'>{state.message}</p>
             </>
           )}
-          {/* Add form errors here */}
-
         </div>
       </div>
     </form>

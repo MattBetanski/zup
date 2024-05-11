@@ -22,7 +22,7 @@ export function UpdateDepartment({ id }: { id: string }) {
   return (
     <Link
       href={`/dashboard/department/${id}/edit`}
-      className="rounded-md border p-2 hover:bg-gray-100"
+      className="rounded-md border p-2 hover:bg-surface-300"
     >
       <PencilIcon className="w-5" />
     </Link>
@@ -37,7 +37,7 @@ export function DeleteDepartment({ id }: { id: string }) {
     }
     return (
         <div>
-            <button onClick={() => setIsOpen(true)} className="rounded-md border p-2 hover:bg-gray-100">
+            <button onClick={() => setIsOpen(true)} className="rounded-md border p-2 hover:bg-surface-300">
                 <span className="sr-only">Delete</span>
                 <TrashIcon className="w-5" />
             </button>

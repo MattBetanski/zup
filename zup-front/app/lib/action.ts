@@ -144,6 +144,14 @@ export async function authenticate(
     }
 }
 
+export async function createAccount(prevState: string | undefined, formData: FormData) {
+    try {
+        
+    } catch (err) {
+        return err;
+    }
+}
+
 export async function redirectDashboard() {
     redirect("/dashboard");
 }

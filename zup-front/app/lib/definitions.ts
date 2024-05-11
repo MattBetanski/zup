@@ -92,9 +92,45 @@ export type InvoiceForm = {
 
 
 export type Department = {
+  ownerId: number;
   name: string;
   description: string;
   departmentId: string;
   creationDate: Date;
   visibility: boolean;
+}
+
+export type Item = {
+  itemId: number;
+  projectId: number;
+  ownerId: number;
+  parentId: number | null;
+  name: string;
+  description: string;
+  type: ItemType;
+  createdDate: Date;
+  deadline: Date | null;
+  state: ItemState;
+}
+
+export enum ItemState {
+  Open = "Open",
+  InProgres = "InProgress",
+  Closed = "Closed"
+}
+
+export enum ItemType {
+  Epic,
+  Feature,
+  Requirement,
+  Task,
+  Bug
+}
+
+export type Project = {
+  projectId: number;
+  departmentId: number;
+  name: string;
+  description: string;
+  createdDate: string;
 }
