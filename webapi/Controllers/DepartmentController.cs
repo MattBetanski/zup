@@ -23,6 +23,13 @@ public class DepartmentController : ControllerBase {
         _userservice = uservice;
     }
 
+    /// <summary>
+    /// Creates a new department
+    /// </summary>
+    /// <param name="department_info">Information about the department necessary for creating it</param>
+    /// <response code="204">Department was created successfully</response>
+    /// <response code="400">Some data was not found, check exception message for details</response>
+    /// <response code="500">Internal server error</response>
     [HttpPost]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(typeof(string), StatusCodes.Status400BadRequest)]
@@ -53,9 +60,21 @@ public class DepartmentController : ControllerBase {
         }
     }
 
+    /// <summary>
+    /// Gets a department by its id
+    /// </summary>
+    /// <param name="department_id">ID of the department</param>
+    /// <returns>The department with a matching ID</returns>
+    /// <response code="200">Returns the department with the matching ID</response>
+    /// <response code="401">A problem occured validating the user's token</response>
+    /// <response code="403">User is not a member of the department</response>
+    /// <response code="404">Department with the given ID was not found</response>
+    /// <response code="500">Internal server error</response>
     [HttpGet]
     [ProducesResponseType(StatusCodes.Status200OK)]
-    [ProducesResponseType(typeof(string), StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(typeof(string), StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(typeof(string), StatusCodes.Status403Forbidden)]
+    [ProducesResponseType(typeof(string), StatusCodes.Status404NotFound)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
     public ActionResult<Department> GetDepartmentById([FromQuery] long department_id) {
         try {
@@ -68,7 +87,7 @@ public class DepartmentController : ControllerBase {
             return department;
         } 
         catch (DataNotFoundException dnfe) {
-            return BadRequest(dnfe.Message);
+            return NotFound(dnfe.Message);
         } 
         catch (Exception ex) {
             Console.WriteLine(ex.Message);
@@ -76,7 +95,13 @@ public class DepartmentController : ControllerBase {
         }
     }
 
-    // gets all the departments the user belongs to
+    /// <summary>
+    /// Gets all departments that the user is a member of
+    /// </summary>
+    /// <returns>List of departments the user is a member of</returns>
+    /// <response code="200">Returns a list of all departments the user is a member of</response>
+    /// <response code="401">A problem occured validating the user's token</response>
+    /// <response code="500">Internal server error</response>
     [HttpGet]
     [Route("all")]
     [ProducesResponseType(StatusCodes.Status200OK)]
@@ -211,6 +236,13 @@ public class DepartmentController : ControllerBase {
         return Ok();
     }
 
+    /// <summary>
+    /// Lists all the pending invites for the department
+    /// </summary>
+    /// <param name="department_id">Id of the department</param>
+    /// <returns>List of all pending invites for the department</returns>
+    /// <response code="200">Returns a list of all pending invites for the department.</response>
+    /// <response code="401">Bad request here.</response>
     [HttpGet]
     [Route("invitations")]
     public ActionResult<List<DepartmentInvite>> GetPendingInvites([FromQuery] long department_id) {

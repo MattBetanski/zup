@@ -50,4 +50,11 @@ public class RoleController : ControllerBase {
             return StatusCode(500, ex.Message);
         }
     }
+
+    // [HttpPut]
+    // public IActionResult AssignRole([FromQuery] long role_id, [FromQuery] long user_id) {
+    //     try {
+
+    //     }
+    // }
 }

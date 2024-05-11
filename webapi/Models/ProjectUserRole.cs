@@ -4,6 +4,7 @@ using System.Text.Json.Serialization;
 
 namespace webapi.Models;
 
+[Table("project_user_role")]
 public class ProjectUserRole {
     [Required, Column("project_id")]
     [ForeignKey("Project")]

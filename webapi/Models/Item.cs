@@ -30,14 +30,8 @@ public class Item {
     [Required, Column("type")]
     public Type Type { get; set; }
 
-    [Required, Column("confidentiality")]
-    public bool Confidentiality { get; set; }
-
     [Required, Column("created_date")]
     public DateTime CreatedDate { get; set; }
-
-    [Column("deadline")]
-    public DateTime? Deadline { get; set; }
 
     [Required, Column("state")]
     public State State { get; set; }

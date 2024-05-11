@@ -98,6 +98,28 @@ public class ProjectController : ControllerBase {
         return Ok();
     }
 
+    [HttpPost]
+    [Route("roles")]
+    public IActionResult AddMemberToProject([FromQuery] long project_id, [FromQuery] long user_id, [FromQuery] long role_id) {
+        try {
+            ProjectUserRole projectUserRole = new ProjectUserRole {
+                ProjectId = project_id,
+                UserId = user_id,
+                RoleId = role_id
+            };
+
+            _projectservice.AssignUserRole(projectUserRole);
+            return NoContent();
+        }
+        catch (UserAlreadyInGroupException uaige) {
+            return BadRequest(uaige.Message);
+        }
+        catch (Exception ex) {
+            Console.WriteLine(ex.Message);
+            return StatusCode(500, ex.Message);
+        }
+    }
+
     [HttpPut]
     [Route("roles")]
     public IActionResult UserRoleUpdate([FromQuery]long project_id, [FromQuery]long user_id, [FromQuery]long role_id) {

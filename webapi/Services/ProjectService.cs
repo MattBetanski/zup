@@ -48,6 +48,22 @@ public class ProjectService {
         }
     }
 
+    public void AssignUserRole(ProjectUserRole projectUserRole) {
+        try {
+            bool userHasRole = (from pur in _context.ProjectUserRole
+                                where pur.UserId == projectUserRole.UserId
+                                select pur).Any();
+            if(userHasRole)
+                throw new UserAlreadyInGroupException("Selected user has already been assigned a role");
+            
+            _context.ProjectUserRole.Add(projectUserRole);
+            _context.SaveChanges();
+        }
+        catch {
+            throw;
+        }
+    }
+
     public void UpdateUserRole(long project_id, long user_id, long role_id) {
         try {
             ProjectUserRole existingProjectUserRole = (from pur in _context.ProjectUserRole
@@ -73,6 +89,18 @@ public class ProjectService {
                                       select dep).FirstOrDefault() ?? throw new DataNotFoundException("The selected department could not be found");
 
             return department;
+        }
+        catch {
+            throw;
+        }
+    }
+
+    public bool checkIfInProject(long user_id, long project_id) {
+        try {
+            bool is_project_member = (from pur in _context.ProjectUserRole
+                                      where pur.UserId == user_id && pur.ProjectId == project_id
+                                      select pur).Any();
+            return is_project_member;
         }
         catch {
             throw;

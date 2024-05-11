@@ -25,4 +25,9 @@ public class ObjectNameInUseException : Exception {
     public ObjectNameInUseException(string message) : base(message) { }
 }
 
+public class UserAlreadyInGroupException : Exception {
+    public UserAlreadyInGroupException() { }
+    public UserAlreadyInGroupException(string message) : base(message) { }
+}
+
 

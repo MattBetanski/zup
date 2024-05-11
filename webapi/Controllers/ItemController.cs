@@ -13,20 +13,32 @@ namespace webapi.Controllers;
 [Authorize]
 public class ItemController : ControllerBase {
     private ItemService _itemservice;
+    private DepartmentService _departmentservice;
+    private ProjectService _projectservice;
     private UserService _userservice;
 
-    public ItemController(ItemService iservice, UserService uservice) {
+    public ItemController(ItemService iservice, DepartmentService dservice, ProjectService pservice, UserService uservice) {
         _itemservice = iservice;
+        _departmentservice = dservice;
+        _projectservice = pservice;
         _userservice = uservice;
     }
 
     [HttpPost]
     public IActionResult CreateItem([FromBody] ItemBody item_info) {
         // set owner to be whoever is creating the item
-        // check if in department (get from porject id)
-        // check if in project
+        // check if in department (get from porject id)x
+        // check if in project x
         // check if level is high enough
         User self = _userservice.getSelf(User.FindFirstValue(ClaimTypes.NameIdentifier));
+        long department_id = _projectservice.GetDepartment(item_info.ProjectId).DepartmentId;
+        if(!_departmentservice.checkIfInDepartment(self.UserId, department_id))
+            return StatusCode(403, "Cannot create an item in this department");
+        else if (!_projectservice.checkIfInProject(self.UserId, item_info.ProjectId)) 
+            return StatusCode(403, "Cannot create an item in this project");
+        else {
+
+        }
 
         return Ok();
     }
