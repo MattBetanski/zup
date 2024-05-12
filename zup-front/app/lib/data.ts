@@ -434,34 +434,3 @@ export async function getItemsForProject(projectId: string) {
 
   }
 }
-
-
-export async function getItemsForType(type: string) {
-  switch (type) {
-    case "epic":
-       return [
-        {
-          "itemId": 1,
-          "name": "Test Item"
-        },
-        {
-          "itemId": 2,
-          "name": "Another One"
-        }
-       ]
-    case "feature":
-      return [
-        {
-          "itemId": 3,
-          "name": "Third Item"
-        }
-      ]
-    default:
-      return [
-        {
-          "itemId": 4,
-          "name": "Last Item"
-        }
-      ]
-  }
-}

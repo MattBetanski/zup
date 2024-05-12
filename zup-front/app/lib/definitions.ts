@@ -134,3 +134,14 @@ export type Project = {
   description: string;
   createdDate: string;
 }
+
+export type DepartmentInvitations = {
+  departmentId: number;
+  inviteeId: number;
+  email: string;
+}
+
+export type UserInvitations = {
+  departmentId: number;
+  departmentName: string;
+}

@@ -5,8 +5,9 @@ import { useState } from "react";
 import { ArrowLeftIcon, ArrowRightIcon } from "@primer/octicons-react";
 import clsx from "clsx";
 import Link from "next/link";
+import { Project } from "../lib/definitions";
 
-export default function PaginatedList({ itemsPerPage, items}: {itemsPerPage: number, items: any[]}) {
+export default function PaginatedList({ itemsPerPage, items}: {itemsPerPage: number, items: Project[]}) {
     const [currentPage, setCurrentPage] = useState(1);
 
     function goToProject(id: string) {
@@ -28,7 +29,7 @@ export default function PaginatedList({ itemsPerPage, items}: {itemsPerPage: num
             <div className="">
                 <Stack direction="vertical">
                     {currentItems.map(x => <Stack.Item>
-                        <Link href={`/dashboard/projects/${x.projectId}`}>
+                        <Link href={`/dashboard/project/${x.projectId}`}>
                             <div className="bg-surface-300 rounded-lg h-48 p-5 border-2 border-surface-400 shadow-lg shadow-surface-200 overflow-hidden line-clamp-2 hover:bg-surface-400">
                                 <h1 className={`${lusitana.className} text-3xl`}>{x.name}</h1>
                                 <hr className="bg-surface-300"></hr>

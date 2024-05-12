@@ -1,10 +1,11 @@
 'use client';
-import { deleteDepartment } from "@/app/lib/department/action";
+import { deleteDepartment, removeInvite } from "@/app/lib/department/action";
 import { PencilIcon, PlusIcon, TrashIcon } from "@heroicons/react/20/solid";
 import { Box, Dialog, Text } from "@primer/react";
 import Link from "next/link";
 import { useState } from "react";
 import { Button } from "../button";
+import { XIcon } from "@primer/octicons-react";
 
 export function CreateDepartment() {
   return (
@@ -62,4 +63,19 @@ export function DeleteDepartment({ id }: { id: string }) {
             </Dialog>
         </div>
     );
+}
+
+export function DeleteInvite({inviteeId, departmentId}: {inviteeId: number, departmentId: number}) {
+  return (
+    <div>
+      <form action={removeInvite}>
+        <input hidden name="inviteeId" value={inviteeId} readOnly />
+        <input hidden name="departmentId" value={departmentId} readOnly />
+        <button type="submit" className="rounded-md border p-2 hover:bg-surface-300">
+          <span className="sr-only">Delete</span>
+          <XIcon className="w-5" />
+        </button>
+      </form>
+    </div>
+  )
 }
