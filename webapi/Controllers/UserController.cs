@@ -119,8 +119,25 @@ public class UserController : ControllerBase {
         }
     }
 
+    /// <summary>
+    /// Updates the status of a department invite
+    /// </summary>
+    /// <param name="department_id"></param>
+    /// <param name="response"></param>
+    /// <returns></returns>
+    /// <response code="204">Invite response updated</response>
+    /// <response code="400">Invite is no longer valid or user is already in department</response>
+    /// <response code="401">A problem occured validating the user's token</response>
+    /// <response code="404">No invite found for user and department</response>
+    /// <response code="500">Internal server error</response>
     [HttpPut]
     [Route("invitations")]
+    [Authorize]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    [ProducesResponseType(typeof(string), StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(typeof(string), StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(typeof(string), StatusCodes.Status404NotFound)]
+    [ProducesResponseType(typeof(string), StatusCodes.Status500InternalServerError)]
     public IActionResult RespondToDepartmentInvite([FromQuery] long department_id, [FromQuery] InviteResponse response) {
         try {
             User self = _userservice.getSelf(User.FindFirstValue(ClaimTypes.NameIdentifier));
@@ -139,6 +156,9 @@ public class UserController : ControllerBase {
         }
         catch (UserAlreadyInGroupException uaige) {
             return BadRequest(uaige.Message);
+        }
+        catch (DataNotFoundException dnfe) {
+            return NotFound(dnfe.Message);
         }
         catch (AccessNotAllowedException anae) {
             return Unauthorized(anae.Message);

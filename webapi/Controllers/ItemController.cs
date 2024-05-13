@@ -90,19 +90,74 @@ public class ItemController : ControllerBase {
 
     [HttpGet]
     public ActionResult<Item> GetItemById([FromQuery] long item_id) {
-        return Ok();
+        return StatusCode(501);
     }
 
+    /// <summary>
+    /// Gets items with a filter
+    /// </summary>
+    /// <param name="project_id"></param>
+    /// <param name="type">Optional</param>
+    /// <param name="state">Optional</param>
+    /// <returns></returns>
+    /// <response code="200">Returns list of items based on filter query</response>
+    /// <response code="401">A problem occured validating the user's token</response>
+    /// <response code="403">User does not have the proper level to view items in this project</response>
+    /// <response code="500">Internal server error</response>
     [HttpGet]
     [Route("filter")]
     public ActionResult<List<Item>> GetItemByFilter([FromQuery] long project_id, [FromQuery] Models.Type? type, [FromQuery] State? state) {
-        // confirm type and state default to null
-        return Ok();
+        try {
+            long department_id = _projectservice.GetDepartment(project_id).DepartmentId;
+            User self = _userservice.getSelf(User.FindFirstValue(ClaimTypes.NameIdentifier));
+
+            if(!checkIfPermitted(false, RoleLevel.Read, department_id, project_id, self.UserId))
+                return StatusCode(403, "You do not have permission to view items in this project");
+
+            return _itemservice.GetWithFilter(project_id, type, state);
+        }
+        catch (AccessNotAllowedException anae) {
+            return Unauthorized(anae.Message);
+        }
+        catch (Exception ex) {
+            Console.WriteLine(ex.Message);
+            return StatusCode(500, ex.Message);
+        }
     }
 
     [HttpPut]
     public IActionResult UpdateItem([FromQuery] long item_id, [FromBody] ItemBodyU item_info) {
-        return Ok();
+        try {
+            Item item = _itemservice.GetById(item_id);
+
+            if(item == null)
+                return BadRequest("Item not found");
+
+            long department_id = _projectservice.GetDepartment(item.ProjectId).DepartmentId;
+            User self = _userservice.getSelf(User.FindFirstValue(ClaimTypes.NameIdentifier));
+
+            if(!checkIfPermitted(true, RoleLevel.Modify, department_id, item.ProjectId, self.UserId))
+                return StatusCode(403, "You do not have permission to modify this item");
+
+            
+            item.Name = item_info.Name;
+            item.Description = item_info.Description;
+            item.State = item_info.State;
+            item.ParentId = item_info.ParentId;
+
+            _itemservice.Update(item);
+            return NoContent();
+        }
+        catch (AccessNotAllowedException anae) {
+            return Unauthorized(anae.Message);
+        }
+        catch (DataNotFoundException dnfe) {
+            return BadRequest(dnfe.Message);
+        }
+        catch (Exception ex) {
+            Console.WriteLine(ex.Message);
+            return StatusCode(500, ex.Message);
+        }
     }
 
     [HttpDelete]
@@ -110,15 +165,18 @@ public class ItemController : ControllerBase {
         return Ok();
     }
 
-    [HttpPut]
-    [Route("assign")]
-    public IActionResult AssignItem([FromQuery] long item_id, [FromQuery] long user_id) {
-        return Ok();
-    }
+    public bool checkIfPermitted(bool needsOwner, RoleLevel minimumLevel, long department_id, long project_id, long user_id) {
+        bool permitted = false;
 
-    [HttpDelete]
-    [Route("assign")]
-    public IActionResult UnassignItem([FromQuery] long item_id, [FromQuery] long user_id) {
-        return Ok();
+        if(needsOwner) {
+            if(user_id == _departmentservice.getOwner(department_id).UserId)
+                permitted = true;
+        }
+        else {
+            if(_departmentservice.checkIfInDepartment(user_id, department_id) && _projectservice.checkIfInProject(user_id, project_id) && _roleservice.checkItemLevel(user_id, minimumLevel))
+                permitted = true;
+        }
+
+        return permitted;
     }
 }

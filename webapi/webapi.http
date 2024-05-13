@@ -126,13 +126,31 @@ Authorization: Bearer {{jwt}}
 Content-Type: application/json
 
 {
-    "name": "invade poland",
-    "description": "very very fast",
-    "state": "Open",
-    "type": "Epic",
+    "name": "eternity",
+    "description": "nill",
+    "state": "InProgess",
+    "type": "Bug",
     "projectId": 2
 }
-###
+### creates an item
+
+GET {{webapi_HostAddress}}/item/filter?project_id=2
+Authorization: Bearer {{jwt2}}
+Accept: application/json
+### get items based on optional filters (can be no filter, one filter, or both state and type)
+
+PUT {{webapi_HostAddress}}/item?item_id=7
+Authorization: Bearer {{jwt}}
+Content-Type: application/json
+
+{
+    "name": "the end",
+    "description": "farting",
+    "state": "Blocked",
+    "parentId": 3
+}
+### udpates an item
+
 
 // FOR TESTING ONLY //
 PUT {{webapi_HostAddress}}/department/testingadd?user_id=1&department_id=2
