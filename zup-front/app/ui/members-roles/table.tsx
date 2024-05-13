@@ -1,19 +1,19 @@
-//TODO: Page for viewing all roles for department NOT TESTED
+//Page for viewing all members in a project
 import Image from 'next/image';
 import { UpdateInvoice, DeleteInvoice } from '@/app/ui/invoices/buttons';
 import InvoiceStatus from '@/app/ui/invoices/status';
 import { formatDateToLocal, formatCurrency } from '@/app/lib/utils';
-import { fetchFilteredInvoices, getMembersList, getRolesList } from '@/app/lib/data';
+import { fetchFilteredInvoices, getMembersList } from '@/app/lib/data';
 import { string, number } from 'zod';
 
-export default async function RolesTable({
+export default async function InvoicesTable({
   query,
   currentPage,
 }: {
   query: string;
   currentPage: number;
 }) {
-  const members = await getRolesList(query, currentPage);
+  const members = await getMembersList(query, currentPage);
 
   return (
     <div className="mt-6 flow-root">
@@ -28,17 +28,18 @@ export default async function RolesTable({
                 <div className="flex items-center justify-between border-b pb-4">
                   <div>
                     <div className="mb-2 flex items-center">
-                      <p>{member.id}</p>
+                      <p>{member.name}</p>
                     </div>
-                    <p className="text-sm text-gray-500">{member.name}</p>
+                    <p className="text-sm text-gray-500">{member.email}</p>
                   </div>
-                  <InvoiceStatus status={member.description} />
+                  <InvoiceStatus status={member.total_pending} />
                 </div>
                 <div className="flex w-full items-center justify-between pt-4">
                   <div>
                     <p className="text-xl font-medium">
-                      {member.permissions}
+                      {member.total_pending}
                     </p>
+                    <p>{member.total_pending}</p>
                   </div>
                   <div className="flex justify-end gap-2">
                     <UpdateInvoice id={member.id} />
@@ -55,13 +56,16 @@ export default async function RolesTable({
                   id
                 </th>
                 <th scope="col" className="px-4 py-5 font-medium sm:pl-6">
-                  Role Name
+                  Member
                 </th>
                 <th scope="col" className="px-3 py-5 font-medium">
-                  Description
+                  Email
                 </th>
                 <th scope="col" className="px-3 py-5 font-medium">
-                  Permissions
+                  Role
+                </th>
+                <th scope="col" className="px-3 py-5 font-medium">
+                  Hire Date
                 </th>
                 <th scope="col" className="relative py-3 pl-6 pr-3">
                   <span className="sr-only">Edit</span>
@@ -77,17 +81,17 @@ export default async function RolesTable({
                   <td className="whitespace-nowrap py-3 pl-6 pr-3">
                     <div className="flex items-center gap-3">
                       
-                      <p>{member.id}</p>
+                      <p>{member.name}</p>
                     </div>
                   </td>
                   <td className="whitespace-nowrap px-3 py-3">
-                    {member.name}
+                    {member.email}
                   </td>
                   <td className="whitespace-nowrap px-3 py-3">
-                    {member.description}
+                    {member.role}
                   </td>
                   <td className="whitespace-nowrap px-3 py-3">
-                    {member.permissions}
+                    {member.hire_date}
                   </td>
                   <td className="whitespace-nowrap py-3 pl-6 pr-3">
                     <div className="flex justify-end gap-3">

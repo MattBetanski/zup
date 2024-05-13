@@ -2,7 +2,7 @@
 import { revalidatePath } from "next/cache";
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
-import { z } from "zod";
+import { ZodSchema, z } from "zod";
 import { Department } from "../definitions";
 
 const DepartmentSchema = z.object({
@@ -15,8 +15,19 @@ const DepartmentSchema = z.object({
     visibility: z.enum(['public', 'private'], {invalid_type_error: "Please select a visibility"})
 });
 
+const RoleSchema = z.object({
+    id: z.number(),
+    name: z.string({invalid_type_error: "Please enter a Role Name"})
+        .min(1, {message: "You must enter a Role Name"}),
+    description: z.string({invalid_type_error: "Please enter a description"})
+        .min(1, {message: "You must enter a description"}),
+    creationDate: z.date(),    
+    Permissions: z.enum(['Read', 'Write'], {invalid_type_error: "Please select a permission"})
+});
+
 const CreateDepartment = DepartmentSchema.omit({ id: true, creationDate: true});
 const EditDepartment = DepartmentSchema.omit({creationDate: true});
+const EditRole = RoleSchema.omit({creationDate: true});
 
 export type EditDepartmentState = {
     errors?: {
@@ -27,7 +38,15 @@ export type EditDepartmentState = {
     },
     message?: string | null;
 }
-
+export type EditRoleState = {
+    errors?: {
+        id?: string[]
+        name?: string[];
+        description: string[];
+        visibility: string[];
+    },
+    message?: string | null;
+}
 export type CreateDepartmentState = {
     errors?: {
         name?: string[];
@@ -94,6 +113,48 @@ export async function createDepartment(prevState: CreateDepartmentState, formDat
         throw new Error("Failed to create department");
     }
     redirect("/dashboard");
+}
+
+export async function editRole(prevState: EditRoleState, formData: FormData) {
+    try {
+        const validatedFields = EditRole.safeParse({
+            id: formData.get("id"),
+            name: formData.get("name"),
+            description: formData.get("description"),
+            Permissions: formData.get("visibility")
+        });
+
+        if (!validatedFields.success) {
+            console.log(validatedFields);
+            return {
+                errors: validatedFields.error.flatten().fieldErrors,
+                message: "Missing fields. Failed to Create Department"
+            };
+        }
+
+        let token = cookies().get("token")?.value ?? '';
+        const {id, name, description, Permissions} = validatedFields.data;
+        var roleID = id;
+        const booleanPermissions = Permissions == "Read";
+        const response = await fetch('http://localhost:5001/department', {
+            method: "POST",
+            body: JSON.stringify({
+                "name": name,
+                "description": description,
+                "visibility": booleanPermissions
+            }),
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": `Bearer ${token}`
+            }
+        });
+        console.log(response);
+        revalidatePath(`/dashboard/department/roles/${id}`);
+    } catch (err) {
+        console.error(err);
+        throw new Error("Failed to create Role");
+    }
+    redirect(`/dashboard/department/roles${roleID}`);
 }
 
 export async function editDepartment(prevState: EditDepartmentState, formData: FormData) {
