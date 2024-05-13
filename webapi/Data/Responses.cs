@@ -20,4 +20,5 @@ public class InvitesResponse {
 public class MinimalDepartment {
     public required string Name { get; set; }
     public required long DepartmentId { get; set; }
+    public required InviteResponse Response { get; set; }
 }

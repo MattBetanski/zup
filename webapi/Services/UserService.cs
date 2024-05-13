@@ -97,13 +97,14 @@ public class UserService {
             List<DepartmentInvite> invites = (from di in _context.DepartmentInvite
                                                where di.InviteeId == user_id
                                                select di).ToList();
-            Console.WriteLine($"len: {invites.Count()}");
+
             foreach (DepartmentInvite di in invites) {
                 MinimalDepartment md = new MinimalDepartment {
                     Name = (from dep in _context.Department
                             where dep.DepartmentId == di.DepartmentId
                             select dep.Name).FirstOrDefault() ?? throw new DataNotFoundException("A problem occured when fetching the invite"),
-                    DepartmentId = di.DepartmentId
+                    DepartmentId = di.DepartmentId,
+                    Response = di.Response
                 };
                 minimalDepartments.Add(md);
             }
@@ -111,6 +112,37 @@ public class UserService {
         }
         catch {
             throw; 
+        }
+    }
+
+    public DepartmentInvite RespondToInvite(long user_id, long department_id, InviteResponse response) {
+        try {
+            DepartmentInvite invite = (from di in _context.DepartmentInvite
+                                       where di.InviteeId == user_id && di.DepartmentId == department_id
+                                       select di).FirstOrDefault() ?? throw new DataNotFoundException("User has no pending invite for this department");
+            if (invite.Response == InviteResponse.Pending) {
+                invite.Response = response;
+                _context.SaveChanges();
+            }
+            return invite;
+        }
+        catch {
+            throw;
+        }
+    }
+
+    public bool checkIfResponded( long user_id, long department_id) {
+        try {
+            DepartmentInvite invite = (from di in _context.DepartmentInvite
+                                       where di.InviteeId == user_id && di.DepartmentId == department_id
+                                       select di).FirstOrDefault() ?? throw new DataNotFoundException("User has no invites from this department");
+            if (invite.Response != InviteResponse.Pending)
+                return true;
+            else 
+                return false;
+        }
+        catch {
+            throw;
         }
     }
 }

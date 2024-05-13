@@ -2,7 +2,7 @@
 // user 1
 @jwt = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1laWQiOiIxIiwidW5pcXVlX25hbWUiOiJoZWxsb3dvcmxkIiwibmJmIjoxNzE1NDYwMDY4LCJleHAiOjE3MTU3MTkyNjgsImlhdCI6MTcxNTQ2MDA2OCwiYXVkIjoiaHR0cDovL2xvY2FsaG9zdDo1MDAwIn0.8BrU4zyvOOdOa9rrmRBWVxrwGw765MtHHWNEchmDjE0
 // user 2
-@jwt2 = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1laWQiOiIyIiwidW5pcXVlX25hbWUiOiJoZWxsb3dvcmxkMiIsIm5iZiI6MTcxNTQ2MzU0MiwiZXhwIjoxNzE1NzIyNzQyLCJpYXQiOjE3MTU0NjM1NDIsImF1ZCI6Imh0dHA6Ly9sb2NhbGhvc3Q6NTAwMCJ9.VzG_EbGWWqipnvGD9pVFTDsyw_z6JrqcAz0cf92yemY
+@jwt2 = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1laWQiOiIyIiwidW5pcXVlX25hbWUiOiJoZWxsb3dvcmxkMiIsIm5iZiI6MTcxNTYzNzY1MywiZXhwIjoxNzE1ODk2ODUzLCJpYXQiOjE3MTU2Mzc2NTMsImF1ZCI6Imh0dHA6Ly9sb2NhbGhvc3Q6NTAwMCJ9.XbH4BIu2NRpJbrbWP_fFl8X0dWF5q_H8i6WvSwxvJSs
 
 POST {{webapi_HostAddress}}/user/create/
 Content-Type: application/json
@@ -30,6 +30,10 @@ Authorization: Bearer {{jwt2}}
 Accept: application/json
 ### get all pending invites for user
 
+PUT {{webapi_HostAddress}}/user/invitations?department_id=1&response=Accepted
+Authorization: Bearer {{jwt2}}
+### respond to an invite
+
 POST {{webapi_HostAddress}}/department/
 Authorization: Bearer {{jwt}}
 Content-Type: application/json
@@ -47,11 +51,11 @@ Accept: application/json
 ### gets department based on department id
  
 GET {{webapi_HostAddress}}/department/all
-Authorization: Bearer {{jwt}}
+Authorization: Bearer {{jwt2}}
 Accept: application/json
 ### get all departments the user is in
 
-POST {{webapi_HostAddress}}/department/invite?department_id=2&email=helloworld2@gmail.com
+POST {{webapi_HostAddress}}/department/invite?department_id=1&email=helloworld2@gmail.com
 Authorization: Bearer {{jwt}}
 ### invite a user to the department (must be owner of department)
 
@@ -75,9 +79,9 @@ Authorization: Bearer {{jwt}}
 Accpet: application/json
 ### get all pending invites for department (must be owner)
 
-DELETE {{webapi_HostAddress}}/department/invite?department_id=2&invitee_id=2
+DELETE {{webapi_HostAddress}}/department/invite?department_id=1&invitee_id=2
 Authorization: Bearer {{jwt}}
-###
+### revoke a pending invite
 
 POST {{webapi_HostAddress}}/project/
 Authorization: Bearer {{jwt}}

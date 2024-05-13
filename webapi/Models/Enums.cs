@@ -18,7 +18,7 @@ public enum State {
 public enum InviteResponse {
     Pending,
     Declined,
-    Accpeted
+    Accepted
 }
 
 public enum RoleLevel {

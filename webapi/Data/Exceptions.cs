@@ -30,4 +30,9 @@ public class UserAlreadyInGroupException : Exception {
     public UserAlreadyInGroupException(string message) : base(message) { }
 }
 
+public class InviteExpiredException : Exception {
+    public InviteExpiredException() { }
+    public InviteExpiredException(string message) : base(message) { }
+}
+
 

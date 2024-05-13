@@ -13,9 +13,11 @@ namespace webapi.Controllers;
 public class UserController : ControllerBase {
     UserService _userservice;
     AuthService _authservice;
-    public UserController(UserService service, AuthService aservice) {
+    DepartmentService _departmentservice;
+    public UserController(UserService service, AuthService aservice, DepartmentService dservice) {
         _userservice = service;
         _authservice = aservice;
+        _departmentservice = dservice;
     }
 
     /// <summary>
@@ -84,9 +86,21 @@ public class UserController : ControllerBase {
         }
     }
 
+    /// <summary>
+    /// Gets list of department names and ids that the user has pending invites to
+    /// </summary>
+    /// <returns></returns>
+    /// <response code="200">List of department names and ids</response>
+    /// <response code="400">Issue getting invite name</response>
+    /// <response code="401">A problem occured validating the user's token</response>
+    /// <response code="500">Internal server error</response>
     [HttpGet]
     [Route("invitations")]
     [Authorize]
+    [ProducesResponseType(typeof(List<MinimalDepartment>), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(string), StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(typeof(string), StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(typeof(string), StatusCodes.Status500InternalServerError)]
     public ActionResult<List<MinimalDepartment>> GetUsersInvites() {
         try {
             User self = _userservice.getSelf(User.FindFirstValue(ClaimTypes.NameIdentifier));
@@ -96,6 +110,9 @@ public class UserController : ControllerBase {
         catch (AccessNotAllowedException anae) {
             return Unauthorized(anae.Message);
         }
+        catch (DataNotFoundException dnfe) {
+            return BadRequest(dnfe.Message);
+        }
         catch (Exception ex) {
             Console.WriteLine(ex.Message);
             return StatusCode(500, ex.Message);
@@ -104,7 +121,31 @@ public class UserController : ControllerBase {
 
     [HttpPut]
     [Route("invitations")]
-    public IActionResult RespondToInvite([FromQuery] long department_id, [FromQuery] bool response) {
-        return Ok();
+    public IActionResult RespondToDepartmentInvite([FromQuery] long department_id, [FromQuery] InviteResponse response) {
+        try {
+            User self = _userservice.getSelf(User.FindFirstValue(ClaimTypes.NameIdentifier));
+            if (_userservice.checkIfResponded(self.UserId, department_id))
+                throw new InviteExpiredException("The invite is no longer valid");
+            if (_departmentservice.checkIfInDepartment(self.UserId, department_id))
+                throw new UserAlreadyInGroupException("User is already part of selected department");
+
+            DepartmentInvite di = _userservice.RespondToInvite(self.UserId, department_id, response);
+            if (response == InviteResponse.Accepted)
+                _departmentservice.AddUserToDepartment(self.UserId, department_id);
+            return NoContent();
+        }
+        catch (InviteExpiredException iee) {
+            return BadRequest(iee.Message);
+        }
+        catch (UserAlreadyInGroupException uaige) {
+            return BadRequest(uaige.Message);
+        }
+        catch (AccessNotAllowedException anae) {
+            return Unauthorized(anae.Message);
+        }
+        catch (Exception ex) {
+            Console.WriteLine(ex.Message);
+            return StatusCode(500, ex.Message);
+        }
     }
 }
