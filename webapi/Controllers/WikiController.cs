@@ -71,9 +71,35 @@ public class WikiController : ControllerBase {
 
     [HttpGet]
     [Route("all")]
-    public ActionResult<List<WikiPage>> GetDepartmentsWikis([FromQuery] long department_id) {
-        // don't return the content here
-        return Ok();
+    public ActionResult<List<SimpleWiki>> GetDepartmentsWikis([FromQuery] long department_id) {
+        try {
+            User self = _userservice.getSelf(User.FindFirstValue(ClaimTypes.NameIdentifier));
+
+            if (_roleservice.checkWikiLevel(self.UserId, RoleLevel.Read)) {
+                List<WikiPage> wikis = _wikiservice.GetByDepartment(department_id);
+                List<SimpleWiki> simple_wikis = new List<SimpleWiki>();
+
+                foreach (WikiPage wiki in wikis) {
+                    simple_wikis.Add(new SimpleWiki() {
+                        WikiId = wiki.WikiPageId,
+                        Title = wiki.Title,
+                        CreatedDate = wiki.CreatedDate,
+                        DepartmentId = wiki.DepartmentId
+                    });
+                }
+
+                return simple_wikis;
+            }
+            else
+                return StatusCode(403, "You are not permitted to view wikis in this department");
+        }
+        catch (AccessNotAllowedException anae) {
+            return Unauthorized(anae.Message);
+        }
+        catch (Exception ex) {
+            Console.WriteLine(ex.Message);
+            return StatusCode(500, ex.Message);
+        }
     }
 
     [HttpGet]

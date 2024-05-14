@@ -22,4 +22,17 @@ public class WikiService {
             throw;
         }
     }
+
+    public List<WikiPage> GetByDepartment(long department_id)
+    {
+        try {
+            List<WikiPage> wikis = (from wiki in _context.WikiPage
+                                    where wiki.DepartmentId == department_id
+                                    select wiki).ToList();
+            return wikis;
+        }
+        catch {
+            throw;
+        }
+    }
 }

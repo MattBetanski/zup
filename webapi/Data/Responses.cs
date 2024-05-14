@@ -22,3 +22,10 @@ public class MinimalDepartment {
     public required long DepartmentId { get; set; }
     public required InviteResponse Response { get; set; }
 }
+
+public class SimpleWiki {
+    public required long WikiId { get; set; }
+    public required string Title { get; set; }
+    public DateTime CreatedDate { get; set; }
+    public required long DepartmentId { get; set; }
+}
