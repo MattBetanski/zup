@@ -1,6 +1,6 @@
 @webapi_HostAddress = http://localhost:5001
 // user 1
-@jwt = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1laWQiOiIxIiwidW5pcXVlX25hbWUiOiJoZWxsb3dvcmxkIiwibmJmIjoxNzE1NDYwMDY4LCJleHAiOjE3MTU3MTkyNjgsImlhdCI6MTcxNTQ2MDA2OCwiYXVkIjoiaHR0cDovL2xvY2FsaG9zdDo1MDAwIn0.8BrU4zyvOOdOa9rrmRBWVxrwGw765MtHHWNEchmDjE0
+@jwt = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1laWQiOiIxIiwidW5pcXVlX25hbWUiOiJoZWxsb3dvcmxkIiwibmJmIjoxNzE1NzI1OTQ4LCJleHAiOjE3MTU5ODUxNDgsImlhdCI6MTcxNTcyNTk0OCwiYXVkIjoiaHR0cDovL2xvY2FsaG9zdDo1MDAwIn0.vy3wYZvPrrFozJP6foxP4VqReMblNVaB1M1MZO9u_fI
 // user 2
 @jwt2 = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1laWQiOiIyIiwidW5pcXVlX25hbWUiOiJoZWxsb3dvcmxkMiIsIm5iZiI6MTcxNTYzNzY1MywiZXhwIjoxNzE1ODk2ODUzLCJpYXQiOjE3MTU2Mzc2NTMsImF1ZCI6Imh0dHA6Ly9sb2NhbGhvc3Q6NTAwMCJ9.XbH4BIu2NRpJbrbWP_fFl8X0dWF5q_H8i6WvSwxvJSs
 
@@ -20,7 +20,7 @@ POST {{webapi_HostAddress}}/user/login/
 Content-Type: application/json
 
 {
-    "username": "helloworld2",
+    "username": "helloworld",
     "password": "password"
 }
 ### logs in user based on credentials

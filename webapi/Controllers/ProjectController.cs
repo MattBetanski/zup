@@ -23,23 +23,6 @@ public class ProjectController : ControllerBase {
         _departmentservice = dservice;
     }
 
-    // [Authorize(Policy = IdentityData.AdminUserPolicyName)]
-    // [HttpPost]
-    // public IActionResult Create(Project new_project) {
-    //     return Ok();
-    // }
-
-    // [HttpGet("{project_id}")]
-    // public ActionResult<Project> GetById(int project_id) {
-    //     Project? project = _projectservice.GetById(project_id);
-
-    //     if (project != null) {
-    //         return project;
-    //     } else {
-    //         return NotFound();
-    //     }
-    // }
-
     /// <summary>
     /// Creates a new project
     /// </summary>
@@ -124,7 +107,7 @@ public class ProjectController : ControllerBase {
     }
 
     /// <summary>
-    /// Adds a user to a project and assigns a role
+    /// Updates a user's role in a project or adds them to the project if they are not already in it
     /// </summary>
     /// <param name="project_id"></param>
     /// <param name="user_id"></param>
@@ -135,13 +118,32 @@ public class ProjectController : ControllerBase {
     /// <response code="401">A problem occured validating the user's token</response>
     /// <response code="403">User is not permitted to add users to projects in this department</response>
     /// <response code="500">Internal server error</response>
-    [HttpPost]
-    [Route("roles")]
+    [HttpPut]
+    [Route("role")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(typeof(string), StatusCodes.Status400BadRequest)]
     [ProducesResponseType(typeof(string), StatusCodes.Status401Unauthorized)]
     [ProducesResponseType(typeof(string), StatusCodes.Status403Forbidden)]
     [ProducesResponseType(typeof(string), StatusCodes.Status500InternalServerError)]
+    public IActionResult UpdateRole([FromQuery] long project_id, [FromQuery] long user_id, [FromQuery] long role_id) {
+        try {
+            IActionResult actionResult;
+            if(_projectservice.checkIfInProject(user_id, project_id)) {
+                actionResult = UserRoleUpdate(project_id, user_id, role_id);
+            }
+            else {
+                actionResult = AddMemberToProject(project_id, user_id, role_id);
+            }
+
+            return actionResult;
+        }
+        catch (Exception ex) {
+            Console.WriteLine(ex.Message);
+            return StatusCode(500, ex.Message);
+        }
+    }
+    
+    [NonAction]
     public IActionResult AddMemberToProject([FromQuery] long project_id, [FromQuery] long user_id, [FromQuery] long role_id) {
         try {
             User self = _userservice.getSelf(User.FindFirstValue(ClaimTypes.NameIdentifier));
@@ -171,24 +173,7 @@ public class ProjectController : ControllerBase {
         }
     }
 
-    /// <summary>
-    /// Updates a user's role in a project
-    /// </summary>
-    /// <param name="project_id"></param>
-    /// <param name="user_id"></param>
-    /// <param name="role_id"></param>
-    /// <returns></returns>
-    /// <response code="200">User role updated successfully</response>
-    /// <response code="401">A problem occured validating the user's token</response>
-    /// <response code="403">User is not permitted to update user roles in this department</response>
-    /// <response code="404">The selected project member could not be found</response>
-    [HttpPut]
-    [Route("roles")]
-    [ProducesResponseType(StatusCodes.Status200OK)]
-    [ProducesResponseType(typeof(string), StatusCodes.Status401Unauthorized)]
-    [ProducesResponseType(typeof(string), StatusCodes.Status403Forbidden)]
-    [ProducesResponseType(typeof(string), StatusCodes.Status404NotFound)]
-    [ProducesResponseType(typeof(string), StatusCodes.Status500InternalServerError)]
+    [NonAction]
     public IActionResult UserRoleUpdate([FromQuery]long project_id, [FromQuery]long user_id, [FromQuery]long role_id) {
         try {
             User self = _userservice.getSelf(User.FindFirstValue(ClaimTypes.NameIdentifier));
@@ -214,7 +199,7 @@ public class ProjectController : ControllerBase {
     }
 
     [HttpDelete]
-    [Route("roles")]
+    [Route("member")]
     public IActionResult RemoveUserFromProject([FromQuery]long project_id, [FromQuery]long user_id) {
         return Ok();
     }

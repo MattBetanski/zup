@@ -70,6 +70,58 @@ public class RoleController : ControllerBase {
     }
 
     /// <summary>
+    /// Gets a role by its ID
+    /// </summary>
+    /// <param name="role_id"></param>
+    /// <returns></returns>
+    /// <response code="200">Returns the role</response>
+    /// <response code="400">Invalid data</response>
+    /// <response code="500">Internal server error</response>
+    [HttpGet]
+    [ProducesResponseType(typeof(Role), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(string), StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(typeof(string), StatusCodes.Status500InternalServerError)]
+    public ActionResult<Role> GetRoleById([FromQuery] long role_id) {
+        try {
+            Role role = _roleservice.GetById(role_id);
+            return role;
+        }
+        catch (DataNotFoundException dnfe) {
+            return BadRequest(dnfe.Message);
+        }
+        catch (Exception ex) {
+            Console.WriteLine(ex.Message);
+            return StatusCode(500, ex.Message);
+        }
+    }
+
+    /// <summary>
+    /// Deletes a role by its ID
+    /// </summary>
+    /// <param name="role_id"></param>
+    /// <returns></returns>
+    /// <response code="204">Role deleted successfully</response>
+    /// <response code="400">Invalid data</response>
+    /// <response code="500">Internal server error</response>
+    [HttpDelete]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    [ProducesResponseType(typeof(string), StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(typeof(string), StatusCodes.Status500InternalServerError)]
+    public IActionResult DeleteRole([FromQuery] long role_id) {
+        try {
+            _roleservice.Delete(role_id);
+            return NoContent();
+        }
+        catch (DataNotFoundException dnfe) {
+            return BadRequest(dnfe.Message);
+        }
+        catch (Exception ex) {
+            Console.WriteLine(ex.Message);
+            return StatusCode(500, ex.Message);
+        }
+    }
+
+    /// <summary>
     /// Gets the user's item level for a project
     /// </summary>
     /// <param name="project_id"></param>

@@ -17,7 +17,7 @@ public class WikiPage {
     public required string Title { get; set; }
 
     [Column("content")]
-    public string? content { get; set; }
+    public string? Content { get; set; }
 
     [Required, Column("created_date")]
     public DateTime CreatedDate { get; set; }

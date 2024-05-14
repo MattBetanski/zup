@@ -1,3 +1,4 @@
+using System.Security.Claims;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -11,15 +12,61 @@ namespace webapi.Controllers;
 [Route("wiki")]
 [Authorize]
 public class WikiController : ControllerBase {
-    // private WikiService _wikiservice;
+    private WikiService _wikiservice;
+    private RoleService _roleservice;
+    private UserService _userservice;
 
-    public WikiController(/*WikiService service*/) {
-        // _wikiservice = service;
+    public WikiController(WikiService wservice, RoleService rservice, UserService uservice) {
+        _wikiservice = wservice;
+        _roleservice = rservice;
+        _userservice = uservice;
     }
 
+    /// <summary>
+    /// Creates a new wiki
+    /// </summary>
+    /// <param name="department_id"></param>
+    /// <param name="wiki_info"></param>
+    /// <returns></returns>
+    /// <response code="204">Wiki created successfully</response>
+    /// <response code="401">A problem occured validating the user's token</response>
+    /// <response code="403">User does not have the proper level to create a wiki</response>
+    /// <response code="500">Internal server error</response>
     [HttpPost]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    [ProducesResponseType(typeof(string), StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(typeof(string), StatusCodes.Status403Forbidden)]
+    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
     public IActionResult CreateWiki([FromQuery] long department_id, [FromBody] WikiBody wiki_info) {
-        return Ok();
+        try {
+            User self = _userservice.getSelf(User.FindFirstValue(ClaimTypes.NameIdentifier));
+
+            if (_roleservice.checkWikiLevel(self.UserId, RoleLevel.Modify)) {
+                WikiPage new_wiki = new WikiPage() {
+                    DepartmentId = department_id,
+                    Title = wiki_info.Title,
+                    Content = wiki_info.Content
+                };
+
+                new_wiki = _wikiservice.Create(new_wiki);
+                return NoContent();
+            }
+            else
+                return StatusCode(403, "You are not permitted to create wikis in this department");
+        }
+        catch (AccessNotAllowedException ex) {
+            return StatusCode(403, ex.Message);
+        }
+        catch (DataNotFoundException ex) {
+            return StatusCode(404, ex.Message);
+        }
+        catch (ObjectNameInUseException ex) {
+            return StatusCode(400, ex.Message);
+        }
+        catch (Exception ex) {
+            Console.WriteLine(ex.Message);
+            return StatusCode(500, ex.Message);
+        }
     }    
 
     [HttpGet]

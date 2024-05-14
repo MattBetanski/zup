@@ -88,9 +88,30 @@ public class ItemController : ControllerBase {
         }
     }
 
+    /// <summary>
+    /// Gets an item by its ID
+    /// </summary>
+    /// <param name="item_id"></param>
+    /// <returns></returns>
+    /// <response code="200">Item found</response>
+    /// <response code="400">Invalid data</response>
+    /// <response code="500">Internal server error</response>
     [HttpGet]
+    [ProducesResponseType(typeof(Item), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(string), StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(typeof(string), StatusCodes.Status500InternalServerError)]
     public ActionResult<Item> GetItemById([FromQuery] long item_id) {
-        return StatusCode(501);
+        try {
+            Item item = _itemservice.GetById(item_id);
+            return item;
+        }
+        catch (DataNotFoundException dnfe) {
+            return BadRequest(dnfe.Message);
+        }
+        catch (Exception ex) {
+            Console.WriteLine(ex.Message);
+            return StatusCode(500, ex.Message);
+        }
     }
 
     /// <summary>
@@ -106,6 +127,10 @@ public class ItemController : ControllerBase {
     /// <response code="500">Internal server error</response>
     [HttpGet]
     [Route("filter")]
+    [ProducesResponseType(typeof(List<Item>), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(string), StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(typeof(string), StatusCodes.Status403Forbidden)]
+    [ProducesResponseType(typeof(string), StatusCodes.Status500InternalServerError)]
     public ActionResult<List<Item>> GetItemByFilter([FromQuery] long project_id, [FromQuery] Models.Type? type, [FromQuery] State? state) {
         try {
             long department_id = _projectservice.GetDepartment(project_id).DepartmentId;
@@ -137,6 +162,11 @@ public class ItemController : ControllerBase {
     /// <response code="403">User does not have the proper level to modify this item</response>
     /// <response code="500">Internal server error</response>
     [HttpPut]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    [ProducesResponseType(typeof(string), StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(typeof(string), StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(typeof(string), StatusCodes.Status403Forbidden)]
+    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
     public IActionResult UpdateItem([FromQuery] long item_id, [FromBody] ItemBodyU item_info) {
         try {
             Item item = _itemservice.GetById(item_id);

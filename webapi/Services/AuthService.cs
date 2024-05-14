@@ -27,7 +27,7 @@ public class AuthService {
                 new Claim(ClaimTypes.NameIdentifier, user.UserId.ToString()),
                 new Claim(ClaimTypes.Name, user.Username),
             }),
-            Expires = DateTime.UtcNow.AddDays(3),
+            Expires = DateTime.UtcNow.AddDays(300),
             Audience = "http://localhost:5000",
             SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
         };

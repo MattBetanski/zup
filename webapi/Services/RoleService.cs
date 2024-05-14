@@ -30,12 +30,35 @@ public class RoleService {
         }
     }
 
+    public Role GetById(long role_id) {
+        try {
+            Role role = (from rl in _context.Role
+                        where rl.RoleId == role_id
+                        select rl).FirstOrDefault() ?? throw new DataNotFoundException("The selected role could not be found");
+            return role;
+        }
+        catch {
+            throw;
+        }
+    }
+
     public Role? GetByUserId(long user_id, long project_id) {
         try {
             Role? role = (from pur in _context.ProjectUserRole
                           where pur.UserId == user_id && pur.ProjectId == project_id
                           select pur.Role).FirstOrDefault();
             return role;
+        }
+        catch {
+            throw;
+        }
+    }
+
+    public void Delete(long role_id) {
+        try {
+            Role role = GetById(role_id);
+            _context.Remove(role);
+            _context.SaveChanges();
         }
         catch {
             throw;
