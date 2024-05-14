@@ -3,7 +3,8 @@ import { revalidatePath } from "next/cache";
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 import { z } from "zod";
-import { Department, DepartmentInvitations } from "../definitions";
+import { Department, DepartmentInvitations, UserRole } from "../definitions";
+
 
 const DepartmentSchema = z.object({
     id: z.number(),
@@ -14,6 +15,7 @@ const DepartmentSchema = z.object({
     creationDate: z.date(),
     visibility: z.enum(['public', 'private'], {invalid_type_error: "Please select a visibility"})
 });
+
 
 const CreateDepartment = DepartmentSchema.omit({ id: true, creationDate: true});
 const EditDepartment = DepartmentSchema.omit({creationDate: true});
@@ -38,6 +40,7 @@ export type CreateDepartmentState = {
 }
 
 export async function deleteDepartment(id: string) {
+    console.log("calling this");
     try {
         console.log("test")
     } catch (err) {
@@ -96,6 +99,7 @@ export async function createDepartment(prevState: CreateDepartmentState, formDat
     redirect("/dashboard");
 }
 
+
 export async function editDepartment(prevState: EditDepartmentState, formData: FormData) {
     try {
         const validatedFields = EditDepartment.safeParse({
@@ -142,7 +146,7 @@ export async function getDepartmentsForUser() {
     try {
         const token = cookies().get("token")?.value;
         if (token == null) {
-            return;
+            return [];
         }
         const response = await fetch('http://localhost:5001/department/all', {
             "method": "GET",
@@ -155,18 +159,19 @@ export async function getDepartmentsForUser() {
             const items: Department[] = await response.json();
             return items;
         } else if (response.status == 401) {
-            return null;
+            return [];
         } else if (response.status == 404) {
             return [];
         } else if (response.status == 500) {
-            return null;
+            return [];
         } else {
-            return null;
+            return [];
         }
     } catch (err) {
         console.error(err);
-        return null;
+        throw Error("Failed to fetch departments for user");
     }
+    return [];
 }
 
 export async function getDepartmentById(id: number) {
@@ -247,6 +252,7 @@ export async function inviteToDepartment(prevState: InviteState, formData: FormD
             }
         });
         console.log(response);
+
         console.log("got here")
         if (response.status == 204) {
             revalidatePath("#")
@@ -285,6 +291,7 @@ export async function getInvitesForDepartment(departmentId: number) {
         console.error(err);
         return [];
     }
+
 }
 
 export async function removeInvite(formData: FormData) {
@@ -310,4 +317,33 @@ export async function removeInvite(formData: FormData) {
         console.error(err);
         return null;
     }
+}
+
+export async function getUsersForDepartment(projectId: number) {
+    try {
+         const token = cookies().get("token")?.value;
+        const params = new URLSearchParams();
+        params.set("project_id", projectId.toString());
+        const response = await fetch(`http://localhost:5001/department/members?${params.toString()}`, {
+            "method": "GET",
+            headers: {
+                "Authorization": `Bearer ${token}`
+            }
+        });
+        console.log(response);
+        if (response.status == 200) {
+            const item: UserRole[] = await response.json();
+            return item;
+        } else if (response.status == 400) {
+            console.error("Department does not exist");
+            return [];
+        } else if (response.status == 500) {
+            console.error("Internal error occurred");
+            return [];
+        }
+    } catch (err) {
+        console.error(err);
+        return [];
+    }
+    return [];
 }

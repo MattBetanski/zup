@@ -1,8 +1,31 @@
-import { fetchDepartmentsForUser } from "@/app/lib/action"
+'use client';
+import { Department } from "@/app/lib/definitions";
 import { DeleteDepartment, UpdateDepartment } from "./buttons";
+import { redirect, useRouter } from "next/navigation";
 
-export default async function DepartmentTable() {
-    const departments = await fetchDepartmentsForUser();
+export default function DepartmentTable({departments}: {departments: Department[]}) {
+    const router = useRouter();
+    function TableRow({department}: {department: Department}){
+        const openDepartment = () => {
+            router.push(`/dashboard/department/${department.departmentId}`);
+        }
+        return (
+            <tr key={department.departmentId} className="w-full border-b py-3 text-sm last-of-type:border-none [&:first-child>td:first-child]:rounded-tl-lg [&:first-child>td:last-child]:rounded-tr-lg [&:last-child>td:first-child]:rounded-bl-lg [&:last-child>td:last-child]:rounded-br-lg hover:bg-surace-400"
+                onDoubleClick={openDepartment}
+            >
+                <td className="whitespace-nowrap px-3 py-3 select-none"><p>{department.name}</p></td>
+                <td className="whitespace-nowrap px-3 py-3 overflow-hidden line-clamp-1 text-ellipsis w-64 select-none">{department.description}</td>
+                <td className="whitespace-nowrap px-3 py-3 select-none">{department.creationDate.toString()}</td>
+                <td className="whitespace-nowrap px-3 py-3 select-none">{department.visibility == true ? "Public" : "Private"}</td>
+                <td className="whitespace-nowrap py-3 pl-6 pr-3 select-none">
+                    <div className="flex justify-end gap-3 select-none">
+                        <UpdateDepartment id={department.departmentId} />
+                        <DeleteDepartment id={department.departmentId}/>
+                    </div>
+                </td>
+            </tr>
+        )
+    }
     return (
         <div className="mt-6 flow-root">
             <div className="inline-block min-w-full align-middle">
@@ -27,18 +50,7 @@ export default async function DepartmentTable() {
                         </thead>
                         <tbody className="">
                             {departments?.map((department) => (
-                                <tr key={department.departmentId} className="w-full border-b py-3 text-sm last-of-type:border-none [&:first-child>td:first-child]:rounded-tl-lg [&:first-child>td:last-child]:rounded-tr-lg [&:last-child>td:first-child]:rounded-bl-lg [&:last-child>td:last-child]:rounded-br-lg">
-                                    <td className="whitespace-nowrap px-3 py-3"><p>{department.name}</p></td>
-                                    <td className="whitespace-nowrap px-3 py-3 overflow-hidden line-clamp-1 text-ellipsis w-64">{department.description}</td>
-                                    <td className="whitespace-nowrap px-3 py-3">{department.creationDate.toString()}</td>
-                                    <td className="whitespace-nowrap px-3 py-3">Public</td>
-                                    <td className="whitespace-nowrap py-3 pl-6 pr-3">
-                                        <div className="flex justify-end gap-3">
-                                            <UpdateDepartment id={department.departmentId} />
-                                            <DeleteDepartment id={department.departmentId}/>
-                                        </div>
-                                    </td>
-                                </tr>
+                                <TableRow department={department} />
                             ))}
                         </tbody>
                     </table>

@@ -206,40 +206,6 @@ export async function checkAuthenticated() {
     return decoded;
 }
 
-export async function fetchDepartmentsForUser() {
-    let data: Department[] =  [
-        {
-            "departmentId": 0,
-            "name": "string",
-            "description": "string",
-            "creationDate": new Date("2024-05-05T23:38:15.388Z"),
-            "visibility": true
-        },
-        {
-            "departmentId": 1,
-            "name": "Test Department",
-            "description": "This is department two",
-            "creationDate": new Date("2024-05-05T23:38:15.388Z"),
-            "visibility": true
-        },
-        {
-            "departmentId": 2,
-            "name": "Another Department",
-            "description": "New Department",
-            "creationDate": new Date("2024-05-05T23:38:15.388Z"),
-            "visibility": true
-        },
-        {
-            "departmentId": 3,
-            "name": "My Department",
-            "description": "Yet another department you have. But this one appears to have a really long description. I wonder if it cant fit properly onto your pages? I guess time will tell.",
-            "creationDate": new Date("2024-05-05T23:38:15.388Z"),
-            "visibility": true
-        }
-    ];
-    return data;
-}
-
 const DepartmentSchema = z.object({
     id: z.string(),
     name: z.string({invalid_type_error: "Please enter a Department Name"})

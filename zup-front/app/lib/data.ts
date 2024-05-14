@@ -11,9 +11,11 @@ import {
   LatestInvoice,
   Item,
   ItemType,
-  ItemState
+  ItemState,
+  MemberTableType,
+  RoleTableType
 } from './definitions';
-import { formatCurrency } from './utils';
+import { formatCurrency, formatDateToLocal } from './utils';
 import { unstable_noStore as noStore } from 'next/cache';
 
 export async function fetchRevenue() {
@@ -229,13 +231,39 @@ export async function fetchFilteredCustomers(query: string) {
   }
 }
 
-export async function getUser(email: string) {
+export async function getRolesList(query: string, currentPage: number){
   try {
-    const user = await sql`SELECT * FROM users WHERE email=${email}`;
-    return user.rows[0] as User;
-  } catch (error) {
-    console.error('Failed to fetch user:', error);
-    throw new Error('Failed to fetch user.');
+    
+    const data = await sql<RoleTableType>`
+		SELECT * from roles
+	  `;
+
+    const roles = data.rows.map((roles) => ({
+      ...roles,
+    }));
+
+    return roles;
+  } catch (err) {
+    console.error('Database Error:', err);
+    throw new Error('Failed to fetch customer table.');
+  }
+}
+export async function getMembersList(query: string,currentPage: number,) {
+  try {
+    
+    const data = await sql<MemberTableType>`
+		SELECT * from members
+	  `;
+
+    const customers = data.rows.map((customer) => ({
+      ...customer,
+      total_pending: formatDateToLocal(customer.hire_date),
+    }));
+
+    return customers;
+  } catch (err) {
+    console.error('Database Error:', err);
+    throw new Error('Failed to fetch customer table.');
   }
 }
 export default async function Page({params}: {params: {id: string}}) {

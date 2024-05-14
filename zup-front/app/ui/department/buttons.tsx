@@ -19,7 +19,7 @@ export function CreateDepartment() {
   );
 }
 
-export function UpdateDepartment({ id }: { id: string }) {
+export function UpdateDepartment({ id }: { id: number }) {
   return (
     <Link
       href={`/dashboard/department/${id}/edit`}
@@ -30,7 +30,7 @@ export function UpdateDepartment({ id }: { id: string }) {
   );
 }
 
-export function DeleteDepartment({ id }: { id: string }) {
+export function DeleteDepartment({ id }: { id: number }) {
     const [isOpen, setIsOpen] = useState(false);
     const deleteDepartmentWithId = () => {
         setIsOpen(false);
@@ -48,7 +48,7 @@ export function DeleteDepartment({ id }: { id: string }) {
                         Delete Department?
                     </Dialog.Header>
                     <Box p={3}>
-                        <Text>Are you sure you want to delete the department? This cannot be undone.</Text>
+                        <Text cname="text-black">Are you sure you want to delete the department? This cannot be undone.</Text>
                     </Box>
                     <div className="bg-white w-full relative">
                         <div className="flex flex-row absolute right-0 bg-white w-full rounded-b-lg">
