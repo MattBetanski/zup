@@ -35,4 +35,16 @@ public class WikiService {
             throw;
         }
     }
+
+    public WikiPage GetWiki(long wiki_id) {
+        try {
+            WikiPage wiki = (from wp in _context.WikiPage
+                            where wp.WikiPageId == wiki_id
+                            select wp).FirstOrDefault() ?? throw new DataNotFoundException("Selected wiki does not exist");
+            return wiki;
+        }
+        catch {
+            throw;
+        }
+    }
 }

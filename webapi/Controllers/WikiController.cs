@@ -105,7 +105,31 @@ public class WikiController : ControllerBase {
     [HttpGet]
     public ActionResult<WikiPage> GetWikiContents([FromQuery] long wiki_id) {
         // content will return as a string
-        return Ok();
+        try {
+            User self = _userservice.getSelf(User.FindFirstValue(ClaimTypes.NameIdentifier));
+
+            if (_roleservice.checkWikiLevel(self.UserId, RoleLevel.Read)) {
+                WikiPage wiki = _wikiservice.GetWiki(wiki_id);
+                return wiki;
+            }
+            else
+                return StatusCode(403, "You are not permitted to view this wiki");
+        }
+        catch (DataNotFoundException dnfe) {
+            return NotFound(dnfe.Message);
+        }
+        catch (AccessNotAllowedException anae) {
+            return Unauthorized(anae.Message);
+        }
+        catch (Exception ex) {
+            Console.WriteLine(ex.Message);
+            return StatusCode(500, ex.Message);
+        }
+    }
+
+
+
+        
     }
 
     [HttpPut]
