@@ -1,3 +1,4 @@
+'use client'
 //TODO: Page for creating role for department NOT TESTED
 import { useFormState } from 'react-dom';
 import { CustomerField } from '@/app/lib/definitions';
