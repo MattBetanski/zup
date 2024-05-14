@@ -80,7 +80,7 @@ export default function Form() {
           </div>
         </div>
 
-        {/* Visibility */}
+        {/* Item level */}
         <fieldset>
           <legend className="mb-2 block text-sm font-medium">
             Permissions
@@ -89,33 +89,48 @@ export default function Form() {
             <div className="flex gap-4">
               <div className="flex items-center">
                 <input
-                  id="public"
-                  name="Permissions"
+                  id="noAccess"
+                  name="itemLevel"
                   type="radio"
-                  value="Read Only"
+                  value="NoAccess"
                   className="h-4 w-4 cursor-pointer border-gray-300 bg-gray-100 text-gray-600 focus:ring-2"
                   aria-describedby='status-error'
                 />
                 <label
-                  htmlFor="pending"
+                  htmlFor="noAccess"
                   className="ml-2 flex cursor-pointer items-center gap-1.5 rounded-full bg-gray-100 px-3 py-1.5 text-xs font-medium text-gray-600"
                 >
-                  Read Access <EyeSlashIcon className="h-4 w-4" />
+                  No Access <EyeSlashIcon className="h-4 w-4" />
                 </label>
               </div>
               <div className="flex items-center">
                 <input
-                  id="public"
-                  name="Permissions"
+                  id="readAccess"
+                  name="itemLevel"
                   type="radio"
-                  value="Write Only"
+                  value="Read"
                   className="h-4 w-4 cursor-pointer border-gray-300 bg-gray-100 text-gray-600 focus:ring-2"
                 />
                 <label
-                  htmlFor="paid"
+                  htmlFor="readAccess"
                   className="ml-2 flex cursor-pointer items-center gap-1.5 rounded-full bg-green-500 px-3 py-1.5 text-xs font-medium text-white"
                 >
-                  Write Access <EyeIcon className="h-4 w-4" />
+                  Read Access <EyeIcon className="h-4 w-4" />
+                </label>
+              </div>
+              <div className="flex items-center">
+                <input
+                  id="writeAccess"
+                  name="itemLevel"
+                  type="radio"
+                  value="Modify"
+                  className="h-4 w-4 cursor-pointer border-gray-300 bg-gray-100 text-gray-600 focus:ring-2"
+                />
+                <label
+                  htmlFor="readAccess"
+                  className="ml-2 flex cursor-pointer items-center gap-1.5 rounded-full bg-green-500 px-3 py-1.5 text-xs font-medium text-white"
+                >
+                  Modify <EyeIcon className="h-4 w-4" />
                 </label>
               </div>
             </div>
