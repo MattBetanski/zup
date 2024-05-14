@@ -68,8 +68,13 @@ builder.Services.AddSwaggerGen(c => {
     c.IncludeXmlComments(xmlPath);
 });
 
+builder.Services.AddCors(options => {
+    options.AddDefaultPolicy(policy => {
+        policy.WithOrigins("http://localhost:3000", "http://localhost:5001").AllowAnyHeader().AllowAnyMethod();
+    });
+}); 
 var app = builder.Build();
-
+app.UseCors();
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
