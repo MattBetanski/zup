@@ -124,3 +124,28 @@ export async function getItemsForType(type: string, projectId: number) {
     }
     return null;
 }
+
+export async function getItemsForProject(projectId: number) {
+    try {
+        let token = cookies().get("token")?.value ?? '';
+        const params = new URLSearchParams();
+        params.set("project_id", projectId.toString());
+        const response = await fetch(`http://localhost:5001/item/filter?${params.toString()}`, {
+            headers: {
+                "Authorization": `Bearer ${token}`
+            }
+        });
+        if (response.status == 200) {
+            const body: Item[] = await response.json();
+            return body;
+        } else {
+            console.log(response);
+            const body = await response.text();
+            console.log(body);
+            return [];
+        }
+    } catch (err) {
+        console.error(err);
+        return [];
+    }
+}

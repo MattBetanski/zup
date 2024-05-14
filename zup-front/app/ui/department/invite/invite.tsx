@@ -43,6 +43,7 @@ export default function Invite(props: {departmentId: number}) {
             </div>
             <div className="mt-6 flex justify-end gap-4">
                 <Button type="submit">Invite User</Button>
+                <Button onClick={cancel} className="bg-surface-300 hover:bg-surface-400 active:bg-surface-200">Go Back</Button>
             </div>
         </form>
     );
