@@ -125,6 +125,17 @@ public class ItemController : ControllerBase {
         }
     }
 
+    /// <summary>
+    /// Updates an item
+    /// </summary>
+    /// <param name="item_id"></param>
+    /// <param name="item_info"></param>
+    /// <returns></returns>
+    /// <response code="204">Item updated successfully</response>
+    /// <response code="400">Invalid data</response>
+    /// <response code="401">A problem occured validating the user's token</response>
+    /// <response code="403">User does not have the proper level to modify this item</response>
+    /// <response code="500">Internal server error</response>
     [HttpPut]
     public IActionResult UpdateItem([FromQuery] long item_id, [FromBody] ItemBodyU item_info) {
         try {
@@ -177,6 +188,9 @@ public class ItemController : ControllerBase {
             if(_departmentservice.checkIfInDepartment(user_id, department_id) && _projectservice.checkIfInProject(user_id, project_id) && _roleservice.checkItemLevel(user_id, minimumLevel))
                 permitted = true;
         }
+
+        if(user_id == _departmentservice.getOwner(department_id).UserId)
+            permitted = true;
 
         return permitted;
     }

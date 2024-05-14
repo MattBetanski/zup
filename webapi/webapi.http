@@ -135,7 +135,7 @@ Content-Type: application/json
 ### creates an item
 
 GET {{webapi_HostAddress}}/item/filter?project_id=2
-Authorization: Bearer {{jwt2}}
+Authorization: Bearer {{jwt}}
 Accept: application/json
 ### get items based on optional filters (can be no filter, one filter, or both state and type)
 

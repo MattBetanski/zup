@@ -106,7 +106,6 @@ public class ProjectService {
 
     public bool checkIfInProject(long user_id, long project_id) {
         try {
-            Console.WriteLine($"U_id: {user_id}\nP_id: {project_id}");
             bool is_project_member = (from pur in _context.ProjectUserRole
                                       where pur.UserId == user_id && pur.ProjectId == project_id
                                       select pur).Any();
