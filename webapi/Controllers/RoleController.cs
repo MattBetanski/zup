@@ -69,10 +69,71 @@ public class RoleController : ControllerBase {
         }
     }
 
-    // [HttpPut]
-    // public IActionResult AssignRole([FromQuery] long role_id, [FromQuery] long user_id) {
-    //     try {
+    /// <summary>
+    /// Gets the user's item level for a project
+    /// </summary>
+    /// <param name="project_id"></param>
+    /// <returns></returns>
+    /// <response code="200">Returns the user's item level</response>
+    /// <response code="400">Invalid data</response>
+    /// <response code="401">A problem occured validating the user's token</response>
+    /// <response code="500">Internal server error</response>
+    [HttpGet("level/item")]
+    [ProducesResponseType(typeof(RoleLevel), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(string), StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(typeof(string), StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(typeof(string), StatusCodes.Status500InternalServerError)]
+    public ActionResult<RoleLevel> GetUsersItemLevel([FromQuery] long project_id) {
+        try {
+            User self = _userservice.getSelf(User.FindFirstValue(ClaimTypes.NameIdentifier));
+            Role? role = _roleservice.GetByUserId(self.UserId, project_id);
+            
+            if (role == null)
+                return RoleLevel.NoAccess;
+            else
+                return role.ItemLevel;
+        }
+        catch (AccessNotAllowedException anae) {
+            return Unauthorized(anae.Message);
+        }
+        catch (DataNotFoundException dnfe) {
+            return BadRequest(dnfe.Message);
+        }
+        catch (Exception ex) {
+            Console.WriteLine(ex.Message);
+            return StatusCode(500, ex.Message);
+        }
+    }
 
-    //     }
-    // }
+    /// <summary>
+    /// Gets the user's wiki level for a project
+    /// </summary>
+    /// <param name="project_id"></param>
+    /// <returns></returns>
+    /// <response code="200">Returns the user's wiki level</response>
+    /// <response code="400">Invalid data</response>
+    /// <response code="401">A problem occured validating the user's token</response>
+    /// <response code="500">Internal server error</response>
+    [HttpGet("level/wiki")]
+    public ActionResult<RoleLevel> GetUsersWikiLevel([FromQuery] long project_id) {
+        try {
+            User self = _userservice.getSelf(User.FindFirstValue(ClaimTypes.NameIdentifier));
+            Role? role = _roleservice.GetByUserId(self.UserId, project_id);
+            
+            if (role == null)
+                return RoleLevel.NoAccess;
+            else
+                return role.WikiLevel;
+        }
+        catch (AccessNotAllowedException anae) {
+            return Unauthorized(anae.Message);
+        }
+        catch (DataNotFoundException dnfe) {
+            return BadRequest(dnfe.Message);
+        }
+        catch (Exception ex) {
+            Console.WriteLine(ex.Message);
+            return StatusCode(500, ex.Message);
+        }
+    }
 }

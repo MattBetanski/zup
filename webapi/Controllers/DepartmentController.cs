@@ -239,7 +239,7 @@ public class DepartmentController : ControllerBase {
                         LastName = mbr.LastName
                     };
 
-                    Role? role = _roleservice.GetByUserId(mbr.UserId);
+                    Role? role = _roleservice.GetByUserId(mbr.UserId, project_id);
                     if (role != null) {
                         UserAndRoleResponse.RoleId = role.RoleId;
                         UserAndRoleResponse.RoleName = role.Name;

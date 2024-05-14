@@ -30,10 +30,10 @@ public class RoleService {
         }
     }
 
-    public Role? GetByUserId(long user_id) {
+    public Role? GetByUserId(long user_id, long project_id) {
         try {
             Role? role = (from pur in _context.ProjectUserRole
-                          where pur.UserId == user_id
+                          where pur.UserId == user_id && pur.ProjectId == project_id
                           select pur.Role).FirstOrDefault();
             return role;
         }

@@ -165,6 +165,7 @@ public class ItemController : ControllerBase {
         return Ok();
     }
 
+    [NonAction]
     public bool checkIfPermitted(bool needsOwner, RoleLevel minimumLevel, long department_id, long project_id, long user_id) {
         bool permitted = false;
 

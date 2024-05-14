@@ -119,7 +119,7 @@ Content-Type: application/json
     "wikiLevel": "Modify",
     "wikiDelete": true
 }
-###
+### create a role
 
 POST {{webapi_HostAddress}}/item/
 Authorization: Bearer {{jwt}}
@@ -147,7 +147,7 @@ Content-Type: application/json
     "name": "the end",
     "description": "farting",
     "state": "Blocked",
-    "parentId": 3
+    "parentId": 8
 }
 ### udpates an item
 
