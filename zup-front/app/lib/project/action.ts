@@ -2,7 +2,7 @@
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 import { z } from "zod";
-import { Project } from "../definitions";
+import { Department, Project } from "../definitions";
 
 const ProjectSchema = z.object({
     projectId: z.number(),
@@ -92,5 +92,30 @@ export async function getProjectsForDepartment(departmentId: number) {
         }
     } catch (err) {
         console.error(err);
+    }
+}
+
+export async function getDepartmentByProjectId(projectId: number) {
+    try {
+        const token = cookies().get("token")?.value ?? '';
+        const params = new URLSearchParams();
+        params.set("project_id", projectId.toString());
+
+        const response = await fetch(`http://localhost:5001/project/department?${params.toString()}`, {
+            headers: {
+                "Authorization": `Bearer ${token}`
+            }
+        });
+
+        if (response.status == 200) {
+            const body: Department = await response.json();
+            return body;
+        } else {
+            console.log(response);
+            throw Error("Failed to fetch department");
+        }
+    } catch (err) {
+        console.error(err);
+        throw Error("Failed getting department by project id");
     }
 }

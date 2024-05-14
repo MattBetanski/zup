@@ -109,7 +109,7 @@ export type Department = {
   ownerId: number;
   name: string;
   description: string;
-  departmentId: string;
+  departmentId: number;
   creationDate: Date;
   visibility: boolean;
 }
@@ -147,4 +147,28 @@ export type Project = {
   name: string;
   description: string;
   createdDate: string;
+}
+
+export enum PermissionLevel {
+  NoAccess = "No Access",
+  Read = "Read",
+  Modify = "Modify"
+}
+export type Role = {
+  roleId: number;
+  departmentId: number;
+  name: string;
+  description: string;
+  itemLevel: PermissionLevel;
+  wikiLevel: PermissionLevel;
+  wikiDelete: boolean;
+}
+
+export type UserRole = {
+  email: string;
+  firstName: string;
+  lastName: string;
+  roleId: number;
+  roleName: string;
+  userId: number;
 }

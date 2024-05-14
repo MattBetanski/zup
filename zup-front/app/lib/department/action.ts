@@ -3,7 +3,7 @@ import { revalidatePath } from "next/cache";
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 import { ZodSchema, z } from "zod";
-import { Department } from "../definitions";
+import { Department, UserRole } from "../definitions";
 
 const DepartmentSchema = z.object({
     id: z.number(),
@@ -15,19 +15,9 @@ const DepartmentSchema = z.object({
     visibility: z.enum(['public', 'private'], {invalid_type_error: "Please select a visibility"})
 });
 
-const RoleSchema = z.object({
-    id: z.number(),
-    name: z.string({invalid_type_error: "Please enter a Role Name"})
-        .min(1, {message: "You must enter a Role Name"}),
-    description: z.string({invalid_type_error: "Please enter a description"})
-        .min(1, {message: "You must enter a description"}),
-    creationDate: z.date(),    
-    Permissions: z.enum(['Read', 'Write'], {invalid_type_error: "Please select a permission"})
-});
 
 const CreateDepartment = DepartmentSchema.omit({ id: true, creationDate: true});
 const EditDepartment = DepartmentSchema.omit({creationDate: true});
-const EditRole = RoleSchema.omit({creationDate: true});
 
 export type EditDepartmentState = {
     errors?: {
@@ -38,15 +28,7 @@ export type EditDepartmentState = {
     },
     message?: string | null;
 }
-export type EditRoleState = {
-    errors?: {
-        id?: string[]
-        name?: string[];
-        description: string[];
-        visibility: string[];
-    },
-    message?: string | null;
-}
+
 export type CreateDepartmentState = {
     errors?: {
         name?: string[];
@@ -57,6 +39,7 @@ export type CreateDepartmentState = {
 }
 
 export async function deleteDepartment(id: string) {
+    console.log("calling this");
     try {
         console.log("test")
     } catch (err) {
@@ -115,47 +98,6 @@ export async function createDepartment(prevState: CreateDepartmentState, formDat
     redirect("/dashboard");
 }
 
-export async function editRole(prevState: EditRoleState, formData: FormData) {
-    try {
-        const validatedFields = EditRole.safeParse({
-            id: formData.get("id"),
-            name: formData.get("name"),
-            description: formData.get("description"),
-            Permissions: formData.get("visibility")
-        });
-
-        if (!validatedFields.success) {
-            console.log(validatedFields);
-            return {
-                errors: validatedFields.error.flatten().fieldErrors,
-                message: "Missing fields. Failed to Create Department"
-            };
-        }
-
-        let token = cookies().get("token")?.value ?? '';
-        const {id, name, description, Permissions} = validatedFields.data;
-        var roleID = id;
-        const booleanPermissions = Permissions == "Read";
-        const response = await fetch('http://localhost:5001/department', {
-            method: "POST",
-            body: JSON.stringify({
-                "name": name,
-                "description": description,
-                "visibility": booleanPermissions
-            }),
-            headers: {
-                "Content-Type": "application/json",
-                "Authorization": `Bearer ${token}`
-            }
-        });
-        console.log(response);
-        revalidatePath(`/dashboard/department/roles/${id}`);
-    } catch (err) {
-        console.error(err);
-        throw new Error("Failed to create Role");
-    }
-    redirect(`/dashboard/department/roles${roleID}`);
-}
 
 export async function editDepartment(prevState: EditDepartmentState, formData: FormData) {
     try {
@@ -203,7 +145,7 @@ export async function getDepartmentsForUser() {
     try {
         const token = cookies().get("token")?.value;
         if (token == null) {
-            return;
+            return [];
         }
         const response = await fetch('http://localhost:5001/department/all', {
             "method": "GET",
@@ -216,18 +158,19 @@ export async function getDepartmentsForUser() {
             const items: Department[] = await response.json();
             return items;
         } else if (response.status == 401) {
-            return null;
+            return [];
         } else if (response.status == 404) {
             return [];
         } else if (response.status == 500) {
-            return null;
+            return [];
         } else {
-            return null;
+            return [];
         }
     } catch (err) {
         console.error(err);
-        return null;
+        throw Error("Failed to fetch departments for user");
     }
+    return [];
 }
 
 export async function getDepartmentById(id: number) {
@@ -257,4 +200,33 @@ export async function getDepartmentById(id: number) {
         console.error(err);
         return null;
     }
+}
+
+export async function getUsersForDepartment(projectId: number) {
+    try {
+         const token = cookies().get("token")?.value;
+        const params = new URLSearchParams();
+        params.set("project_id", projectId.toString());
+        const response = await fetch(`http://localhost:5001/department/members?${params.toString()}`, {
+            "method": "GET",
+            headers: {
+                "Authorization": `Bearer ${token}`
+            }
+        });
+        console.log(response);
+        if (response.status == 200) {
+            const item: UserRole[] = await response.json();
+            return item;
+        } else if (response.status == 400) {
+            console.error("Department does not exist");
+            return [];
+        } else if (response.status == 500) {
+            console.error("Internal error occurred");
+            return [];
+        }
+    } catch (err) {
+        console.error(err);
+        return [];
+    }
+    return [];
 }

@@ -1,27 +1,13 @@
-'use client';
-import { deleteDepartment } from "@/app/lib/department/action";
-import { PencilIcon, PlusIcon, TrashIcon } from "@heroicons/react/20/solid";
-import { Box, Dialog, Text } from "@primer/react";
+import { deleteRole } from "@/app/lib/roles/action";
+import { PencilIcon, TrashIcon } from "@primer/octicons-react";
+import { Box, Button, Dialog, Text } from "@primer/react";
 import Link from "next/link";
 import { useState } from "react";
-import { Button } from "../button";
 
-export function CreateDepartment() {
+export function EditRole({ roleId, departmentId}: { roleId: number, departmentId: number }) {
   return (
     <Link
-      href="/dashboard/department/create"
-      className="flex h-10 items-center rounded-lg bg-blue-600 px-4 text-sm font-medium text-white transition-colors hover:bg-blue-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600"
-    >
-      <span className="hidden md:block">Create Department</span>{' '}
-      <PlusIcon className="h-5 md:ml-4" />
-    </Link>
-  );
-}
-
-export function UpdateDepartment({ id }: { id: number }) {
-  return (
-    <Link
-      href={`/dashboard/department/${id}/edit`}
+      href={`/dashboard/department/${departmentId}/roles/${roleId}/edit`}
       className="rounded-md border p-2 hover:bg-surface-300"
     >
       <PencilIcon className="w-5" />
@@ -29,11 +15,11 @@ export function UpdateDepartment({ id }: { id: number }) {
   );
 }
 
-export function DeleteDepartment({ id }: { id: number }) {
+export function DeleteRole({ roleId, departmentId }: { roleId: number, departmentId: number }) {
     const [isOpen, setIsOpen] = useState(false);
     const deleteDepartmentWithId = () => {
         setIsOpen(false);
-        deleteDepartment.bind(null, id)();
+        deleteRole.bind(null, roleId, departmentId)();
     }
     return (
         <div>
@@ -43,16 +29,16 @@ export function DeleteDepartment({ id }: { id: number }) {
             </button>
             <Dialog isOpen={isOpen} onDismiss={() => setIsOpen(false)}>
                 <div className="bg-white rounded-t-lg relative drop-shadow-lg w-full h-full">
-                    <Dialog.Header>
-                        Delete Department?
+                    <Dialog.Header cname="bg-red-300">
+                        Delete Role?
                     </Dialog.Header>
                     <Box p={3}>
-                        <Text cname="text-black">Are you sure you want to delete the department? This cannot be undone.</Text>
+                        <Text cname="text-black">Are you sure you want to delete the role? This cannot be undone.</Text>
                     </Box>
                     <div className="bg-white w-full relative">
                         <div className="flex flex-row absolute right-0 bg-white w-full rounded-b-lg">
                             <form action={deleteDepartmentWithId}>
-                                <Button className="m-3 bg-red-500 hover:bg-red-600 active:bg-red-700" >Delete Department</Button>
+                                <Button className="m-3 bg-red-500 hover:bg-red-600 active:bg-red-700" >Delete Role</Button>
                             </form>
                             <Button className="m-3 bg-green-700 hover:bg-green-800 active:bg-green-900" onClick={() => setIsOpen(false)}>Cancel</Button>
                         </div>

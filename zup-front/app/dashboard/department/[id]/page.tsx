@@ -12,6 +12,7 @@ import { UpdateDepartment } from "@/app/ui/department/buttons";
 import Link from "next/link";
 import { getDepartmentById } from "@/app/lib/department/action";
 import { getProjectsForDepartment } from "@/app/lib/project/action";
+import { DepartmentIdBreadcrumb } from "@/app/ui/department/breadcrumbs";
 export default async function Page({params}: {params: {id: number}}) {
     const id = params.id;
     const department = await getDepartmentById(id);
@@ -27,6 +28,7 @@ export default async function Page({params}: {params: {id: number}}) {
 
     return (
         <main>
+            <DepartmentIdBreadcrumb departmentId={params.id} />
             <div className="flex flex-col overflow-hidden">
                 <div className="h-[1/8] p-3">
                     <h1 className={`${lusitana.className} text-3xl`}>{department.name}</h1>
