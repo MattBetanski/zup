@@ -114,6 +114,17 @@ public class ItemController : ControllerBase {
         }
     }
 
+    public ActionResult<List<Item>> GetChildItems([FromQuery] long parent_id) {
+        try {
+            List<Item> children = _itemservice.GetChildren(parent_id);
+            return children;
+        }
+        catch (Exception ex) {
+            Console.WriteLine(ex.Message);
+            return StatusCode(500, ex.Message);
+        }
+    }
+
     /// <summary>
     /// Gets items with a filter
     /// </summary>

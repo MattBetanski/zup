@@ -27,6 +27,19 @@ public class ItemService {
         return _context.Item.Find(item_id) ?? throw new DataNotFoundException("Select item not found");
     }
 
+    public List<Item> GetChildren(long item_id) {
+        try {
+            List<Item> children = (from itm in _context.Item
+                                where itm.ParentId == item_id
+                                select itm).ToList();
+
+            return children;
+        }
+        catch {
+            throw;
+        }
+    }
+
     public List<Item> GetWithFilter(long project_id, Models.Type? type, State? state) {
         try {
             List<Item> items = (from itm in _context.Item
