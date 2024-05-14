@@ -114,6 +114,17 @@ public class ItemController : ControllerBase {
         }
     }
 
+    /// <summary>
+    /// Gets children of an item
+    /// </summary>
+    /// <param name="parent_id"></param>
+    /// <returns></returns>
+    /// <response code="200">Returns list of children items</response>
+    /// <response code="500">Internal server error</response>
+    [HttpGet]
+    [Route("children")]
+    [ProducesResponseType(typeof(List<Item>), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(string), StatusCodes.Status500InternalServerError)]
     public ActionResult<List<Item>> GetChildItems([FromQuery] long parent_id) {
         try {
             List<Item> children = _itemservice.GetChildren(parent_id);
