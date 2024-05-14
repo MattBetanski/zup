@@ -123,7 +123,6 @@ export type Item = {
   description: string;
   type: ItemType;
   createdDate: Date;
-  deadline: Date | null;
   state: ItemState;
 }
 
@@ -171,4 +170,15 @@ export type UserRole = {
   roleId: number;
   roleName: string;
   userId: number;
+}
+
+export type DepartmentInvitations = {
+  departmentId: number;
+  inviteeId: number;
+  email: string;
+}
+
+export type UserInvitations = {
+  departmentId: number;
+  name: string;
 }

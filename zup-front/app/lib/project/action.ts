@@ -55,7 +55,6 @@ export async function createProject(prevState: CreateProjectState, formData: For
                 "Authorization": `Bearer ${token}`
             }
         });
-        console.log(response);
         if (response.status == 204) {
             // Do nothing
         } else if (response.status == 400) {
@@ -85,14 +84,40 @@ export async function getProjectsForDepartment(departmentId: number) {
                 "Authorization": `Bearer ${token}`
             }
         });
+        console.log(response);
+        if (response.status == 200) {
+            const body: Project[] = await response.json();
+            return body;
+        }
+    } catch (err) {
+        console.error(err);
+        return null;
+    }
+    return null;
+}
 
+export async function getProjectById(projectId: number) {
+    try {
+        const token = cookies().get("token")?.value ?? '';
+        const params = new URLSearchParams();
+        params.set("project_id", projectId.toString());
+        const response = await fetch(`http://localhost:5001/project?${params.toString()}`, {
+            headers: {
+                "Authorization": `Bearer ${token}`
+            }
+        });
+        console.log(token);
         if (response.status == 200) {
             const body: Project = await response.json();
             return body;
         }
     } catch (err) {
         console.error(err);
+        return null;
     }
+  return null;
+}
+
 }
 
 export async function getDepartmentByProjectId(projectId: number) {
@@ -118,4 +143,5 @@ export async function getDepartmentByProjectId(projectId: number) {
         console.error(err);
         throw Error("Failed getting department by project id");
     }
+    return null;
 }

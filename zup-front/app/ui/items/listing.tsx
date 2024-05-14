@@ -1,19 +1,15 @@
-'use client';
+'use client'
+import { Item, ItemType } from "@/app/lib/definitions";
+import { BugIcon, CodeIcon, FileIcon, PackageIcon, RepoIcon } from "@primer/octicons-react";
+import { TreeView } from "@primer/react";
+import Link from "next/link";
+import React from "react";
 
-import { UserCircleIcon } from '@heroicons/react/20/solid';
-import {TreeView} from '@primer/react';
-import { BugIcon, CodeIcon, FileIcon, PackageIcon, RepoIcon } from '@primer/octicons-react';
-import Link from 'next/link';
-import { getItemsForProject } from '@/app/lib/data';
-import { Item, ItemType } from '@/app/lib/definitions';
-import React from 'react';
-export default async function Page() {
-
+export default function ItemListing({items}: {items: Item[]}) {
     type ItemTuple = {
         item: Item;
         children: ItemTuple[];
     };
-    let items = await getItemsForProject("hi");
     const itemMap = new Map<number, ItemTuple>();
     const itemList: ItemTuple[] = [];
     items?.forEach(item => {
@@ -56,6 +52,9 @@ export default async function Page() {
         }
     };
 
+    function onSelect(id: string) {
+        console.log(id);
+    }
     const renderTree = (itemTuple: ItemTuple) => {
         const {item, children} = itemTuple;
         return (
@@ -73,29 +72,14 @@ export default async function Page() {
             </React.Fragment>
         );
     };
-
-    console.log(itemList);
-    function onSelect(id: string) {
-        console.log(id);
-    }
     return (
-        <main className='bg-surface-200'>
+        <main>
+            {items.length > 0 ? 
             <TreeView>
                 {itemList.map(itemTuple => renderTree(itemTuple))}
-            </TreeView>
-            <TreeView>
-                <TreeView.Item id="src" defaultExpanded className='text-blue-500'>
-                    <TreeView.LeadingVisual>
-                        <PackageIcon />
-                    </TreeView.LeadingVisual>
-                    Zup
-                    <TreeView.SubTree>
-                        <TreeView.Item id="item1" onSelect={() => {onSelect("3")}}>
-                            Help
-                        </TreeView.Item>
-                    </TreeView.SubTree>
-                </TreeView.Item>
-            </TreeView>
+            </TreeView> : 
+            <p className="bg-surface-100">No items, try creating one</p>
+        }
         </main>
-    )
+    );
 }
