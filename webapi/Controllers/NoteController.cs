@@ -27,7 +27,7 @@ public class NoteController : ControllerBase {
     /// <summary>
     /// Get all notes from a department
     /// </summary>
-    /// <param name="new_note"></param>
+    /// <param name="noteBody"></param>
     /// <returns></returns>
     /// <response code="200">Note created</response>
     /// <response code="401">A problem occured validating the token</response>
@@ -38,9 +38,17 @@ public class NoteController : ControllerBase {
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     [ProducesResponseType(StatusCodes.Status403Forbidden)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-    public ActionResult<Note> CreateNote([FromBody] Note new_note) {
+    public ActionResult<Note> CreateNote([FromBody] NoteBody noteBody) {
         try {
             User self = _userservice.getSelf(User.FindFirstValue(ClaimTypes.NameIdentifier));
+
+            Note new_note = new Note() {
+                Title = noteBody.Title,
+                Content = noteBody.Content,
+                DepartmentId = noteBody.DepartmentId,
+                CreatedDate = DateTime.UtcNow,
+                OwnerId = self.UserId,
+            };
 
             if (self.UserId != _departmentservice.getOwner(new_note.DepartmentId).UserId || !_projectservice.checkIfInProject(new_note.ProjectId, self.UserId)) {
                 throw new AccessNotAllowedException("You are not a member of the project");

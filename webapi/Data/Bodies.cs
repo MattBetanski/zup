@@ -33,6 +33,12 @@ public class LoginBody {
     public required string Password { get; set; }
 }
 
+public class NoteBody {
+    public required string Title { get; set; }
+    public required string Content { get; set; }
+    public required long DepartmentId { get; set; }
+}
+
 public class ProjectBody {
     public required string Name { get; set; }
     public string? Description { get; set; }
