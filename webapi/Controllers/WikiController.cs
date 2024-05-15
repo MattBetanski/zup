@@ -42,7 +42,7 @@ public class WikiController : ControllerBase {
     public IActionResult CreateWiki([FromQuery] long department_id, [FromBody] WikiBody wiki_info) {
         try {
             User self = _userservice.getSelf(User.FindFirstValue(ClaimTypes.NameIdentifier));
-            
+            Console.WriteLine($"content: {wiki_info.Content}");
             if (self.UserId == _deparmtnetserivce.getOwner(department_id).UserId || _roleservice.checkWikiLevel(self.UserId, RoleLevel.Modify)) {
                 WikiPage new_wiki = new WikiPage() {
                     DepartmentId = department_id,

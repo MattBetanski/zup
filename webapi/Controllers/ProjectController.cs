@@ -203,4 +203,36 @@ public class ProjectController : ControllerBase {
     public IActionResult RemoveUserFromProject([FromQuery]long project_id, [FromQuery]long user_id) {
         return Ok();
     }
+
+    /// <summary>
+    /// Gets department information by project id
+    /// </summary>
+    /// <param name="project_id"></param>
+    /// <returns>Department information</returns>
+    /// <response code="200">Returns department information</response>
+    /// <response code="401">A problem occured validating the user's token</response>
+    /// <response code="403">User is not a member of the department</response>
+    /// <response code="500">Internal server error</response>
+    [HttpGet]
+    [Route("department")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(string), StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(typeof(string), StatusCodes.Status403Forbidden)]
+    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+    public ActionResult<Department> GetDepartmentByProjectId([FromQuery] long project_id) {
+        try {
+            User self = _userservice.getSelf(User.FindFirstValue(ClaimTypes.NameIdentifier));
+            Department department = _departmentservice.getByProjectId(project_id);
+            if (!_departmentservice.checkIfInDepartment(self.UserId, department.DepartmentId))
+                return StatusCode(403, "You are not permitted to view this department");
+            return Ok(department);
+        }
+        catch (AccessNotAllowedException anea) {
+            return Unauthorized(anea.Message);
+        }
+        catch (Exception ex) {
+            Console.WriteLine(ex.Message);
+            return StatusCode(500, ex.Message);
+        }
+    }
 }

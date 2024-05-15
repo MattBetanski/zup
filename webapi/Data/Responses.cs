@@ -8,6 +8,7 @@ public class UserAndRoleResponse {
     public required string LastName { get; set; }
     public long RoleId { get; set; }
     public string? RoleName { get; set; }
+    public long UserId {get; set;}
 
 }
 

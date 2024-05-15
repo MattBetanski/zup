@@ -10,7 +10,7 @@ public enum Type {
 
 public enum State {
     Open,
-    InProgess,
+    InProgress,
     Blocked,
     Completed
 }

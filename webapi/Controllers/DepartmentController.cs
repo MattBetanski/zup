@@ -236,15 +236,16 @@ public class DepartmentController : ControllerBase {
                     UserAndRoleResponse UserAndRoleResponse = new UserAndRoleResponse {
                         Email = mbr.Email,
                         FirstName = mbr.FirstName,
-                        LastName = mbr.LastName
+                        LastName = mbr.LastName,
+                        UserId = mbr.UserId
                     };
-
                     Role? role = _roleservice.GetByUserId(mbr.UserId, project_id);
+                    Console.WriteLine($"role: {role}");
+                    Console.WriteLine($"uid: {mbr.UserId}");
                     if (role != null) {
                         UserAndRoleResponse.RoleId = role.RoleId;
                         UserAndRoleResponse.RoleName = role.Name;
                     }
-
                     user_list.Add(UserAndRoleResponse);
                 }
 
@@ -259,6 +260,9 @@ public class DepartmentController : ControllerBase {
             return StatusCode(500, ex.Message);
         }
     }
+
+
+
 
     /// <summary>
     /// Invites a user to the department

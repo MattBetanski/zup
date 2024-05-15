@@ -44,9 +44,11 @@ public class RoleService {
 
     public Role? GetByUserId(long user_id, long project_id) {
         try {
+            Console.WriteLine($"rid: {project_id}");
             Role? role = (from pur in _context.ProjectUserRole
                           where pur.UserId == user_id && pur.ProjectId == project_id
                           select pur.Role).FirstOrDefault();
+            Console.WriteLine($"role: {role}");
             return role;
         }
         catch {
