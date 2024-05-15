@@ -1,0 +1,182 @@
+@webapi_HostAddress = http://localhost:5001
+// user 1
+@jwt = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1laWQiOiIxIiwidW5pcXVlX25hbWUiOiJoZWxsb3dvcmxkIiwibmJmIjoxNzE1NzI1OTQ4LCJleHAiOjE3MTU5ODUxNDgsImlhdCI6MTcxNTcyNTk0OCwiYXVkIjoiaHR0cDovL2xvY2FsaG9zdDo1MDAwIn0.vy3wYZvPrrFozJP6foxP4VqReMblNVaB1M1MZO9u_fI
+// user 2
+@jwt2 = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1laWQiOiIyIiwidW5pcXVlX25hbWUiOiJoZWxsb3dvcmxkMiIsIm5iZiI6MTcxNTYzNzY1MywiZXhwIjoxNzE1ODk2ODUzLCJpYXQiOjE3MTU2Mzc2NTMsImF1ZCI6Imh0dHA6Ly9sb2NhbGhvc3Q6NTAwMCJ9.XbH4BIu2NRpJbrbWP_fFl8X0dWF5q_H8i6WvSwxvJSs
+
+POST {{webapi_HostAddress}}/user/create/
+Content-Type: application/json
+
+{
+    "username": "helloworld3",
+    "email": "helloworld3@gmail.com",
+    "password": "password",
+    "firstName": "hello",
+    "lastName": "world"
+}
+### creates an user
+
+POST {{webapi_HostAddress}}/user/login/
+Content-Type: application/json
+
+{
+    "username": "helloworld",
+    "password": "password"
+}
+### logs in user based on credentials
+
+GET {{webapi_HostAddress}}/user/invitations
+Authorization: Bearer {{jwt2}}
+Accept: application/json
+### get all pending invites for user
+
+PUT {{webapi_HostAddress}}/user/invitations?department_id=1&response=Accepted
+Authorization: Bearer {{jwt2}}
+### respond to an invite
+
+POST {{webapi_HostAddress}}/department/
+Authorization: Bearer {{jwt}}
+Content-Type: application/json
+
+{
+    "name": "bigworlddepartment",
+    "description": "spodermun",
+    "visibility": true
+}
+### creates department
+
+GET {{webapi_HostAddress}}/department?department_id=2
+Authorization: Bearer {{jwt}}
+Accept: application/json
+### gets department based on department id
+ 
+GET {{webapi_HostAddress}}/department/all
+Authorization: Bearer {{jwt2}}
+Accept: application/json
+### get all departments the user is in
+
+POST {{webapi_HostAddress}}/department/invite?department_id=1&email=helloworld2@gmail.com
+Authorization: Bearer {{jwt}}
+### invite a user to the department (must be owner of department)
+
+GET {{webapi_HostAddress}}/department/projects?department_id=2
+Authorization: Bearer {{jwt}}
+Accept: application/json
+### get all the projects in the department
+
+GET {{webapi_HostAddress}}/department/roles?department_id=2
+Authorization: Bearer {{jwt}}
+Accept: application/json
+### get the roles in the department
+
+GET {{webapi_HostAddress}}/department/members?project_id=2
+Authorization: Bearer {{jwt2}}
+Accept: application/json
+### get the members of the department with a project id
+
+GET {{webapi_HostAddress}}/department/invitations?department_id=2
+Authorization: Bearer {{jwt}}
+Accpet: application/json
+### get all pending invites for department (must be owner)
+
+DELETE {{webapi_HostAddress}}/department/invite?department_id=1&invitee_id=2
+Authorization: Bearer {{jwt}}
+### revoke a pending invite
+
+POST {{webapi_HostAddress}}/project/
+Authorization: Bearer {{jwt}}
+Content-Type: application/json
+
+{
+    "name": "bigworldproject2",
+    "description": "me no like",
+    "departmentId": 2
+}
+### creates a project (must be owner of department)
+
+GET {{webapi_HostAddress}}/project?project_id=1
+Authorization: Bearer {{jwt}}
+Accept: application/json
+### get project by id
+
+PUT {{webapi_HostAddress}}/project/role?project_id=2&user_id=1&role_id=2
+Authorization: Bearer {{jwt}}
+### assign a user a role and add them to the project if not already
+
+POST {{webapi_HostAddress}}/role/
+Authorization: Bearer {{jwt}}
+Content-Type: application/json
+
+{
+    "name": "rizzler",
+    "description": "ohio isnt real",
+    "departmentId": 2,
+    "itemLevel": "Read",
+    "wikiLevel": "Modify",
+    "wikiDelete": true
+}
+### create a role
+
+POST {{webapi_HostAddress}}/item/
+Authorization: Bearer {{jwt}}
+Content-Type: application/json
+
+{
+    "name": "baby",
+    "description": "nill",
+    "state": "InProgess",
+    "type": "Bug",
+    "projectId": 2,
+    "parentId": 2
+}
+### creates an item
+
+GET {{webapi_HostAddress}}/item/children?parent_id=2
+Authorization: Bearer {{jwt}}
+Accept: application/json
+### gets the children of the item
+
+GET {{webapi_HostAddress}}/item/filter?project_id=2
+Authorization: Bearer {{jwt}}
+Accept: application/json
+### get items based on optional filters (can be no filter, one filter, or both state and type)
+
+PUT {{webapi_HostAddress}}/item?item_id=7
+Authorization: Bearer {{jwt}}
+Content-Type: application/json
+
+{
+    "name": "the end",
+    "description": "farting",
+    "state": "Blocked",
+    "parentId": 8
+}
+### udpates an item
+
+POST {{webapi_HostAddress}}/wiki?department_id=1
+Authorization: Bearer {{jwt}}
+Content-Type: application/json
+
+{
+    "title": "wookie2",
+    "content": "not helpful wiki"
+}
+### creates a new wiki
+
+GET {{webapi_HostAddress}}/wiki/all?department_id=1
+Authorization: Bearer {{jwt}}
+Accept: application/json
+### get all the wikis (without content)
+
+GET {{webapi_HostAddress}}/wiki?wiki_id=3
+Authorization: Bearer {{jwt}}
+Accept: application/json
+### get a wiki by id
+
+
+// FOR TESTING ONLY //
+PUT {{webapi_HostAddress}}/department/testingadd?user_id=3&department_id=2
+Authorization: Bearer {{jwt}}
+### add user to department
+
+# v 
