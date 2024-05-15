@@ -16,7 +16,7 @@ namespace webapi.Migrations
                 {
                     department_id = table.Column<long>(type: "bigint", nullable: false),
                     invitee_id = table.Column<long>(type: "bigint", nullable: false),
-                    Response = table.Column<bool>(type: "boolean", nullable: false)
+                    Response = table.Column<int>(type: "integer", nullable: false)
                 },
                 constraints: table =>
                 {

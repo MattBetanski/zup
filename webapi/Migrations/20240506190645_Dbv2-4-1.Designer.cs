@@ -66,8 +66,8 @@ namespace webapi.Migrations
                         .HasColumnType("bigint")
                         .HasColumnName("invitee_id");
 
-                    b.Property<bool>("Response")
-                        .HasColumnType("boolean");
+                    b.Property<int>("Response")
+                        .HasColumnType("integer");
 
                     b.HasKey("DepartmentId", "InviteeId");
 
