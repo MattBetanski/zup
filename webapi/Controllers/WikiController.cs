@@ -13,11 +13,13 @@ namespace webapi.Controllers;
 [Authorize]
 public class WikiController : ControllerBase {
     private WikiService _wikiservice;
+    private DepartmentService _deparmtnetserivce;
     private RoleService _roleservice;
     private UserService _userservice;
 
-    public WikiController(WikiService wservice, RoleService rservice, UserService uservice) {
+    public WikiController(WikiService wservice, DepartmentService dservice, RoleService rservice, UserService uservice) {
         _wikiservice = wservice;
+        _deparmtnetserivce = dservice;
         _roleservice = rservice;
         _userservice = uservice;
     }
@@ -40,12 +42,13 @@ public class WikiController : ControllerBase {
     public IActionResult CreateWiki([FromQuery] long department_id, [FromBody] WikiBody wiki_info) {
         try {
             User self = _userservice.getSelf(User.FindFirstValue(ClaimTypes.NameIdentifier));
-
-            if (_roleservice.checkWikiLevel(self.UserId, RoleLevel.Modify)) {
+            Console.WriteLine($"bool: {self.UserId == _deparmtnetserivce.getOwner(department_id).UserId}");
+            if (self.UserId == _deparmtnetserivce.getOwner(department_id).UserId || _roleservice.checkWikiLevel(self.UserId, RoleLevel.Modify)) {
                 WikiPage new_wiki = new WikiPage() {
                     DepartmentId = department_id,
                     Title = wiki_info.Title,
-                    Content = wiki_info.Content
+                    Content = wiki_info.Content,
+                    CreatedDate = DateTime.UtcNow
                 };
 
                 new_wiki = _wikiservice.Create(new_wiki);
@@ -69,13 +72,26 @@ public class WikiController : ControllerBase {
         }
     }    
 
+    /// <summary>
+    /// Returns all wikis in a department without the content
+    /// </summary>
+    /// <param name="department_id"></param>
+    /// <returns></returns>
+    /// <response code="200">Returns a list of wikis</response>
+    /// <response code="401">A problem occured validating the user's token</response>
+    /// <response code="403">User does not have the proper level to view wikis</response>
+    /// <response code="500">Internal server error</response>
     [HttpGet]
     [Route("all")]
+    [ProducesResponseType(typeof(List<SimpleWiki>), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(string), StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(typeof(string), StatusCodes.Status403Forbidden)]
+    [ProducesResponseType(typeof(string), StatusCodes.Status500InternalServerError)]
     public ActionResult<List<SimpleWiki>> GetDepartmentsWikis([FromQuery] long department_id) {
         try {
             User self = _userservice.getSelf(User.FindFirstValue(ClaimTypes.NameIdentifier));
 
-            if (_roleservice.checkWikiLevel(self.UserId, RoleLevel.Read)) {
+            if (self.UserId == _deparmtnetserivce.getOwner(department_id).UserId || _roleservice.checkWikiLevel(self.UserId, RoleLevel.Read)) {
                 List<WikiPage> wikis = _wikiservice.GetByDepartment(department_id);
                 List<SimpleWiki> simple_wikis = new List<SimpleWiki>();
 
@@ -102,7 +118,22 @@ public class WikiController : ControllerBase {
         }
     }
 
+    /// <summary>
+    /// Returns the content of a wiki
+    /// </summary>
+    /// <param name="wiki_id"></param>
+    /// <returns></returns>
+    /// <response code="200">Returns the wiki content</response>
+    /// <response code="401">A problem occured validating the user's token</response>
+    /// <response code="403">User does not have the proper level to view the wiki</response>
+    /// <response code="404">Wiki not found</response>
+    /// <response code="500">Internal server error</response>
     [HttpGet]
+    [ProducesResponseType(typeof(WikiPage), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(string), StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(typeof(string), StatusCodes.Status403Forbidden)]
+    [ProducesResponseType(typeof(string), StatusCodes.Status404NotFound)]
+    [ProducesResponseType(typeof(string), StatusCodes.Status500InternalServerError)]
     public ActionResult<WikiPage> GetWikiContents([FromQuery] long wiki_id) {
         // content will return as a string
         try {
@@ -125,11 +156,6 @@ public class WikiController : ControllerBase {
             Console.WriteLine(ex.Message);
             return StatusCode(500, ex.Message);
         }
-    }
-
-
-
-        
     }
 
     [HttpPut]

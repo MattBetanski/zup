@@ -153,6 +153,21 @@ Content-Type: application/json
 }
 ### udpates an item
 
+POST {{webapi_HostAddress}}/wiki?department_id=1
+Authorization: Bearer {{jwt}}
+Content-Type: application/json
+
+{
+    "title": "wookie2",
+    "content": "not helpful wiki"
+}
+### creates a new wiki
+
+GET {{webapi_HostAddress}}/wiki/all?department_id=1
+Authorization: Bearer {{jwt}}
+Accept: application/json
+### get all the wikis (without content)
+
 
 // FOR TESTING ONLY //
 PUT {{webapi_HostAddress}}/department/testingadd?user_id=3&department_id=2
