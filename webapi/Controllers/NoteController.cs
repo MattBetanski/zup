@@ -13,11 +13,13 @@ namespace webapi.Controllers;
 [Authorize]
 public class NoteController : ControllerBase {
     private NoteService _noteservice;
+    private DepartmentService _departmentservice;
     private ProjectService _projectservice;
     private UserService _userservice;
 
-    public NoteController(NoteService service, ProjectService pservice, UserService uservice) {
+    public NoteController(NoteService service, DepartmentService dservice, ProjectService pservice, UserService uservice) {
         _noteservice = service;
+        _departmentservice = dservice;
         _projectservice = pservice;
         _userservice = uservice;
     }
@@ -40,7 +42,7 @@ public class NoteController : ControllerBase {
         try {
             User self = _userservice.getSelf(User.FindFirstValue(ClaimTypes.NameIdentifier));
 
-            if (!_projectservice.checkIfInProject(new_note.ProjectId, self.UserId)) {
+            if (self.UserId != _departmentservice.getOwner(new_note.DepartmentId).UserId || !_projectservice.checkIfInProject(new_note.ProjectId, self.UserId)) {
                 throw new AccessNotAllowedException("You are not a member of the project");
             }
 
