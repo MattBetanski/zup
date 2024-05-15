@@ -149,6 +149,37 @@ public class NoteController : ControllerBase {
         }
     }
 
+    /// <summary>
+    /// Get all notes from a department
+    /// </summary>
+    /// <param name="department_id"></param>
+    /// <returns></returns>
+    /// <response code="200">Notes found</response>
+    /// <response code="401">A problem occured validating the token</response>
+    /// <response code="403">You are not a member of the department</response>
+    /// <response code="500">Internal server error</response>
+    [HttpGet]
+    [Route("all")]
+    public ActionResult<List<Note>> GetAllNotes([FromQuery] long department_id) {
+        try {
+            User self = _userservice.getSelf(User.FindFirstValue(ClaimTypes.NameIdentifier));
+
+            if (self.UserId != _departmentservice.getOwner(department_id).UserId || !_departmentservice.checkIfInDepartment(department_id, self.UserId)) {
+                throw new AccessNotAllowedException("You are not a member of the department");
+            }
+
+            List<Note> notes = _noteservice.GetAllNotes(department_id);
+            return notes;
+        }
+        catch (AccessNotAllowedException anae) {
+            return Unauthorized(anae.Message);
+        }
+        catch (Exception ex) {
+            Console.WriteLine(ex);
+            return StatusCode(500, ex.Message);
+        }
+    }
+
     [HttpDelete]
     public IActionResult DeleteNote([FromQuery] long note_id) {
         return Ok();

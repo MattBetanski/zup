@@ -47,6 +47,18 @@ public class NoteService {
         }
     }
 
+    public List<Note> GetAllNotes(long department_id) {
+        try {
+            List<Note> notes = (from note in _context.Note
+                                where note.DepartmentId == department_id
+                                select note).ToList();
+            return notes;
+        }
+        catch {
+            throw;
+        }
+    }
+
     public bool hasRated(long note_id, long user_id) {
         try {
             return (from rating in _context.NoteRating
