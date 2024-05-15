@@ -115,14 +115,6 @@ namespace webapi.Migrations
                 nullable: false,
                 defaultValue: "");
 
-            migrationBuilder.AlterColumn<bool>(
-                name: "response",
-                table: "department_invite",
-                type: "boolean",
-                nullable: false,
-                oldClrType: typeof(int),
-                oldType: "integer");
-
             migrationBuilder.AddForeignKey(
                 name: "FK_wiki_page_project_project_id",
                 table: "wiki_page",

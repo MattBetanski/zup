@@ -12,8 +12,8 @@ using webapi.Data;
 namespace webapi.Migrations
 {
     [DbContext(typeof(ZupContext))]
-    [Migration("20240506190645_Dbv2-4-1")]
-    partial class Dbv241
+    [Migration("20240515025000_Dbv3-0-0")]
+    partial class Dbv300
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -47,11 +47,17 @@ namespace webapi.Migrations
                         .HasColumnType("text")
                         .HasColumnName("name");
 
-                    b.Property<bool>("visibility")
+                    b.Property<long>("OwnerId")
+                        .HasColumnType("bigint")
+                        .HasColumnName("owner_id");
+
+                    b.Property<bool>("Visibility")
                         .HasColumnType("boolean")
                         .HasColumnName("visibility");
 
                     b.HasKey("DepartmentId");
+
+                    b.HasIndex("OwnerId");
 
                     b.ToTable("department");
                 });
@@ -67,7 +73,8 @@ namespace webapi.Migrations
                         .HasColumnName("invitee_id");
 
                     b.Property<int>("Response")
-                        .HasColumnType("integer");
+                        .HasColumnType("integer")
+                        .HasColumnName("response");
 
                     b.HasKey("DepartmentId", "InviteeId");
 
@@ -102,17 +109,9 @@ namespace webapi.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseSerialColumn(b.Property<long>("ItemId"));
 
-                    b.Property<bool>("Confidentiality")
-                        .HasColumnType("boolean")
-                        .HasColumnName("confidentiality");
-
                     b.Property<DateTime>("CreatedDate")
                         .HasColumnType("timestamp with time zone")
                         .HasColumnName("created_date");
-
-                    b.Property<DateTime?>("Deadline")
-                        .HasColumnType("timestamp with time zone")
-                        .HasColumnName("deadline");
 
                     b.Property<string>("Description")
                         .HasColumnType("text")
@@ -220,17 +219,9 @@ namespace webapi.Migrations
                         .HasColumnType("bigint")
                         .HasColumnName("change_user_id");
 
-                    b.Property<bool>("Confidentiality")
-                        .HasColumnType("boolean")
-                        .HasColumnName("confidentiality");
-
                     b.Property<DateTime>("CreatedDate")
                         .HasColumnType("timestamp with time zone")
                         .HasColumnName("created_date");
-
-                    b.Property<DateTime?>("Deadline")
-                        .HasColumnType("timestamp with time zone")
-                        .HasColumnName("deadline");
 
                     b.Property<string>("Description")
                         .HasColumnType("text")
@@ -305,9 +296,8 @@ namespace webapi.Migrations
                         .HasColumnType("bigint")
                         .HasColumnName("owner_id");
 
-                    b.Property<long>("ProjectId")
-                        .HasColumnType("bigint")
-                        .HasColumnName("project_id");
+                    b.Property<long?>("ProjectId")
+                        .HasColumnType("bigint");
 
                     b.Property<string>("Title")
                         .IsRequired()
@@ -408,7 +398,7 @@ namespace webapi.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("ProjectUserRole");
+                    b.ToTable("project_user_role");
                 });
 
             modelBuilder.Entity("webapi.Models.Role", b =>
@@ -420,14 +410,6 @@ namespace webapi.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseSerialColumn(b.Property<long>("RoleId"));
 
-                    b.Property<int>("CreateLevel")
-                        .HasColumnType("integer")
-                        .HasColumnName("create_level");
-
-                    b.Property<int>("DeleteLevel")
-                        .HasColumnType("integer")
-                        .HasColumnName("delete_level");
-
                     b.Property<long>("DepartmentId")
                         .HasColumnType("bigint")
                         .HasColumnName("department_id");
@@ -436,14 +418,14 @@ namespace webapi.Migrations
                         .HasColumnType("text")
                         .HasColumnName("description");
 
+                    b.Property<int>("ItemLevel")
+                        .HasColumnType("integer")
+                        .HasColumnName("item_level");
+
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("text")
                         .HasColumnName("name");
-
-                    b.Property<int>("ReadLevel")
-                        .HasColumnType("integer")
-                        .HasColumnName("read_level");
 
                     b.Property<bool>("WikiDelete")
                         .HasColumnType("boolean")
@@ -452,10 +434,6 @@ namespace webapi.Migrations
                     b.Property<int>("WikiLevel")
                         .HasColumnType("integer")
                         .HasColumnName("wiki_level");
-
-                    b.Property<int>("WriteLevel")
-                        .HasColumnType("integer")
-                        .HasColumnName("write_level");
 
                     b.HasKey("RoleId");
 
@@ -501,11 +479,6 @@ namespace webapi.Migrations
                         .HasColumnType("text")
                         .HasColumnName("last_name");
 
-                    b.Property<string>("Salt")
-                        .IsRequired()
-                        .HasColumnType("text")
-                        .HasColumnName("salt");
-
                     b.Property<string>("Username")
                         .IsRequired()
                         .HasColumnType("text")
@@ -525,18 +498,17 @@ namespace webapi.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseSerialColumn(b.Property<long>("WikiPageId"));
 
+                    b.Property<string>("Content")
+                        .HasColumnType("text")
+                        .HasColumnName("content");
+
                     b.Property<DateTime>("CreatedDate")
                         .HasColumnType("timestamp with time zone")
                         .HasColumnName("created_date");
 
-                    b.Property<string>("FilePath")
-                        .IsRequired()
-                        .HasColumnType("text")
-                        .HasColumnName("file_path");
-
-                    b.Property<long>("ProjectId")
+                    b.Property<long>("DepartmentId")
                         .HasColumnType("bigint")
-                        .HasColumnName("project_id");
+                        .HasColumnName("department_id");
 
                     b.Property<string>("Title")
                         .IsRequired()
@@ -545,9 +517,20 @@ namespace webapi.Migrations
 
                     b.HasKey("WikiPageId");
 
-                    b.HasIndex("ProjectId");
+                    b.HasIndex("DepartmentId");
 
                     b.ToTable("wiki_page");
+                });
+
+            modelBuilder.Entity("webapi.Models.Department", b =>
+                {
+                    b.HasOne("webapi.Models.User", "Owner")
+                        .WithMany()
+                        .HasForeignKey("OwnerId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Owner");
                 });
 
             modelBuilder.Entity("webapi.Models.DepartmentInvite", b =>
@@ -667,9 +650,7 @@ namespace webapi.Migrations
 
                     b.HasOne("webapi.Models.Project", "Project")
                         .WithMany()
-                        .HasForeignKey("ProjectId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("ProjectId");
 
                     b.Navigation("Department");
 
@@ -748,13 +729,13 @@ namespace webapi.Migrations
 
             modelBuilder.Entity("webapi.Models.WikiPage", b =>
                 {
-                    b.HasOne("webapi.Models.Project", "Project")
+                    b.HasOne("webapi.Models.Department", "Department")
                         .WithMany()
-                        .HasForeignKey("ProjectId")
+                        .HasForeignKey("DepartmentId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("Project");
+                    b.Navigation("Department");
                 });
 
             modelBuilder.Entity("webapi.Models.User", b =>
