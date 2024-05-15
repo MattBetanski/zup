@@ -494,3 +494,10 @@ VALUES ('20240515014137_note_trigger', '8.0.4');
 
 COMMIT;
 
+START TRANSACTION;
+
+INSERT INTO "__EFMigrationsHistory" ("MigrationId", "ProductVersion")
+VALUES ('20240515025000_Dbv3-0-0', '8.0.4');
+
+COMMIT;
+
