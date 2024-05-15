@@ -38,13 +38,6 @@ namespace webapi.Migrations
                 type: "text",
                 nullable: true);
 
-            migrationBuilder.AlterColumn<int>(
-                name: "response",
-                table: "department_invite",
-                type: "integer",
-                nullable: false,
-                oldClrType: typeof(bool),
-                oldType: "boolean");
 
             migrationBuilder.AddColumn<long>(
                 name: "owner_id",
