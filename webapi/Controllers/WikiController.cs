@@ -42,7 +42,7 @@ public class WikiController : ControllerBase {
     public IActionResult CreateWiki([FromQuery] long department_id, [FromBody] WikiBody wiki_info) {
         try {
             User self = _userservice.getSelf(User.FindFirstValue(ClaimTypes.NameIdentifier));
-            Console.WriteLine($"bool: {self.UserId == _deparmtnetserivce.getOwner(department_id).UserId}");
+            
             if (self.UserId == _deparmtnetserivce.getOwner(department_id).UserId || _roleservice.checkWikiLevel(self.UserId, RoleLevel.Modify)) {
                 WikiPage new_wiki = new WikiPage() {
                     DepartmentId = department_id,
@@ -139,8 +139,9 @@ public class WikiController : ControllerBase {
         try {
             User self = _userservice.getSelf(User.FindFirstValue(ClaimTypes.NameIdentifier));
 
-            if (_roleservice.checkWikiLevel(self.UserId, RoleLevel.Read)) {
-                WikiPage wiki = _wikiservice.GetWiki(wiki_id);
+            WikiPage wiki = _wikiservice.GetWiki(wiki_id);
+
+            if (self.UserId == _deparmtnetserivce.getOwner(wiki.DepartmentId).UserId || _roleservice.checkWikiLevel(self.UserId, RoleLevel.Read)) {
                 return wiki;
             }
             else

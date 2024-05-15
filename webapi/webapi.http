@@ -168,6 +168,11 @@ Authorization: Bearer {{jwt}}
 Accept: application/json
 ### get all the wikis (without content)
 
+GET {{webapi_HostAddress}}/wiki?wiki_id=1
+Authorization: Bearer {{jwt}}
+Accept: application/json
+### get a wiki by id
+
 
 // FOR TESTING ONLY //
 PUT {{webapi_HostAddress}}/department/testingadd?user_id=3&department_id=2
