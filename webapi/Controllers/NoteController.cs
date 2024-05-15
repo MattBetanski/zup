@@ -13,33 +13,128 @@ namespace webapi.Controllers;
 [Authorize]
 public class NoteController : ControllerBase {
     private NoteService _noteservice;
+    private ProjectService _projectservice;
     private UserService _userservice;
 
-    public NoteController(NoteService service, UserService uservice) {
+    public NoteController(NoteService service, ProjectService pservice, UserService uservice) {
         _noteservice = service;
+        _projectservice = pservice;
         _userservice = uservice;
     }
 
-    [HttpPut]
-    [Route("rate")]
-    public IActionResult RateNote([FromQuery] long note_id, [FromQuery] bool? rating = null) {
-        // if rating is not set, remove rating (this should be a trigger)
-        // ask copilot how to run raw sql file within entity framework core
+    /// <summary>
+    /// Get all notes from a department
+    /// </summary>
+    /// <param name="new_note"></param>
+    /// <returns></returns>
+    /// <response code="200">Note created</response>
+    /// <response code="401">A problem occured validating the token</response>
+    /// <response code="403">You are not a member of the project</response>
+    /// <response code="500">Internal server error</response>
+    [HttpPost]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(StatusCodes.Status403Forbidden)]
+    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+    public ActionResult<Note> CreateNote([FromBody] Note new_note) {
         try {
             User self = _userservice.getSelf(User.FindFirstValue(ClaimTypes.NameIdentifier));
 
-            if (rating == null) {
-                // remove rating
-                //_noteservice.RemoveRating(note_id);
+            if (!_projectservice.checkIfInProject(new_note.ProjectId, self.UserId)) {
+                throw new AccessNotAllowedException("You are not a member of the project");
             }
-            else {
-                // add rating
-            
-            }
-            return NoContent();
+
+            new_note.OwnerId = self.UserId;
+            _noteservice.Create(new_note);
+            return new_note;
+        }
+        catch (AccessNotAllowedException anae) {
+            return Unauthorized(anae.Message);
         }
         catch (Exception ex) {
-            Console.WriteLine(ex.Message);
+            Console.WriteLine(ex);
+            return StatusCode(500, ex.Message);
+        }
+    }
+
+    /// <summary>
+    /// Get all notes from a department
+    /// </summary>
+    /// <param name="note_id"></param>
+    /// <returns></returns>
+    /// <response code="200">Note found</response>
+    /// <response code="401">A problem occured validating the token</response>
+    /// <response code="404">Note not found</response>
+    /// <response code="500">Internal server error</response>
+    [HttpGet]
+    public ActionResult<Note> GetNoteById([FromQuery] long note_id) {
+        try {
+            Note note = _noteservice.GetNote(note_id);
+            return note;
+        }
+        catch (AccessNotAllowedException anae) {
+            return Unauthorized(anae.Message);      
+        }
+        catch (DataNotFoundException dnfe) {
+            return NotFound(dnfe.Message);
+        }
+        catch (Exception ex) {
+            Console.WriteLine(ex);
+            return StatusCode(500, ex.Message);
+        }
+    }
+
+    /// <summary>
+    /// Rate a note
+    /// </summary>
+    /// <param name="note_id"></param>
+    /// <param name="rating"></param>
+    /// <returns></returns>
+    /// <response code="204">Rating updated</response>
+    /// <response code="401">A problem occured validating the token</response>
+    /// <response code="404">Note not found</response>
+    /// <response code="500">Internal server error</response>
+    [HttpPut]
+    [Route("rate")]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+    public IActionResult RateNote([FromQuery] long note_id, [FromQuery] bool? rating = null) {
+        try {
+            User self = _userservice.getSelf(User.FindFirstValue(ClaimTypes.NameIdentifier));
+
+            if (_noteservice.hasRated(note_id, self.UserId)) {
+                if (rating == null) {
+                    // remove rating
+                    _noteservice.DeleteRating(note_id, self.UserId);
+                }
+                else {
+                    // update rating
+                    _noteservice.UpdateRating(note_id, self.UserId, (bool)rating);
+                }
+            }
+            else {
+                if (rating != null) {
+                    NoteRating nr = new NoteRating() {
+                        NoteId = note_id,
+                        UserId = self.UserId,
+                        Rate = (bool)rating
+                    };
+                    _noteservice.AddRating(nr);
+                }
+            }
+            
+            return NoContent();
+        }
+        catch (AccessNotAllowedException anae) {
+            return Unauthorized(anae.Message);
+        }
+        catch (DataNotFoundException dnfe) {
+            return NotFound(dnfe.Message);
+        }
+        catch (Exception ex) {
+            Console.WriteLine(ex);
             return StatusCode(500, ex.Message);
         }
     }
