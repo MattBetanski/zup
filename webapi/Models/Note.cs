@@ -29,10 +29,6 @@ public class Note {
     [ForeignKey("Department")]
     public long DepartmentId { get; set; }
 
-    [Required, Column("project_id")]
-    [ForeignKey("Project")]
-    public long ProjectId { get; set; }
-
     [JsonIgnore]
     public virtual User? Owner { get; set; }
     [JsonIgnore]
