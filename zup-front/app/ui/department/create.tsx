@@ -38,11 +38,11 @@ export default function Form() {
                 type="text"
                 placeholder="Enter Department name"
                 className="peer block w-full rounded-r-3xl border border-gray-500 rounded-l-lg py-[9px] pl-10 text-sm outline-2 placeholder:text-gray-500 bg-surface-200"
-                aria-describedby='amount-error'
+                aria-describedby='name-error'
               />
             <UserCircleIcon className="pointer-events-none absolute left-3 top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-gray-500" />
           </div>
-          <div id="customer-error" aria-live="polite" aria-atomic="true">
+          <div id="name-error" aria-live="polite" aria-atomic="true">
             {state.errors?.name &&
               state.errors.name.map((error: string) => (
                 <p className='mt-2 text-sm text-red-500' key={error}>
@@ -65,11 +65,11 @@ export default function Form() {
                 type="text"
                 placeholder="Enter Description"
                 className="peer block w-full rounded-r-3xl border border-gray-500 rounded-l-lg py-[9px] pl-10 text-sm outline-2 placeholder:text-gray-500 bg-surface-200"
-                aria-describedby='amount-error'
+                aria-describedby='description-error'
               />
               <CurrencyDollarIcon className="pointer-events-none absolute left-3 top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-gray-500 peer-focus:text-gray-900" />
             </div>
-            <div id="invoice-error" aria-live="polite" aria-atomic="true">
+            <div id="description-error" aria-live="polite" aria-atomic="true">
               {state.errors?.description &&
                 state.errors.description.map((error: string) => (
                   <p className='mt-2 text-sm text-red-500' key={error}>

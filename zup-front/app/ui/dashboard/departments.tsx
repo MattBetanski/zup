@@ -104,7 +104,6 @@ export default function DepartmentWrapper({departments}: {departments: Departmen
                     </button>
 
                 </div>
-                <Button className="absoute right-0 bg-primary-300 hover:bg-primary-200 active:bg-primary-100" onClick={createDepartment}>Create Department</Button>
             </div>
         </div>
     </>

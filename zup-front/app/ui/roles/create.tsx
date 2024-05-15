@@ -1,3 +1,4 @@
+'use client';
 import { createRole, CreateRoleState } from "@/app/lib/roles/action";
 import { EyeIcon, EyeSlashIcon } from "@heroicons/react/24/solid";
 import { useRouter } from "next/navigation";
@@ -8,7 +9,7 @@ export default function CreateRole({departmentId}: {departmentId: number}){
     const router = useRouter();
 
     function cancel() {
-        router.back();
+        router.push(`/dashboard/department/${departmentId}/roles`);
     }
   const initialState: CreateRoleState = { message: null, errors: {}};
   const [state, dispatch] = useFormState(createRole, initialState);

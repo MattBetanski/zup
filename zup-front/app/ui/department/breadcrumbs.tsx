@@ -19,3 +19,14 @@ export function DepartmentListingBreadcrumb() {
         </Breadcrumbs>
     )
 }
+
+export function DepartmentInviteBreadcrumb({departmentId}: {departmentId: number}) {
+    return (
+        <Breadcrumbs>
+            <Breadcrumbs.Item href="/dashboard">Dashboard</Breadcrumbs.Item>
+            <Breadcrumbs.Item href={`/dashboard/department`}>Department</Breadcrumbs.Item>
+            <Breadcrumbs.Item href={`/dashboard/department/${departmentId}/`}>{departmentId}</Breadcrumbs.Item>
+            <Breadcrumbs.Item href={`/dashboard/department/${departmentId}/invite`} selected>Invite</Breadcrumbs.Item>
+        </Breadcrumbs>
+    )
+}

@@ -232,7 +232,8 @@ export async function setRole(roleId: number, userId: number, projectId: number)
         params.set("user_id", userId.toString());
         params.set("role_id", roleId.toString());
         console.log(params.toString());
-        const response = await fetch(`http://localhost:5001/project/roles?${params.toString()}`, {
+        console.log("attempting to set role");
+        const response = await fetch(`http://localhost:5001/project/role?${params.toString()}`, {
             "method": "PUT",
             headers: {
                 "Authorization": `Bearer ${token}`

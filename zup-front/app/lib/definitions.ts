@@ -2,6 +2,7 @@
 // It describes the shape of the data, and what data type each property should accept.
 // For simplicity of teaching, we're manually defining these types.
 
+import { DO_NOT_USE_OR_YOU_WILL_BE_FIRED_EXPERIMENTAL_REACT_NODES } from "react";
 import internal from "stream";
 
 // However, these types are generated automatically if you're using an ORM such as Prisma.
@@ -128,16 +129,17 @@ export type Item = {
 
 export enum ItemState {
   Open = "Open",
-  InProgres = "InProgress",
-  Closed = "Closed"
+  InProgress = "InProgress",
+  Completed = "Completed",
+  Blocked = "Blocked"
 }
 
 export enum ItemType {
-  Epic,
-  Feature,
-  Requirement,
-  Task,
-  Bug
+  Epic = "Epic",
+  Feature = "Feature",
+  Requirement = "Requirement",
+  Task = "Task",
+  Bug = "Bug"
 }
 
 export type Project = {
@@ -172,13 +174,28 @@ export type UserRole = {
   userId: number;
 }
 
-export type DepartmentInvitations = {
+export type WikiListing = {
+  wikiId: number;
   departmentId: number;
-  inviteeId: number;
-  email: string;
+  title: string;
+  createDate: Date;
 }
 
-export type UserInvitations = {
+export type WikiPage = {
+  wikiPageId: number;
   departmentId: number;
-  name: string;
+  title: string;
+  createDate: Date;
+  content: string;
+}
+
+export type Note = {
+  noteId: number;
+  ownerId: number;
+  title: string;
+  content: string;
+  createDate: Date;
+  likeCount: number;
+  departmentId: number;
+  projectId: number;
 }

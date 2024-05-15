@@ -118,7 +118,6 @@ export async function getProjectById(projectId: number) {
   return null;
 }
 
-}
 
 export async function getDepartmentByProjectId(projectId: number) {
     try {

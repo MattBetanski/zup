@@ -34,16 +34,16 @@ export default async function Page({params}: {params: {id: number}}) {
     const items = await getProjectsForDepartment(id);
 
     return (
-        <main>
+        <main className="h-full">
             <DepartmentIdBreadcrumb departmentId={params.id} />
-            <div className="flex flex-col overflow-hidden">
+            <div className="overflow-hidden h-full">
                 <div className="h-[1/8] p-3">
                     <h1 className={`${lusitana.className} text-3xl`}>{department.name}</h1>
                     <hr></hr>
                     <p className={` mt-5 text-md`}>{department.description}</p>
                 </div>
-                <div className="flex h-3/4 mt-5 overflow-hidden">
-                    <div className="flex-auto w-1/2 p-3 h-3/4 overflow-hidden">
+                <div className="h-[80%] mt-5 overflow-hidden">
+                    <div className="flex-auto w-1/2 p-3 overflow-hidden h-full">
                         <h1 className="text-3xl mb-5">Projects</h1>
                         <div className="h-full">
                             {(items && items.length > 0) ? (<PaginatedList itemsPerPage={3} items={items}/>): (
@@ -52,21 +52,14 @@ export default async function Page({params}: {params: {id: number}}) {
                             
                         </div>
                     </div>
-                    <div className="flex flex-col w-1/2">
-                        <div className="flex flex-col relative h-64 bg-surface-300 m-4 rounded-lg border-surface-400 border-2">
-                                <RecentWikiPages pages={pages} departmentId={id} />
-                                <div className="items-end absolute right-5 bottom-5">
-                                    <Button className="w-48 text-center items-center justify-center">Create Wiki Page</Button>
-                                </div>
-                            </div>
-                        <div className="flex h-64 bg-green-300">Notes</div>
-                        <div className="flex h-64 bg-red-300">Roles</div>
-                    </div>
                 </div>
-                <div className="flex flex-row">
+                <div className="flex flex-row justify-end">
                     <Link href={`/dashboard/department/${id}/edit`} className="flex h-10 mr-5 items-center rounded-lg bg-blue-500 px-4 text-sm font-medium text-white transition-colors hover:bg-blue-400 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-500 active:bg-blue-600 aria-disabled:cursor-not-allowed aria-disabled:opacity-50">Edit</Link>
                     <Link href={`/dashboard/project/create?departmentId=${id}`} className="flex mr-5 h-10 items-center rounded-lg bg-blue-500 px-4 text-sm font-medium text-white transition-colors hover:bg-blue-400 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-500 active:bg-blue-600 aria-disabled:cursor-not-allowed aria-disabled:opacity-50">Create Project</Link>
                     <Link href={`/dashboard/department/${id}/invite`} className="flex h-10 mr-5 items-center rounded-lg bg-blue-500 px-4 text-sm font-medium text-white transition-colors hover:bg-blue-400 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-500 active:bg-blue-600 aria-disabled:cursor-not-allowed aria-disabled:opacity-50">Invite</Link>
+                    <Link href={`/dashboard/department/${id}/roles`} className="flex h-10 mr-5 items-center rounded-lg bg-blue-500 px-4 text-sm font-medium text-white transition-colors hover:bg-blue-400 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-500 active:bg-blue-600 aria-disabled:cursor-not-allowed aria-disabled:opacity-50">Roles</Link>
+                    <Link href={`/dashboard/department/${id}/wiki`} className="flex h-10 mr-5 items-center rounded-lg bg-blue-500 px-4 text-sm font-medium text-white transition-colors hover:bg-blue-400 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-500 active:bg-blue-600 aria-disabled:cursor-not-allowed aria-disabled:opacity-50">Wiki Pages</Link>
+                    <Link href={`/dashboard/department/${id}/notes`} className="flex h-10 mr-5 items-center rounded-lg bg-blue-500 px-4 text-sm font-medium text-white transition-colors hover:bg-blue-400 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-500 active:bg-blue-600 aria-disabled:cursor-not-allowed aria-disabled:opacity-50">Notes</Link>
                     
                 </div>
             </div>

@@ -22,7 +22,7 @@ const EditDepartment = DepartmentSchema.omit({creationDate: true});
 
 export type EditDepartmentState = {
     errors?: {
-        id?: string[]
+        id?: string[];
         name?: string[];
         description: string[];
         visibility: string[];
@@ -39,7 +39,7 @@ export type CreateDepartmentState = {
     message?: string | null;
 }
 
-export async function deleteDepartment(id: string) {
+export async function deleteDepartment(id: number) {
     console.log("calling this");
     try {
         console.log("test")
