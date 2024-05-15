@@ -50,8 +50,8 @@ public class NoteController : ControllerBase {
                 OwnerId = self.UserId,
             };
 
-            if (self.UserId != _departmentservice.getOwner(new_note.DepartmentId).UserId || !_projectservice.checkIfInProject(new_note.ProjectId, self.UserId)) {
-                throw new AccessNotAllowedException("You are not a member of the project");
+            if (self.UserId != _departmentservice.getOwner(new_note.DepartmentId).UserId || !_departmentservice.checkIfInDepartment(new_note.DepartmentId, self.UserId)) {
+                throw new AccessNotAllowedException("You are not a member of the department");
             }
 
             new_note.OwnerId = self.UserId;
